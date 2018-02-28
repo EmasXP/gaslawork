@@ -91,6 +91,18 @@ class Index extends \Gaslawork\Controller {
 }
 ```
 
+### Advanced routing
+
+This is a fully working route:
+
+`/hello/:action/world/:controller/foo/:id`
+
+An example URL that matches this route is:
+
+`/hello/abc/world/def/foo`
+
+The controller will be `def` and the action will be `abc`.
+
 ### To write about
 
 * Calling `__invoke()` on controller.
