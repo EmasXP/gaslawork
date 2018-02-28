@@ -195,13 +195,12 @@ class Route implements RouteInterface {
 
 		if ($action !== null)
 		{
-			$class_path .= "->"
-				.$this->action_prefix
+			$action = $this->action_prefix
 				.$action
 				.$this->action_suffix;
 		}
 
-		return $this->target = $class_path;
+		return new RouteTarget($class_path, $action);
 	}
 
 

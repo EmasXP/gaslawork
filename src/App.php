@@ -100,25 +100,30 @@ class App {
 			$uri
 		);
 
-		$target = explode("->", $route->getTarget());
+		$target = $route->getTarget();
+		/* @var $route RouteTargetInterface */
 
-		//spl_autoload($target[0]);
+		$controller_path = $target->getController();
 
-		if ( ! class_exists($target[0]))
+		//spl_autoload($controller_path);
+
+		if ( ! class_exists($controller_path))
 		{
 			return print "404";
 		}
 
-		$controller = new $target[0];
+		$controller = new $controller_path;
 
-		if (count($target) > 1)
+		$action = $target->getAction();
+
+		if ($action !== null)
 		{
-			if ( ! method_exists($controller, $target[1]))
+			if ( ! method_exists($controller, $action))
 			{
 				return print "404";
 			}
 
-			return $controller->{$target[1]}();
+			return $controller->$action();
 		}
 
 		return $controller();
