@@ -4,7 +4,7 @@ namespace Gaslawork;
 
 class App {
 
-	protected $dispatcher;
+	protected $router;
 	protected $dependencies = array();
 	protected $loaded_dependencies = array();
 	public $base_url;
@@ -12,17 +12,17 @@ class App {
 	protected static $instance;
 
 
-	public static function instance($dispatcher = null)
+	public static function instance($router = null)
 	{
 		if (self::$instance === null)
 		{
-			return new self($dispatcher);
+			return new self($router);
 		}
 
-		if ($dispatcher !== null)
+		if ($router !== null)
 		{
 			return self::current()
-				->setDispatcher($dispatcher);
+				->setRouter($router);
 		}
 
 		return self::current();
@@ -35,9 +35,9 @@ class App {
 	}
 
 
-	public function __construct($dispatcher)
+	public function __construct($router)
 	{
-		$this->dispatcher = $dispatcher;
+		$this->router = $router;
 
 		if (self::$instance !== null)
 		{
@@ -48,16 +48,16 @@ class App {
 	}
 
 
-	public function setDispatcher($dispatcher)
+	public function setRouter($router)
 	{
-		$this->dispatcher = $dispatcher;
+		$this->router = $router;
 		return $this;
 	}
 
 
-	public function getDispatcher()
+	public function getRouter()
 	{
-		return $this->dispatcher;
+		return $this->router;
 	}
 
 
@@ -75,20 +75,20 @@ class App {
 			$uri = substr($uri, 0, $pos);
 		}
 
-		$uri = rawurldecode($uri);
+		$uri_decoded = rawurldecode($uri);
 
 		if ($this->base_url !== null)
 		{
-			return substr($uri, strlen($this->base_url));
+			return substr($uri_decoded, strlen($this->base_url));
 		}
 
-		return $uri;
+		return $uri_decoded;
 	}
 
 
 	public function findAndExecuteRoute($uri, $http_method)
 	{
-		$route = $this->dispatcher->findRoute($uri, $http_method);
+		$route = $this->router->findRoute($uri, $http_method);
 
 		if ($route === null)
 		{
