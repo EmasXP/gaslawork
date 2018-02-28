@@ -15,13 +15,13 @@ class Routes implements RoutesInterface {
 	}
 
 
-	public function find_route($url, $method = null)
+	public function findRoute($url, $method = null)
 	{
 		$route_url = new RouteUrl($url);
 
 		foreach ($this->routes as $route)
 		{
-			if ( ! $route->check_route($route_url, $method))
+			if ( ! $route->checkRoute($route_url, $method))
 			{
 				continue;
 			}

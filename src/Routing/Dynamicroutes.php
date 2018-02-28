@@ -17,11 +17,11 @@ class Dynamicroutes {
 	}
 
 
-	public function find_route($url, $method = null)
+	public function findRoute($url, $method = null)
 	{
 		$route_url = new RouteUrl($url);
 
-		$exploded = $route_url->get_exploded();
+		$exploded = $route_url->getExploded();
 
 		$controller = $this->default_controller;
 		$action = $this->default_action;

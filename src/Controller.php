@@ -4,17 +4,17 @@ namespace Gaslawork;
 
 class Controller {
 
-	public function get_param($name)
+	public function getParam($name)
 	{
 		return Request::current()
-			->get_param($name);
+			->getParam($name);
 	}
 
 
-	public function params()
+	public function getParams()
 	{
 		return Request::current()
-			->get_params();
+			->getParams();
 	}
 
 

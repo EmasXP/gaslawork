@@ -29,17 +29,17 @@ class Request {
 	}
 
 
-	public function get_param($name)
+	public function getParam($name)
 	{
 		return $this->route
-			->get_param($name);
+			->getParam($name);
 	}
 
 
-	public function get_params()
+	public function getParams()
 	{
 		return $this->route
-			->get_params();
+			->getParams();
 	}
 
 }

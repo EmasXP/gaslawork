@@ -16,13 +16,13 @@ class DynamicrouteResult implements RouteInterface {
 	}
 
 
-	public function get_target()
+	public function getTarget()
 	{
 		return $this->target;
 	}
 
 
-	public function get_param($name)
+	public function getParam($name)
 	{
 		if ( ! isset($this->params[$name]))
 		{
@@ -33,7 +33,7 @@ class DynamicrouteResult implements RouteInterface {
 	}
 
 
-	public function get_params()
+	public function getParams()
 	{
 		return $this->params;
 	}

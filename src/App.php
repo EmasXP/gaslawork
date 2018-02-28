@@ -61,7 +61,7 @@ class App {
 	}
 
 
-	protected function get_uri()
+	protected function getUri()
 	{
 		if ( ! isset($_SERVER['REQUEST_URI']))
 		{
@@ -86,9 +86,9 @@ class App {
 	}
 
 
-	public function find_and_execute_route($uri, $http_method)
+	public function findAndExecuteRoute($uri, $http_method)
 	{
-		$route = $this->dispatcher->find_route($uri, $http_method);
+		$route = $this->dispatcher->findRoute($uri, $http_method);
 
 		if ($route === null)
 		{
@@ -100,9 +100,9 @@ class App {
 			$uri
 		);
 
-		$target = explode("->", $route->get_target());
+		$target = explode("->", $route->getTarget());
 
-		spl_autoload($target[0]);
+		//spl_autoload($target[0]);
 
 		if ( ! class_exists($target[0]))
 		{
@@ -127,8 +127,8 @@ class App {
 
 	public function run()
 	{
-		return $this->find_and_execute_route(
-			$this->get_uri(),
+		return $this->findAndExecuteRoute(
+			$this->getUri(),
 			(isset($_SERVER["REQUEST_METHOD"]) ? $_SERVER["REQUEST_METHOD"] : null)
 		);
 	}

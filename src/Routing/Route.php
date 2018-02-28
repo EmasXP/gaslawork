@@ -27,49 +27,49 @@ class Route implements RouteInterface {
 	}
 
 
-	public function set_defaults(array $defaults)
+	public function setDefaults(array $defaults)
 	{
 		$this->defaults = $defaults;
 		return $this;
 	}
 
 
-	public function set_required(array $required)
+	public function setRequired(array $required)
 	{
 		$this->required = $required;
 		return $this;
 	}
 
 
-	public function set_whitelist(array $whitelist)
+	public function setWhitelist(array $whitelist)
 	{
 		$this->whitelist = $whitelist;
 		return $this;
 	}
 
 
-	public function set_blacklist(array $blacklist)
+	public function setBlacklist(array $blacklist)
 	{
 		$this->blacklist = $blacklist;
 		return $this;
 	}
 
 
-	public function set_action_prefix($action_prefix)
+	public function setActionPrefix($action_prefix)
 	{
 		$this->action_prefix = $action_prefix;
 		return $this;
 	}
 
 
-	public function set_action_suffix($action_suffix)
+	public function setActionSuffix($action_suffix)
 	{
 		$this->action_suffix = $action_suffix;
 		return $this;
 	}
 
 
-	protected function get_route_exploded()
+	protected function getRouteExploded()
 	{
 		if ($this->exploded_route !== null)
 		{
@@ -80,10 +80,10 @@ class Route implements RouteInterface {
 	}
 
 
-	public function check_route(RouteUrl $url, $method)
+	public function checkRoute(RouteUrl $url, $method)
 	{
-		$exploded = $this->get_route_exploded();
-		$url_exploded = $url->get_exploded();
+		$exploded = $this->getRouteExploded();
+		$url_exploded = $url->getExploded();
 
 		$params = array();
 
@@ -167,7 +167,7 @@ class Route implements RouteInterface {
 	}
 
 
-	public function get_target()
+	public function getTarget()
 	{
 		if ($this->target !== null)
 		{
@@ -189,9 +189,9 @@ class Route implements RouteInterface {
 			$class_path .= $this->params["directory"]."\\";
 		}
 
-		$class_path .= ucfirst($this->get_param("controller"));
+		$class_path .= ucfirst($this->getParam("controller"));
 
-		$action = $this->get_param("action");
+		$action = $this->getParam("action");
 
 		if ($action !== null)
 		{
@@ -205,7 +205,7 @@ class Route implements RouteInterface {
 	}
 
 
-	public function get_param($name)
+	public function getParam($name)
 	{
 		if (isset($this->params[$name]))
 		{
@@ -221,7 +221,7 @@ class Route implements RouteInterface {
 	}
 
 
-	public function get_params()
+	public function getParams()
 	{
 		return $this->params + $this->defaults;
 	}

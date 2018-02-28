@@ -5,10 +5,10 @@ namespace Gaslawork\Routing;
 
 interface RouteInterface {
 
-	public function get_target();
+	public function getTarget();
 
-	public function get_param($name);
+	public function getParam($name);
 
-	public function get_params();
+	public function getParams();
 
 }

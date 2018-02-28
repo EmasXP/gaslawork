@@ -20,7 +20,7 @@ class RouteUrl {
 	}
 
 
-	public function get_exploded()
+	public function getExploded()
 	{
 		if ($this->exploded_url === null)
 		{
