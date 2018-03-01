@@ -4,11 +4,7 @@ This project is under heavy development. I'm still in the phase of investigating
 
 ## Routing
 
-You do not need to use the built-in routes if you don't want to. How to use other routing libraries are explained in a later section. This whole "Routing" section will explain how to use the built-in routing.
-
-Gaslawork uses dynamic routes. Many other frameworks choose to map URLs to controllers but Gaslawork's routes are more performant when having a lot of URLs. PHP is executing the whole code every time, which means that the router's objects needs to be built from scratch each time, wasting resources on things that are never going to be used. After all, when visiting a page only one route is the correct one, and all the other ones are created but never used. Even when using cache the objects needs to be unserialized to be used, making it slower the more URLs you have.
-
-An example using the built-in routes:
+Gaslawork uses dynamic routing. Here is an example using one single route:
 
 ```php
 use Gaslawork\Routing\Route;
@@ -26,11 +22,10 @@ The `Routes` object will hold all the routes, and we `add` a `Route` object to i
 
 I'm now going to explain how the routing internals work. You do not _need_ to know this, but I find it comforting knowing the internals of the framework I'm using, and maybe you do too:
 
-- Gaslawork internally calls the `findRoute()` of the routing object. This object is the built-in `Routes` in this example, but you are free to use whatever you want.
-- `Routes` iterates through all the routes added and calls `checkRoute()` on them. We have added the built-in `Route` in this example, but you are free to use whatever you want.
+- Gaslawork internally calls the `findRoute()` of the routing (`Routes`) object.
+- `Routes` iterates through all the routes added and calls `checkRoute()` on them. We have added the built-in `Route` in this example, but you are free to write your own route classes. I'll describe how to do that in a later section.
 - `Routes` returns the route object back to Gaslawork when route's `checkRoute()` returns `true`
-- `getTarget()` of the route is called by Gaslawork, and the route returns a `RouteTarget` object.
-- The path to the controller (and in this case also the action) is fetched from the `RouteTarget` object.
+- The path to the controller (and in this case also the action) is fetched by calling `getController()` and `getAction()` of the route object.
 - Gaslawork imports the controller and calls the action.
 
 ### Parameters (and special parameters)
@@ -102,6 +97,10 @@ An example URL that matches this route is:
 `/hello/abc/world/def/foo`
 
 The controller will be `def` and the action will be `abc`.
+
+### Why dynamic routing is used
+
+Many other frameworks choose to map URLs to controllers but Gaslawork's routes are more performant when having a lot of URLs. PHP is executing the whole code every time, which means that the router's objects needs to be built from scratch each time, wasting resources on things that are never going to be used. After all, when visiting a page only one route is the correct one, and all the other ones are created but never used. Even when using cache the objects needs to be unserialized to be used, making it slower the more URLs you have.
 
 ### To write about
 
