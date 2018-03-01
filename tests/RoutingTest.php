@@ -19,7 +19,7 @@ final class RoutingTest extends TestCase {
 		$this->assertTrue($route !== null);
 
 		$this->assertEquals("\Application\Controller\Index", $route->getController());
-		$this->assertEquals("action_index", $route->getAction());
+		$this->assertEquals("indexAction", $route->getAction());
 	}
 
 
@@ -33,7 +33,7 @@ final class RoutingTest extends TestCase {
 		$this->assertTrue($route !== null);
 
 		$this->assertEquals("\Application\Controller\Hello", $route->getController());
-		$this->assertEquals("action_index", $route->getAction());
+		$this->assertEquals("indexAction", $route->getAction());
 	}
 
 
@@ -47,7 +47,7 @@ final class RoutingTest extends TestCase {
 		$this->assertTrue($route !== null);
 
 		$this->assertEquals("\Application\Controller\Hello", $route->getController());
-		$this->assertEquals("action_world", $route->getAction());
+		$this->assertEquals("worldAction", $route->getAction());
 	}
 
 
@@ -61,7 +61,7 @@ final class RoutingTest extends TestCase {
 		$this->assertTrue($route !== null);
 
 		$this->assertEquals("\Application\Controller\Index", $route->getController());
-		$this->assertEquals("action_index", $route->getAction());
+		$this->assertEquals("indexAction", $route->getAction());
 	}
 
 
@@ -75,7 +75,7 @@ final class RoutingTest extends TestCase {
 		$this->assertTrue($route !== null);
 
 		$this->assertEquals("\Application\Controller\Index", $route->getController());
-		$this->assertEquals("action_hello", $route->getAction());
+		$this->assertEquals("helloAction", $route->getAction());
 	}
 
 
@@ -89,7 +89,7 @@ final class RoutingTest extends TestCase {
 		$this->assertTrue($route !== null);
 
 		$this->assertEquals("\Application\Controller\Index", $route->getController());
-		$this->assertEquals("action_index", $route->getAction());
+		$this->assertEquals("indexAction", $route->getAction());
 	}
 
 
@@ -103,7 +103,7 @@ final class RoutingTest extends TestCase {
 		$this->assertTrue($route !== null);
 
 		$this->assertEquals("\Application\Controller\Hello", $route->getController());
-		$this->assertEquals("action_index", $route->getAction());
+		$this->assertEquals("indexAction", $route->getAction());
 	}
 
 
@@ -118,7 +118,7 @@ final class RoutingTest extends TestCase {
 		$this->assertTrue($route !== null);
 
 		$this->assertEquals("\World\Index", $route->getController());
-		$this->assertEquals("action_index", $route->getAction());
+		$this->assertEquals("indexAction", $route->getAction());
 	}
 
 
@@ -133,7 +133,7 @@ final class RoutingTest extends TestCase {
 		$this->assertTrue($route !== null);
 
 		$this->assertEquals("\Hello\Index", $route->getController());
-		$this->assertEquals("action_index", $route->getAction());
+		$this->assertEquals("indexAction", $route->getAction());
 	}
 
 
@@ -148,7 +148,7 @@ final class RoutingTest extends TestCase {
 		$this->assertTrue($route !== null);
 
 		$this->assertEquals("\World\Foo", $route->getController());
-		$this->assertEquals("action_index", $route->getAction());
+		$this->assertEquals("indexAction", $route->getAction());
 	}
 
 
@@ -163,7 +163,7 @@ final class RoutingTest extends TestCase {
 		$this->assertTrue($route !== null);
 
 		$this->assertEquals("\Hello\Foo", $route->getController());
-		$this->assertEquals("action_index", $route->getAction());
+		$this->assertEquals("indexAction", $route->getAction());
 	}
 
 
@@ -178,7 +178,7 @@ final class RoutingTest extends TestCase {
 		$this->assertTrue($route !== null);
 
 		$this->assertEquals("\World\Foo", $route->getController());
-		$this->assertEquals("action_bar", $route->getAction());
+		$this->assertEquals("barAction", $route->getAction());
 	}
 
 
@@ -193,7 +193,7 @@ final class RoutingTest extends TestCase {
 		$this->assertTrue($route !== null);
 
 		$this->assertEquals("\Hello\Foo", $route->getController());
-		$this->assertEquals("action_bar", $route->getAction());
+		$this->assertEquals("barAction", $route->getAction());
 	}
 
 
@@ -208,7 +208,7 @@ final class RoutingTest extends TestCase {
 		$this->assertTrue($route !== null);
 
 		$this->assertEquals("\Second\Hello", $route->getController());
-		$this->assertEquals("action_world", $route->getAction());
+		$this->assertEquals("worldAction", $route->getAction());
 	}
 
 
@@ -223,7 +223,7 @@ final class RoutingTest extends TestCase {
 		$this->assertTrue($route !== null);
 
 		$this->assertEquals("\First\Hello", $route->getController());
-		$this->assertEquals("action_world", $route->getAction());
+		$this->assertEquals("worldAction", $route->getAction());
 	}
 
 
@@ -237,7 +237,7 @@ final class RoutingTest extends TestCase {
 		$this->assertTrue($route !== null);
 
 		$this->assertEquals("\Application\Controller\World", $route->getController());
-		$this->assertEquals("action_hello", $route->getAction());
+		$this->assertEquals("helloAction", $route->getAction());
 	}
 
 

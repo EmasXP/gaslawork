@@ -49,25 +49,27 @@ Here are some examples of URL's - using the route we defined in the example abov
 
 URL                       | Controller (Class)               | Action (Method)
 --                        | --                               | --
-/                         | \Application\Controller\Index    | action_index
-/foo                      | \Application\Controller\Foo      | action_index
-/foo/bar                  | \Application\Controller\Foo      | action_bar
+/                         | \Application\Controller\Index    | indexAction 
+/foo                      | \Application\Controller\Foo      | indexAction 
+/foo/bar                  | \Application\Controller\Foo      | barAction 
 
 #### Action prefix and suffix
 
-You may have noticed in the previous example that the action (method) names has `action_` prefixed. This is because of security. For example, calling `index()` on the `Index` class is treated as calling the constructor.
+You may have noticed in the previous example that the action (method) names are suffixed with `Action`. This is because of security. For example, calling `index()` on the `Index` class is treated as calling the constructor.
 
-You can change the prefix by this method:
-
-```php
-$route->setActionPrefix("hello_"); // hello_index
-```
-
-And there is also a setting for adding a suffix:
+You can change the suffix by using this method:
 
 ```php
-$route->setActionSuffix("_action"); // index_action
+$route->setActionSuffix("Hello"); // indexHello
 ```
+
+And there is also a setting for adding a prefix:
+
+```php
+$route->setActionPrefix("action_"); // action_index
+```
+
+You can use a combination of both if you feel like it.
 
 #### Fetching parameters
 

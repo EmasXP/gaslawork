@@ -17,8 +17,8 @@ class Route implements RouteInterface {
 	protected $params = array();
 	protected $controller;
 	protected $action;
-	protected $action_prefix = "action_";
-	protected $action_suffix;
+	protected $action_prefix;
+	protected $action_suffix = "Action";
 
 
 	public function __construct($route, $namespace_prefix)
