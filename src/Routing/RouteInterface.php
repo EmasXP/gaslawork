@@ -6,7 +6,9 @@ interface RouteInterface {
 
 	public function checkRoute(RouteUrl $url, $method);
 
-	public function getTarget();
+	public function getController();
+
+	public function getAction();
 
 	public function getParam($name);
 

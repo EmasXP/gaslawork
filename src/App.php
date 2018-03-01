@@ -12,7 +12,7 @@ class App {
 	protected static $instance;
 
 
-	public static function instance($router = null)
+	public static function instance(Routing\Routes $router = null)
 	{
 		if (self::$instance === null)
 		{
@@ -35,7 +35,7 @@ class App {
 	}
 
 
-	public function __construct($router)
+	public function __construct(Routing\Routes $router)
 	{
 		$this->router = $router;
 
@@ -48,7 +48,7 @@ class App {
 	}
 
 
-	public function setRouter($router)
+	public function setRouter(Routing\Routes $router)
 	{
 		$this->router = $router;
 		return $this;
@@ -100,10 +100,7 @@ class App {
 			$uri
 		);
 
-		$target = $route->getTarget();
-		/* @var $route RouteTargetInterface */
-
-		$controller_path = $target->getController();
+		$controller_path = $route->getController();
 
 		//spl_autoload($controller_path);
 
@@ -114,7 +111,7 @@ class App {
 
 		$controller = new $controller_path;
 
-		$action = $target->getAction();
+		$action = $route->getAction();
 
 		if ($action !== null)
 		{

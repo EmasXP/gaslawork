@@ -15,7 +15,8 @@ class Route implements RouteInterface {
 	protected $whitelist;
 	protected $blacklist;
 	protected $params = array();
-	protected $target;
+	protected $controller;
+	protected $action;
 	protected $action_prefix = "action_";
 	protected $action_suffix;
 
@@ -167,11 +168,11 @@ class Route implements RouteInterface {
 	}
 
 
-	public function getTarget()
+	public function getController()
 	{
-		if ($this->target !== null)
+		if ($this->controller !== null)
 		{
-			return $this->target;
+			return $this->controller;
 		}
 
 		$class_path = $this->namespace_prefix;
@@ -191,16 +192,27 @@ class Route implements RouteInterface {
 
 		$class_path .= ucfirst($this->getParam("controller"));
 
-		$action = $this->getParam("action");
+		return $this->controller = $class_path;
+	}
 
-		if ($action !== null)
+
+	public function getAction()
+	{
+		if ($this->action !== null)
 		{
-			$action = $this->action_prefix
-				.$action
-				.$this->action_suffix;
+			return $this->action;
 		}
 
-		return new RouteTarget($class_path, $action);
+		$action = $this->getParam("action");
+
+		if ($action === null)
+		{
+			return null;
+		}
+
+		return $this->action = $this->action_prefix
+			.$action
+			.$this->action_suffix;
 	}
 
 
