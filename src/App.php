@@ -8,6 +8,7 @@ class App {
 	protected $dependencies = array();
 	protected $loaded_dependencies = array();
 	public $base_url;
+	public $index_file;
 
 	protected static $instance;
 
@@ -61,28 +62,52 @@ class App {
 	}
 
 
+	protected function stripBaseUrlFromUri($uri)
+	{
+		$base_url = parse_url($this->base_url, PHP_URL_PATH);
+
+		if (strpos($uri, $base_url) === 0)
+		{
+			$uri = substr($uri, strlen($base_url));
+		}
+
+		if (
+			$this->index_file
+			&& strpos($uri, $this->index_file) === 0
+		)
+		{
+			return substr($uri, strlen($this->index_file));
+		}
+
+		return $uri;
+	}
+
+
 	protected function getUri()
 	{
-		if ( ! isset($_SERVER['REQUEST_URI']))
+		if (isset($_SERVER["PATH_INFO"]))
 		{
-			return null;
+			return $_SERVER["PATH_INFO"];
 		}
 
-		$uri = $_SERVER['REQUEST_URI'];
-
-		if (false !== $pos = strpos($uri, '?'))
+		if (isset($_SERVER["REQUEST_URI"]))
 		{
-			$uri = substr($uri, 0, $pos);
+			$uri = $_SERVER["REQUEST_URI"];
+
+			$request_uri = parse_url($_SERVER["REQUEST_URI"], PHP_URL_PATH);
+
+			if ($request_uri)
+			{
+				return $this->stripBaseUrlFromUri(rawurldecode($request_uri));
+			}
 		}
 
-		$uri_decoded = rawurldecode($uri);
-
-		if ($this->base_url !== null)
+		if (isset($_SERVER['PHP_SELF']))
 		{
-			return substr($uri_decoded, strlen($this->base_url));
+			return $this->stripBaseUrlFromUri($_SERVER['PHP_SELF']);
 		}
 
-		return $uri_decoded;
+		throw new GaslaworkException("Unable to detect the URI.");
 	}
 
 
