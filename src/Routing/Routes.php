@@ -8,7 +8,7 @@ class Routes {
 	protected $routes = array();
 
 
-	public function add($route)
+	public function add(RouteInterface $route)
 	{
 		$this->routes[] = $route;
 		return $this;
