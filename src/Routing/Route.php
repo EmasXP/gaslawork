@@ -77,7 +77,7 @@ class Route implements RouteInterface {
 			return $this->exploded_route;
 		}
 
-		return $this->exploded_route = explode("/", rtrim($this->route, "/"));
+		return $this->exploded_route = explode("/", trim($this->route, "/"));
 	}
 
 

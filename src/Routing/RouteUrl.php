@@ -24,7 +24,7 @@ class RouteUrl {
 	{
 		if ($this->exploded_url === null)
 		{
-			$this->exploded_url = explode("/", rtrim($this->url, "/"));
+			$this->exploded_url = explode("/", trim($this->url, "/"));
 		}
 
 		return $this->exploded_url;

@@ -294,4 +294,43 @@ final class RoutingTest extends TestCase {
 	}
 
 
+	public function testFindingRouteWithoutSlashPrefix()
+	{
+		$routes = (new Routes)
+			->add(new Route(":controller/:action/:id", "\Application\Controller\\"));
+
+		$route = $routes->findRoute("/hello");
+
+		$this->assertTrue($route !== null);
+
+		$this->assertEquals("\Application\Controller\Hello", $route->getController());
+	}
+
+
+	public function testFindingRouteWithoutSlashPrefixAgain()
+	{
+		$routes = (new Routes)
+			->add(new Route("/:controller/:action/:id", "\Application\Controller\\"));
+
+		$route = $routes->findRoute("hello");
+
+		$this->assertTrue($route !== null);
+
+		$this->assertEquals("\Application\Controller\Hello", $route->getController());
+	}
+
+
+	public function testFindingRouteWithoutSlashPrefixOnceAgain()
+	{
+		$routes = (new Routes)
+			->add(new Route(":controller/:action/:id", "\Application\Controller\\"));
+
+		$route = $routes->findRoute("hello");
+
+		$this->assertTrue($route !== null);
+
+		$this->assertEquals("\Application\Controller\Hello", $route->getController());
+	}
+
+
 }
