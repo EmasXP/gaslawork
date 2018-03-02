@@ -66,6 +66,11 @@ class App {
 	{
 		$base_url = parse_url($this->base_url, PHP_URL_PATH);
 
+		if (empty($base_url))
+		{
+			return $uri;
+		}
+
 		if (strpos($uri, $base_url) === 0)
 		{
 			$uri = substr($uri, strlen($base_url));
@@ -92,19 +97,17 @@ class App {
 
 		if (isset($_SERVER["REQUEST_URI"]))
 		{
-			$uri = $_SERVER["REQUEST_URI"];
+			$uri = parse_url($_SERVER["REQUEST_URI"], PHP_URL_PATH);
 
-			$request_uri = parse_url($_SERVER["REQUEST_URI"], PHP_URL_PATH);
-
-			if ($request_uri)
+			if ($uri)
 			{
-				return $this->stripBaseUrlFromUri(rawurldecode($request_uri));
+				return $this->stripBaseUrlFromUri(rawurldecode($uri));
 			}
 		}
 
-		if (isset($_SERVER['PHP_SELF']))
+		if (isset($_SERVER["PHP_SELF"]))
 		{
-			return $this->stripBaseUrlFromUri($_SERVER['PHP_SELF']);
+			return $this->stripBaseUrlFromUri($_SERVER["PHP_SELF"]);
 		}
 
 		throw new GaslaworkException("Unable to detect the URI.");
