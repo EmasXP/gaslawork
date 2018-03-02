@@ -14,7 +14,7 @@ final class RoutingTest extends TestCase {
 		$routes = (new Routes)
 			->add(new Route("/:controller/:action/:id", "\Application\Controller\\"));
 
-		$route = $routes->findRoute("");
+		$route = $routes->findRoute("/");
 
 		$this->assertTrue($route !== null);
 
@@ -56,7 +56,7 @@ final class RoutingTest extends TestCase {
 		$routes = (new Routes)
 			->add(new Route("/:action/:id", "\Application\Controller\\"));
 
-		$route = $routes->findRoute("");
+		$route = $routes->findRoute("/");
 
 		$this->assertTrue($route !== null);
 
@@ -84,7 +84,7 @@ final class RoutingTest extends TestCase {
 		$routes = (new Routes)
 			->add(new Route("/:controller/:id", "\Application\Controller\\"));
 
-		$route = $routes->findRoute("");
+		$route = $routes->findRoute("/");
 
 		$this->assertTrue($route !== null);
 
@@ -250,5 +250,48 @@ final class RoutingTest extends TestCase {
 
 		$this->assertNull($route);
 	}
+
+
+	public function testFindingFirstRouteWhenSeveralMatches()
+	{
+		$routes = (new Routes)
+			->add(new Route("/:controller/:action/:id", "\First\\"))
+			->add(new Route("/:controller/:action/:id", "\Second\\"));
+
+		$route = $routes->findRoute("/hello");
+
+		$this->assertTrue($route !== null);
+
+		$this->assertEquals("\First\Hello", $route->getController());
+	}
+
+
+	public function testFindingFirstRouteWhenSeveralMatchesAgain()
+	{
+		$routes = (new Routes)
+			->add(new Route("/:controller/:action/:id", "\First\\"))
+			->add(new Route("/hello/:action/:id", "\Second\\"));
+
+		$route = $routes->findRoute("/hello");
+
+		$this->assertTrue($route !== null);
+
+		$this->assertEquals("\First\Hello", $route->getController());
+	}
+
+
+	public function testFindingFirstRouteWhenSeveralMatchesOnceAgain()
+	{
+		$routes = (new Routes)
+			->add(new Route("/hello/:action/:id", "\First\\"))
+			->add(new Route("/:controller/:action/:id", "\Second\\"));
+
+		$route = $routes->findRoute("/hello");
+
+		$this->assertTrue($route !== null);
+
+		$this->assertEquals("\First\Index", $route->getController());
+	}
+
 
 }
