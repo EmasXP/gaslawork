@@ -4,17 +4,19 @@ This project is under heavy development. I'm still in the phase of investigating
 
 ## Setup
 
-First we need to include your application into `composer.json` so that Composer can auto load your application classes:
+First we need to include your application classes into `composer.json`:
 
 ```json
 {
     "autoload": {
         "psr-4": {
-            "Application\\": "application/",
+            "": "classes/",
         }
     }
 }
 ```
+
+This enabled auto loading for all the classes in the `classes` folder. This example is without a namespace prefix, but you are free to do as you like.
 
 TODO: composer commands.
 
@@ -27,7 +29,7 @@ use Gaslawork\Routing\Routes;
 use Gaslawork\Routing\Route;
 
 $routes = (new Routes)
-	->add(new Route("/:controller/:action/:id", "\Application\Controller\\"));
+	->add(new Route("/:controller/:action/:id", "\Controller\\"));
 
 $app = new Gaslawork\App($routes);
 // $app->base_url = "/";
@@ -85,7 +87,7 @@ use Gaslawork\Routing\Routes;
 use Gaslawork\Routing\Route;
 
 $routes = (new Routes)
-    ->add(new Route("/:controller/:action/:id", "\Application\Controller\\"));
+    ->add(new Route("/:controller/:action/:id", "\Controller\\"));
 ```
 
 In a perfect world this is the only route you will ever add.
@@ -104,7 +106,7 @@ I'm now going to explain how the routing internals work. You do not _need_ to kn
 
 ### Parameters (and special parameters)
 
-In the example above we have put `/:controller/:action/:id` as the "target", and `\Application\Controller\\` as the "namespace prefix". Parts that begins with `:` is considered as "parameters", and there are three special parameters:
+In the example above we have put `/:controller/:action/:id` as the "target", and `\Controller\\` as the "namespace prefix". Parts that begins with `:` is considered as "parameters", and there are three special parameters:
 
 - :directory
 - :controller
@@ -123,9 +125,9 @@ Here are some examples of URL's - using the route we defined in the example abov
 
 URL                       | Controller (Class)               | Action (Method)
 --                        | --                               | --
-/                         | \Application\Controller\Index    | indexAction 
-/foo                      | \Application\Controller\Foo      | indexAction 
-/foo/bar                  | \Application\Controller\Foo      | barAction 
+/                         | \Controller\Index    | indexAction 
+/foo                      | \Controller\Foo      | indexAction 
+/foo/bar                  | \Controller\Foo      | barAction 
 
 #### Action prefix and suffix
 
