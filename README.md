@@ -55,7 +55,7 @@ Options +FollowSymLinks -MultiViews
 # Turning on URL rewriting
 RewriteEngine On
 
-# Base directory
+# Base folder
 RewriteBase /
 
 # Denying access for hidden files
@@ -64,7 +64,7 @@ RewriteBase /
 	Deny From All
 </Files>
 
-# Allow access to files and folders
+# Allowing direct access to files and folders
 RewriteCond %{REQUEST_FILENAME} !-f
 RewriteCond %{REQUEST_FILENAME} !-d
 
