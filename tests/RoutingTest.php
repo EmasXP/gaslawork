@@ -333,4 +333,137 @@ final class RoutingTest extends TestCase {
 	}
 
 
+	public function testWhtelist()
+	{
+		$routes = (new Routes)
+			->add(
+				(new Route(":controller/:action/:id", "\First\\"))
+					->setWhitelist(array(
+						"controller" => array("foo"),
+					))
+			)
+			->add(
+				(new Route(":controller/:action/:id", "\Second\\"))
+					->setWhitelist(array(
+						"controller" => array("bar"),
+					))
+			);
+
+		$route = $routes->findRoute("bar");
+
+		$this->assertTrue($route !== null);
+
+		$this->assertEquals("\Second\Bar", $route->getController());
+	}
+
+
+	public function testWhtelistAgain()
+	{
+		$routes = (new Routes)
+			->add(
+				(new Route(":controller/:action/:id", "\First\\"))
+					->setWhitelist(array(
+						"controller" => array("foo"),
+					))
+			)
+			->add(
+				(new Route(":controller/:action/:id", "\Second\\"))
+					->setWhitelist(array(
+						"controller" => array("bar"),
+					))
+			);
+
+		$route = $routes->findRoute("foo");
+
+		$this->assertTrue($route !== null);
+
+		$this->assertEquals("\First\Foo", $route->getController());
+	}
+
+
+	public function testWhtelistNoMatch()
+	{
+		$routes = (new Routes)
+			->add(
+				(new Route(":controller/:action/:id", "\First\\"))
+					->setWhitelist(array(
+						"controller" => array("foo"),
+					))
+			)
+			->add(
+				(new Route(":controller/:action/:id", "\Second\\"))
+					->setWhitelist(array(
+						"controller" => array("bar"),
+					))
+			);
+
+		$route = $routes->findRoute("hello");
+
+		$this->assertNull($route);
+	}
+
+
+	public function testWhtelistMatchGenericRoute()
+	{
+		$routes = (new Routes)
+			->add(
+				(new Route(":controller/:action/:id", "\First\\"))
+					->setWhitelist(array(
+						"controller" => array("foo"),
+					))
+			)
+			->add(
+				(new Route(":controller/:action/:id", "\Second\\"))
+					->setWhitelist(array(
+						"controller" => array("bar"),
+					))
+			)
+			->add(new Route(":controller/:action/:id", "\Third\\"));
+
+		$route = $routes->findRoute("hello");
+
+		$this->assertTrue($route !== null);
+
+		$this->assertEquals("\Third\Hello", $route->getController());
+	}
+
+
+	public function testWhtelistCustomParameter()
+	{
+		$routes = (new Routes)
+			->add(
+				(new Route(":controller/:id", "\First\\"))
+					->setWhitelist(array(
+						"id" => array("12"),
+					))
+			)
+			->add(new Route(":controller/:id", "\Second\\"));
+
+		$route = $routes->findRoute("hello/12");
+
+		$this->assertTrue($route !== null);
+
+		$this->assertEquals("\First\Hello", $route->getController());
+		$this->assertEquals("12", $route->getParam("id"));
+	}
+
+
+	public function testWhtelistCustomParameterNoMatch()
+	{
+		$routes = (new Routes)
+			->add(
+				(new Route(":controller/:id", "\First\\"))
+					->setWhitelist(array(
+						"id" => array("12"),
+					))
+			)
+			->add(new Route(":controller/:id", "\Second\\"));
+
+		$route = $routes->findRoute("hello/13");
+
+		$this->assertTrue($route !== null);
+
+		$this->assertEquals("\Second\Hello", $route->getController());
+	}
+
 }

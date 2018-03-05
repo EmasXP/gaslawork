@@ -176,6 +176,31 @@ An example URL that matches this route is:
 
 The controller will be `def` and the action will be `abc`.
 
+### White list and black list
+
+In order to have more control of our routes you can white list and black list parameter values.
+
+#### White list
+
+```php
+$routes = (new Routes)
+	->add(
+		(new Route(":controller/:action/:id", "\Controller\Special\\"))
+			->setWhitelist(array(
+				"controller" => array("foo"),
+			))
+	)
+	->add(new Route(":controller/:action/:id", "\Controller\\"));
+```
+
+We are creating a `Rotue` object and call `setWhitelist()` on it. We pass a dictionary to that method where the key is the name of the parameter. The value of the dictionary is an array of allowed values of the parameters. All other values than is specified here will not match the route.
+
+The example above will call the controller `\Controller\Special\Foo` when the `controller` parameter is `foo`.
+
+You can white list all parameters, not just the special onces.
+
+White list have higher priority than black list.
+
 ### Why dynamic routing is used
 
 Many other frameworks choose to map URLs to controllers but Gaslawork's routes are more performant when having a lot of URLs. PHP is executing the whole code every time, which means that the router's objects needs to be built from scratch each time, wasting resources on things that are never going to be used. After all, when visiting a page only one route is the correct one, and all the other ones are created but never used. Even when using cache the objects needs to be unserialized to be used, making it slower the more URLs you have.
