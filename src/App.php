@@ -7,7 +7,8 @@ class App {
 	protected $router;
 	protected $dependencies = array();
 	protected $loaded_dependencies = array();
-	public $base_url;
+	protected $_index_file;
+	public $base_url = "/";
 	public $index_file;
 
 	protected static $instance;
@@ -62,26 +63,45 @@ class App {
 	}
 
 
+	public function getIndexFile()
+	{
+		if ($this->index_file)
+		{
+			return $this->index_file;
+		}
+
+		if ($this->_index_file)
+		{
+			return $this->_index_file;
+		}
+
+		if ( ! isset($_SERVER["SCRIPT_NAME"]))
+		{
+			return null;
+		}
+
+		return $this->_index_file = basename($_SERVER["SCRIPT_NAME"]);
+	}
+
+
 	protected function stripBaseUrlFromUri($uri)
 	{
 		$base_url = parse_url($this->base_url, PHP_URL_PATH);
 
-		if (empty($base_url))
+		if ( ! empty($base_url))
 		{
-			return $uri;
-		}
-
-		if (strpos($uri, $base_url) === 0)
-		{
-			$uri = substr($uri, strlen($base_url));
+			if (strpos($uri, $base_url) === 0)
+			{
+				$uri = substr($uri, strlen($base_url));
+			}
 		}
 
 		if (
-			$this->index_file
-			&& strpos($uri, $this->index_file) === 0
+			$this->getIndexFile()
+			&& strpos($uri, $this->getIndexFile()) === 0
 		)
 		{
-			return substr($uri, strlen($this->index_file));
+			return substr($uri, strlen($this->getIndexFile()));
 		}
 
 		return $uri;

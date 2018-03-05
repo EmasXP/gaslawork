@@ -33,7 +33,7 @@ $routes = (new Routes)
 
 $app = new Gaslawork\App($routes);
 // $app->base_url = "/";
-$app->index_file = "index.php";
+// $app->index_file = "index.php";
 
 $app->run();
 ```
@@ -45,7 +45,7 @@ This is enough to get you going. This index file does not handle 404 or non-caug
 These are two optional settings on the `App` object, and they are used to help Gaslawork determine the URI if the incoming requests.
 
 * **base_url** is used if your application is not in the root of the domain. If you for example have your application under `https://example.com/foobar`, the `base_url` should be `"/foobar/"`.
-* **index_file** is used when you have the index file in the URL, for example `https://example.com/index.php/foo/bar`. In that example the `index_file` should be `"index.php"`. It never hurts to add this setting even if you do not plan to have the index file in the URLs. This setting can be an aid when Gaslaworks tries to detect the URI.
+* **index_file** is used when you have the index file in the URL, for example `https://example.com/index.php/foo/bar`. In that example the `index_file` should be `"index.php"`. It never hurts to add this setting even if you do not plan to have the index file in the URLs. This setting can be an aid when Gaslaworks tries to detect the URI. Gaslawork tries to figure out the name of the index file if the setting is left empty.
 
 ### Apache
 
@@ -102,7 +102,7 @@ I'm now going to explain how the routing internals work. You do not _need_ to kn
 - `Routes` iterates through all the routes added and calls `checkRoute()` on them. We have added the built-in `Route` in this example, but you are free to write your own route classes. I'll describe how to do that in a later section.
 - `Routes` returns the route object back to Gaslawork when route's `checkRoute()` returns `true`
 - The path to the controller (and in this case also the action) is fetched by calling `getController()` and `getAction()` of the route object.
-- Gaslawork imports the controller and calls the action.
+- Gaslawork creates an object of the controller and calls the action.
 
 ### Parameters (and special parameters)
 
@@ -193,13 +193,13 @@ $routes = (new Routes)
 	->add(new Route(":controller/:action/:id", "\Controller\\"));
 ```
 
-We are creating a `Rotue` object and call `setWhitelist()` on it. We pass a dictionary to that method where the key is the name of the parameter. The value of the dictionary is an array of allowed values of the parameters. All other values than is specified here will not match the route.
+We are creating a `Rotue` object and call `setWhitelist()` on it. We pass a dictionary to that method where the key is the name of the parameter. The value of the dictionary is an array of allowed values of the parameter. All other values than is specified here will not match the route.
 
 The example above will call the controller `\Controller\Special\Foo` when the `controller` parameter is `foo`.
 
 You can white list all parameters, not just the special onces.
 
-### Black list
+#### Black list
 
 ```php
 $routes = (new Routes)
@@ -214,7 +214,7 @@ $routes = (new Routes)
 
 This time we call the `setBlacklist()` method on the `Route` object. We pass a dictionary to that method where the key is the name of the parameter and the value is an array of non-allowed parameter values. 
 
-In this example so the controller `\Controller\Bar` will be called if the `controller` parameter is `bar`, but the controller `\Controller\Special\Foo` will be called when the `controller` parameter is `foo`.
+In this example above the controller `\Controller\Bar` will be called if the `controller` parameter is `bar`, but the controller `\Controller\Special\Foo` will be called when the `controller` parameter is `foo`.
 
 ### Why dynamic routing is used
 
