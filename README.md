@@ -199,7 +199,22 @@ The example above will call the controller `\Controller\Special\Foo` when the `c
 
 You can white list all parameters, not just the special onces.
 
-White list have higher priority than black list.
+### Black list
+
+```php
+$routes = (new Routes)
+	->add(
+		(new Route(":controller/:action/:id", "\Controller\\"))
+			->setBlacklist(array(
+				"controller" => array("foo"),
+			))
+	)
+	->add(new Route(":controller/:action/:id", "\Controller\Special\\"));
+```
+
+This time we call the `setBlacklist()` method on the `Route` object. We pass a dictionary to that method where the key is the name of the parameter and the value is an array of non-allowed parameter values. 
+
+In this example so the controller `\Controller\Bar` will be called if the `controller` parameter is `bar`, but the controller `\Controller\Special\Foo` will be called when the `controller` parameter is `foo`.
 
 ### Why dynamic routing is used
 
