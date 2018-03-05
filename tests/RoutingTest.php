@@ -466,4 +466,319 @@ final class RoutingTest extends TestCase {
 		$this->assertEquals("\Second\Hello", $route->getController());
 	}
 
+
+	public function testWhitelistSeveralValues()
+	{
+		$routes = (new Routes)
+			->add(
+				(new Route(":controller/:id", "\Controller\\"))
+					->setWhitelist(array(
+						"id" => array("123", "abc"),
+					))
+			);
+
+		$route = $routes->findRoute("hello/123");
+
+		$this->assertTrue($route !== null);
+
+		$this->assertEquals("\Controller\Hello", $route->getController());
+		$this->assertEquals("123", $route->getParam("id"));
+	}
+
+
+	public function testWhitelistSeveralValuesAgain()
+	{
+		$routes = (new Routes)
+			->add(
+				(new Route(":controller/:id", "\Controller\\"))
+					->setWhitelist(array(
+						"id" => array("123", "abc"),
+					))
+			);
+
+		$route = $routes->findRoute("hello/abc");
+
+		$this->assertTrue($route !== null);
+
+		$this->assertEquals("\Controller\Hello", $route->getController());
+		$this->assertEquals("abc", $route->getParam("id"));
+	}
+
+
+	public function testWhitelistSeveralValuesOnceAgain()
+	{
+		$routes = (new Routes)
+			->add(
+				(new Route(":controller/:id", "\Controller\\"))
+					->setWhitelist(array(
+						"id" => array("123", "abc"),
+					))
+			);
+
+		$route = $routes->findRoute("hello/world");
+
+		$this->assertNull($route);
+	}
+
+
+	public function testBlacklist()
+	{
+		$routes = (new Routes)
+			->add(
+				(new Route(":controller/:action/:id", "\First\\"))
+					->setBlacklist(array(
+						"controller" => array("foo"),
+					))
+			)
+			->add(
+				(new Route(":controller/:action/:id", "\Second\\"))
+					->setBlacklist(array(
+						"controller" => array("bar"),
+					))
+			);
+
+		$route = $routes->findRoute("foo");
+
+		$this->assertTrue($route !== null);
+
+		$this->assertEquals("\Second\Foo", $route->getController());
+	}
+
+
+	public function testBlacklistAgain()
+	{
+		$routes = (new Routes)
+			->add(
+				(new Route(":controller/:action/:id", "\First\\"))
+					->setBlacklist(array(
+						"controller" => array("foo"),
+					))
+			)
+			->add(
+				(new Route(":controller/:action/:id", "\Second\\"))
+					->setBlacklist(array(
+						"controller" => array("bar"),
+					))
+			);
+
+		$route = $routes->findRoute("bar");
+
+		$this->assertTrue($route !== null);
+
+		$this->assertEquals("\First\Bar", $route->getController());
+	}
+
+
+	public function testBlacklistOnceAgain()
+	{
+		$routes = (new Routes)
+			->add(
+				(new Route(":controller/:action/:id", "\First\\"))
+					->setBlacklist(array(
+						"controller" => array("foo"),
+					))
+			)
+			->add(
+				(new Route(":controller/:action/:id", "\Second\\"))
+					->setBlacklist(array(
+						"controller" => array("bar"),
+					))
+			);
+
+		$route = $routes->findRoute("hello");
+
+		$this->assertTrue($route !== null);
+
+		$this->assertEquals("\First\Hello", $route->getController());
+	}
+
+
+	public function testBlacklistMatchGenericRoute()
+	{
+		$routes = (new Routes)
+			->add(
+				(new Route(":controller/:action/:id", "\First\\"))
+					->setBlacklist(array(
+						"controller" => array("bar"),
+					))
+			)
+			->add(new Route(":controller/:action/:id", "\Second\\"));
+
+		$route = $routes->findRoute("bar");
+
+		$this->assertTrue($route !== null);
+
+		$this->assertEquals("\Second\Bar", $route->getController());
+	}
+
+
+	public function testBlacklistCustomParameter()
+	{
+		$routes = (new Routes)
+			->add(
+				(new Route(":controller/:id", "\First\\"))
+					->setBlacklist(array(
+						"id" => array("12"),
+					))
+			)
+			->add(new Route(":controller/:id", "\Second\\"));
+
+		$route = $routes->findRoute("hello/1024");
+
+		$this->assertTrue($route !== null);
+
+		$this->assertEquals("\First\Hello", $route->getController());
+		$this->assertEquals("1024", $route->getParam("id"));
+	}
+
+
+	public function testBlacklistCustomParameterNoMatch()
+	{
+		$routes = (new Routes)
+			->add(
+				(new Route(":controller/:id", "\First\\"))
+					->setBlacklist(array(
+						"id" => array("12"),
+					))
+			)
+			->add(new Route(":controller/:id", "\Second\\"));
+
+		$route = $routes->findRoute("hello/12");
+
+		$this->assertTrue($route !== null);
+
+		$this->assertEquals("\Second\Hello", $route->getController());
+	}
+
+
+	public function testBlacklistSeveralValues()
+	{
+		$routes = (new Routes)
+			->add(
+				(new Route(":controller/:id", "\Controller\\"))
+					->setBlacklist(array(
+						"id" => array("123", "abc"),
+					))
+			);
+
+		$route = $routes->findRoute("hello/123");
+
+		$this->assertNull($route);
+	}
+
+
+	public function testBlacklistSeveralValuesAgain()
+	{
+		$routes = (new Routes)
+			->add(
+				(new Route(":controller/:id", "\Controller\\"))
+					->setBlacklist(array(
+						"id" => array("123", "abc"),
+					))
+			);
+
+		$route = $routes->findRoute("hello/abc");
+
+		$this->assertNull($route);
+	}
+
+
+	public function testBlacklistSeveralValuesOnceAgain()
+	{
+		$routes = (new Routes)
+			->add(
+				(new Route(":controller/:id", "\Controller\\"))
+					->setBlacklist(array(
+						"id" => array("123", "abc"),
+					))
+			);
+
+		$route = $routes->findRoute("hello/world");
+
+		$this->assertTrue($route !== null);
+
+		$this->assertEquals("\Controller\Hello", $route->getController());
+		$this->assertEquals("world", $route->getParam("id"));
+	}
+
+
+	public function testWhitelistAndBlacklistCombination()
+	{
+		$routes = (new Routes)
+			->add(
+				(new Route(":controller/:id", "\Controller\\"))
+					->setWhitelist(array(
+						"id" => array("123"),
+					))
+					->setBlacklist(array(
+						"id" => array("123"),
+					))
+			);
+
+		$route = $routes->findRoute("hello/123");
+
+		$this->assertNull($route);
+	}
+
+
+	public function testWhitelistAndBlacklistCombinationAgain()
+	{
+		$routes = (new Routes)
+			->add(
+				(new Route(":controller/:id1/:id2", "\Controller\\"))
+					->setWhitelist(array(
+						"id1" => array("123"),
+					))
+					->setBlacklist(array(
+						"id2" => array("abc"),
+					))
+			);
+
+		$route = $routes->findRoute("hello/123/abcd");
+
+		$this->assertTrue($route !== null);
+
+		$this->assertEquals("\Controller\Hello", $route->getController());
+		$this->assertEquals("123", $route->getParam("id1"));
+		$this->assertEquals("abcd", $route->getParam("id2"));
+	}
+
+
+	public function testWhitelistAndBlacklistCombinationOnceAgain()
+	{
+		$routes = (new Routes)
+			->add(
+				(new Route(":controller/:id1/:id2", "\Controller\\"))
+					->setWhitelist(array(
+						"id1" => array("123"),
+					))
+					->setBlacklist(array(
+						"id2" => array("abc"),
+					))
+			);
+
+		$route = $routes->findRoute("hello/123/abc");
+
+		$this->assertNull($route);
+	}
+
+
+	public function testWhitelistAndBlacklistCombinationYetAgain()
+	{
+		$routes = (new Routes)
+			->add(
+				(new Route(":controller/:id1/:id2", "\Controller\\"))
+					->setWhitelist(array(
+						"id1" => array("123"),
+					))
+					->setBlacklist(array(
+						"id2" => array("abc"),
+					))
+			);
+
+		$route = $routes->findRoute("hello/1234/abcd");
+
+		$this->assertNull($route);
+	}
+
 }
