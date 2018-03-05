@@ -81,7 +81,7 @@ class Route implements RouteInterface {
 	}
 
 
-	public function checkRoute(RouteUrl $url, $method)
+	public function checkRoute(RequestUri $url, $method)
 	{
 		$exploded = $this->getRouteExploded();
 		$url_exploded = $url->getExploded();

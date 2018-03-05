@@ -17,7 +17,7 @@ class Routes {
 
 	public function findRoute($url, $method = null)
 	{
-		$route_url = new RouteUrl($url);
+		$route_url = new RequestUri($url);
 
 		foreach ($this->routes as $route)
 		{

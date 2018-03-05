@@ -2,7 +2,7 @@
 
 namespace Gaslawork\Routing;
 
-class RouteUrl {
+class RequestUri {
 
 	protected $url;
 	protected $exploded_url;
