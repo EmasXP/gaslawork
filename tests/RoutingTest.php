@@ -956,4 +956,85 @@ final class RoutingTest extends TestCase {
 		$this->assertEquals("indexAction", $route->getAction());
 	}
 
+
+	public function testRequiredFail()
+	{
+		$route = (new Route("/:controller/:id", "\Controller\\"))
+			->setRequired(array("id"));
+
+		$this->assertFalse(
+			$route->checkRoute(new RequestUri("/"), null)
+		);
+	}
+
+
+	public function testRequiredFailAgain()
+	{
+		$route = (new Route("/:controller/:id1/:id2", "\Controller\\"))
+			->setRequired(array("id2"));
+
+		$this->assertFalse(
+			$route->checkRoute(new RequestUri("/hello/world"), null)
+		);
+	}
+
+
+	public function testRequiredFailTwoParams()
+	{
+		$route = (new Route("/:controller/:id1/:id2", "\Controller\\"))
+			->setRequired(array("id1", "id2"));
+
+		$this->assertFalse(
+			$route->checkRoute(new RequestUri("/hello/world"), null)
+		);
+	}
+
+
+	public function testRequiredSuccess()
+	{
+		$route = (new Route("/:controller/:id", "\Controller\\"))
+			->setRequired(array("id"));
+
+		$this->assertTrue(
+			$route->checkRoute(new RequestUri("/hello/world"), null)
+		);
+	}
+
+
+	public function testRequiredSuccessAgain()
+	{
+		$route = (new Route("/:controller/:id1/:id2", "\Controller\\"))
+			->setRequired(array("id2"));
+
+		$this->assertTrue(
+			$route->checkRoute(new RequestUri("/hello/world/foo"), null)
+		);
+	}
+
+
+	public function testRequiredSuccessTwoParams()
+	{
+		$route = (new Route("/:controller/:id1/:id2", "\Controller\\"))
+			->setRequired(array("id1", "id2"));
+
+		$this->assertTrue(
+			$route->checkRoute(new RequestUri("/hello/world/foo"), null)
+		);
+	}
+
+
+	public function testRequiredSuccessTwoParamsWithDefaultOnSecond()
+	{
+		$route = (new Route("/:controller/:id1/:id2", "\Controller\\"))
+			->setRequired(array("id1", "id2"))
+			->setDefaults(array(
+				"controller" => "index",
+				"id2" => "bar",
+			));
+
+		$this->assertTrue(
+			$route->checkRoute(new RequestUri("/hello/world"), null)
+		);
+	}
+
 }
