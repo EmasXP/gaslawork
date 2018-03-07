@@ -114,7 +114,7 @@ class Route implements RouteInterface {
 				}
 				elseif (
 					$this->required !== null
-					&& ! in_array($param_name, $this->required)
+					&& in_array($param_name, $this->required)
 				)
 				{
 					return false;
