@@ -170,6 +170,64 @@ class Index extends \Gaslawork\Controller {
 }
 ```
 
+#### Default parameters
+
+All parameters can have default values.
+
+```php
+$routes = (new Routes)->add(
+	(new Route("/:controller/:action/:id", "\Controller\\"))
+		->setDefaults(array(
+			"controller" => "welcome",
+			"action" => "hello",
+		))
+);
+```
+
+The example above will have the default `controller` to be `welcome` and the default `action` to be `hello`. That means that the URI `/` will match to the controller `\Controller\Welcome\` and the action `helloAction` will be called.
+
+You can set defaults for all parameters:
+
+```php
+$routes = (new Routes)->add(
+	(new Route("/:controller/:action/:id", "\Controller\\"))
+		->setDefaults(array(
+			"controller" => "welcome",
+			"action" => "hello",
+			"id" => "123",
+		))
+);
+```
+
+This will make the `id` parameter to be `123` until the parameter is set in the URI.
+
+Since the `setDefaults()` method overwrites all preexisting defaults, you can remove the default of `controller` and `action`. Be careful though, a route that is missing the controller is treated as invalid. A missing action will call the `__invoke()` method of the controller. This is of course perfectly valid and some developers prefer it.
+
+You can also set a default for a parameter that is not in the "target":
+
+```php
+$routes = (new Routes)->add(
+	(new Route("/:action", "\Controller\\"))
+		->setDefaults(array(
+			"controller" => "hello",
+			"action" => "index",
+		))
+);
+```
+
+In this example the controller will always be `\Controller\Hello`. You can use this idea to totally remove actions from your application (or a specific route), and only use controllers:
+
+```php
+$routes = (new Routes)->add(
+	(new Route("/:controller", "\Controller\\"))
+		->setDefaults(array(
+			"controller" => "index",
+		))
+);
+```
+
+This route does not have an action, and can never have, so the `__invoke()` method of the controller will always be called.
+
 ### Advanced routing
 
 This is a fully working route:
