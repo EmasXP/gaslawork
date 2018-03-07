@@ -781,4 +781,77 @@ final class RoutingTest extends TestCase {
 		$this->assertNull($route);
 	}
 
+
+	public function testActionPrefix()
+	{
+		$routes = (new Routes)
+			->add(
+				(new Route(":controller/:action", "\Controller\\"))
+					->setActionPrefix("action_")
+			);
+
+		$route = $routes->findRoute("hello/world");
+
+		$this->assertEquals("action_worldAction", $route->getAction());
+	}
+
+
+	public function testActionSuffix()
+	{
+		$routes = (new Routes)
+			->add(
+				(new Route(":controller/:action", "\Controller\\"))
+					->setActionSuffix("Foo")
+			);
+
+		$route = $routes->findRoute("hello/world");
+
+		$this->assertEquals("worldFoo", $route->getAction());
+	}
+
+
+	public function testActionPrefixWithoutSuffix()
+	{
+		$routes = (new Routes)
+			->add(
+				(new Route(":controller/:action", "\Controller\\"))
+					->setActionPrefix("action_")
+					->setActionSuffix("")
+			);
+
+		$route = $routes->findRoute("hello/world");
+
+		$this->assertEquals("action_world", $route->getAction());
+	}
+
+
+	public function testActionPrefixWithoutSuffixAgain()
+	{
+		$routes = (new Routes)
+			->add(
+				(new Route(":controller/:action", "\Controller\\"))
+					->setActionPrefix("action_")
+					->setActionSuffix(null)
+			);
+
+		$route = $routes->findRoute("hello/world");
+
+		$this->assertEquals("action_world", $route->getAction());
+	}
+
+
+	public function testActionPrefixAndSuffix()
+	{
+		$routes = (new Routes)
+			->add(
+				(new Route(":controller/:action", "\Controller\\"))
+					->setActionPrefix("foo_")
+					->setActionSuffix("Bar")
+			);
+
+		$route = $routes->findRoute("hello/world");
+
+		$this->assertEquals("foo_worldBar", $route->getAction());
+	}
+
 }
