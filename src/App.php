@@ -150,8 +150,6 @@ class App {
 
 		$controller_path = $route->getController();
 
-		//spl_autoload($controller_path);
-
 		if ( ! class_exists($controller_path))
 		{
 			return print "404";
