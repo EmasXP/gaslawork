@@ -47,36 +47,9 @@ These are two optional settings on the `App` object, and they are used to help G
 * **base_url** is used if your application is not in the root of the domain. If you for example have your application under `https://example.com/foobar`, the `base_url` should be `"/foobar/"`.
 * **index_file** is used when you have the index file in the URL, for example `https://example.com/index.php/foo/bar`. In that example the `index_file` should be `"index.php"`. It never hurts to add this setting even if you do not plan to have the index file in the URLs. This setting can be an aid when Gaslaworks tries to detect the URI. Gaslawork tries to figure out the name of the index file if the setting is left empty (if needed).
 
-### Apache
+### Setting up the web server
 
-This is an example `.htaccess` file that you can put alongside your index file:
-
-```
-Options +FollowSymLinks -MultiViews
-
-# Turning on URL rewriting
-RewriteEngine On
-
-# Base folder
-RewriteBase /
-
-# Denying access for hidden files
-<Files .*>
-	Order Deny,Allow
-	Deny From All
-</Files>
-
-# Allowing direct access to files and folders
-RewriteCond %{REQUEST_FILENAME} !-f
-RewriteCond %{REQUEST_FILENAME} !-d
-
-# Rewriting URLs to index.php/*URI*
-RewriteRule .* index.php/$0 [PT]
-```
-
-### Nginx
-
-TODO
+I'm explaining how to set up Apache and Nginx in a later section called "Web servers".
 
 ## Routing
 
@@ -117,7 +90,7 @@ These parameters decide which controller and action should be executed. These pa
 - :controller - `index`
 - :action - `index`
 
-The defaults are going to be used if a parameter is not set by the URL. 
+The defaults are going to be used if a parameter is not set by the URL.
 
 The namespace prefix is where Gaslawork should be looking for the controllers.
 
@@ -125,9 +98,9 @@ Here are some examples of URL's - using the route we defined in the example abov
 
 URL                       | Controller (Class)               | Action (Method)
 --                        | --                               | --
-/                         | \Controller\Index    | indexAction 
-/foo                      | \Controller\Foo      | indexAction 
-/foo/bar                  | \Controller\Foo      | barAction 
+/                         | \Controller\Index    | indexAction
+/foo                      | \Controller\Foo      | indexAction
+/foo/bar                  | \Controller\Foo      | barAction
 
 #### Action prefix and suffix
 
@@ -148,7 +121,7 @@ $route->setActionPrefix("action_"); // action_indexAction
 In the example above both the prefix and suffix was added. To have only suffix, we need to write like this:
 
 ```php
-// action_index
+// action_index:
 $route->setActionPrefix("action_")
     ->setActionSuffix(""); // Suffix can also be null instead of an empty string
 ```
@@ -276,7 +249,7 @@ $routes = (new Routes)
 	->add(new Route(":controller/:action/:id", "\Controller\Special\\"));
 ```
 
-This time we call the `setBlacklist()` method on the `Route` object. We pass a dictionary to that method where the key is the name of the parameter and the value is an array of non-allowed parameter values. 
+This time we call the `setBlacklist()` method on the `Route` object. We pass a dictionary to that method where the key is the name of the parameter and the value is an array of non-allowed parameter values.
 
 In this example above the controller `\Controller\Bar` will be called if the `controller` parameter is `bar`, but the controller `\Controller\Special\Foo` will be called when the `controller` parameter is `foo`.
 
@@ -286,9 +259,39 @@ Many other frameworks choose to map URLs to controllers but Gaslawork's routes a
 
 ### To write about
 
-* Calling `__invoke()` on controller.
 * :directory
-* defaults
 * required
-* whitelist
-* blacklist
+
+
+## Web servers
+
+### Apache
+
+This is an example `.htaccess` file that you can put alongside your index file:
+
+```
+Options +FollowSymLinks -MultiViews
+
+# Turning on URL rewriting
+RewriteEngine On
+
+# Base folder
+RewriteBase /
+
+# Denying access for hidden files
+<Files .*>
+	Order Deny,Allow
+	Deny From All
+</Files>
+
+# Allowing direct access to files and folders
+RewriteCond %{REQUEST_FILENAME} !-f
+RewriteCond %{REQUEST_FILENAME} !-d
+
+# Rewriting URLs to index.php/*URI*
+RewriteRule .* index.php/$0 [PT]
+```
+
+### Nginx
+
+TODO
