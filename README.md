@@ -29,7 +29,7 @@ use Gaslawork\Routing\Routes;
 use Gaslawork\Routing\Route;
 
 $routes = (new Routes)
-	->add(new Route("/:controller/:action/:id", "\Controller\\"));
+    ->add(new Route("/:controller/:action/:id", "\Controller\\"));
 
 $app = new Gaslawork\App($routes);
 // $app->base_url = "/";
@@ -149,11 +149,11 @@ All parameters can have default values.
 
 ```php
 $routes = (new Routes)->add(
-	(new Route("/:controller/:action/:id", "\Controller\\"))
-		->setDefaults(array(
-			"controller" => "welcome",
-			"action" => "hello",
-		))
+    (new Route("/:controller/:action/:id", "\Controller\\"))
+        ->setDefaults(array(
+            "controller" => "welcome",
+            "action" => "hello",
+        ))
 );
 ```
 
@@ -163,12 +163,12 @@ You can set defaults for all parameters:
 
 ```php
 $routes = (new Routes)->add(
-	(new Route("/:controller/:action/:id", "\Controller\\"))
-		->setDefaults(array(
-			"controller" => "welcome",
-			"action" => "hello",
-			"id" => "123",
-		))
+    new Route("/:controller/:action/:id", "\Controller\\"))
+        ->setDefaults(array(
+            "controller" => "welcome",
+            "action" => "hello",
+            "id" => "123",
+        ))
 );
 ```
 
@@ -180,11 +180,11 @@ You can also set a default for a parameter that is not in the "target":
 
 ```php
 $routes = (new Routes)->add(
-	(new Route("/:action", "\Controller\\"))
-		->setDefaults(array(
-			"controller" => "hello",
-			"action" => "index",
-		))
+    (new Route("/:action", "\Controller\\"))
+        ->setDefaults(array(
+            "controller" => "hello",
+            "action" => "index",
+        ))
 );
 ```
 
@@ -192,10 +192,10 @@ In this example the controller will always be `\Controller\Hello`. You can use t
 
 ```php
 $routes = (new Routes)->add(
-	(new Route("/:controller", "\Controller\\"))
-		->setDefaults(array(
-			"controller" => "index",
-		))
+    (new Route("/:controller", "\Controller\\"))
+        ->setDefaults(array(
+            "controller" => "index",
+        ))
 );
 ```
 
@@ -205,13 +205,13 @@ This route does not have an action, and can never have, so the `__invoke()` meth
 
 ```php
 $routes = (new Routes)
-	->add(
-		(new Route("/:controller/:action/:id", "\Controller\Special\\"))
-			->setWhitelist(array(
-				"controller" => array("foo"),
-			))
-	)
-	->add(new Route("/:controller/:action/:id", "\Controller\\"));
+    ->add(
+        (new Route("/:controller/:action/:id", "\Controller\Special\\"))
+            ->setWhitelist(array(
+                "controller" => array("foo"),
+            ))
+    )
+    ->add(new Route("/:controller/:action/:id", "\Controller\\"));
 ```
 
 We are creating a `Rotue` object and call `setWhitelist()` on it. We pass a dictionary to that method where the key is the name of the parameter. The value of the dictionary is an array of allowed values of the parameter. All other values than is specified here will not match the route.
@@ -224,13 +224,13 @@ You can white list all parameters, not just the special onces.
 
 ```php
 $routes = (new Routes)
-	->add(
-		(new Route("/:controller/:action/:id", "\Controller\\"))
-			->setBlacklist(array(
-				"controller" => array("foo"),
-			))
-	)
-	->add(new Route("/:controller/:action/:id", "\Controller\Special\\"));
+    ->add(
+        (new Route("/:controller/:action/:id", "\Controller\\"))
+            ->setBlacklist(array(
+                "controller" => array("foo"),
+            ))
+    )
+    ->add(new Route("/:controller/:action/:id", "\Controller\Special\\"));
 ```
 
 This time we call the `setBlacklist()` method on the `Route` object. We pass a dictionary to that method where the key is the name of the parameter and the value is an array of non-allowed parameter values.
@@ -241,11 +241,11 @@ In this example above the controller `\Controller\Bar` will be called if the `co
 
 ```php
 $routes = (new Routes)
-	->add(
-		(new Route("/:controller/:action/:id", "\Controller\WithId\\"))
-			->setRequired(array("id"))
-	)
-	->add(new Route("/:controller/:action/:id", "\Controller\\"));
+    ->add(
+        (new Route("/:controller/:action/:id", "\Controller\WithId\\"))
+            ->setRequired(array("id"))
+    )
+    ->add(new Route("/:controller/:action/:id", "\Controller\\"));
 ```
 
 The example above sets the `id` parameter to be required. So the URI `/Hello/World/123` will match the first route and the controller `\Controller\WithId\Hello\` will be used.
