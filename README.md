@@ -45,7 +45,7 @@ This is enough to get you going. This index file does not handle 404 or non-caug
 These are two optional settings on the `App` object, and they are used to help Gaslawork determine the URI if the incoming requests.
 
 * **base_url** is used if your application is not in the root of the domain. If you for example have your application under `https://example.com/foobar`, the `base_url` should be `"/foobar/"`.
-* **index_file** is used when you have the index file in the URL, for example `https://example.com/index.php/foo/bar`. In that example the `index_file` should be `"index.php"`. It never hurts to add this setting even if you do not plan to have the index file in the URLs. This setting can be an aid when Gaslaworks tries to detect the URI. Gaslawork tries to figure out the name of the index file if the setting is left empty.
+* **index_file** is used when you have the index file in the URL, for example `https://example.com/index.php/foo/bar`. In that example the `index_file` should be `"index.php"`. It never hurts to add this setting even if you do not plan to have the index file in the URLs. This setting can be an aid when Gaslaworks tries to detect the URI. Gaslawork tries to figure out the name of the index file if the setting is left empty (if needed).
 
 ### Apache
 
@@ -142,10 +142,16 @@ $route->setActionSuffix("Hello"); // indexHello
 And there is also a setting for adding a prefix:
 
 ```php
-$route->setActionPrefix("action_"); // action_index
+$route->setActionPrefix("action_"); // action_indexAction
 ```
 
-You can use a combination of both if you feel like it.
+In the example above both the prefix and suffix was added. To have only suffix, we need to write like this:
+
+```php
+// action_index
+$route->setActionPrefix("action_")
+    ->setActionSuffix(""); // Suffix can also be null instead of an empty string
+```
 
 #### Fetching parameters
 
