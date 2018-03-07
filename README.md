@@ -201,6 +201,55 @@ $routes = (new Routes)->add(
 
 This route does not have an action, and can never have, so the `__invoke()` method of the controller will always be called.
 
+#### White listing parameters
+
+```php
+$routes = (new Routes)
+	->add(
+		(new Route("/:controller/:action/:id", "\Controller\Special\\"))
+			->setWhitelist(array(
+				"controller" => array("foo"),
+			))
+	)
+	->add(new Route("/:controller/:action/:id", "\Controller\\"));
+```
+
+We are creating a `Rotue` object and call `setWhitelist()` on it. We pass a dictionary to that method where the key is the name of the parameter. The value of the dictionary is an array of allowed values of the parameter. All other values than is specified here will not match the route.
+
+The example above will call the controller `\Controller\Special\Foo` when the `controller` parameter is `foo`.
+
+You can white list all parameters, not just the special onces.
+
+#### Black listing parameters
+
+```php
+$routes = (new Routes)
+	->add(
+		(new Route("/:controller/:action/:id", "\Controller\\"))
+			->setBlacklist(array(
+				"controller" => array("foo"),
+			))
+	)
+	->add(new Route("/:controller/:action/:id", "\Controller\Special\\"));
+```
+
+This time we call the `setBlacklist()` method on the `Route` object. We pass a dictionary to that method where the key is the name of the parameter and the value is an array of non-allowed parameter values.
+
+In this example above the controller `\Controller\Bar` will be called if the `controller` parameter is `bar`, but the controller `\Controller\Special\Foo` will be called when the `controller` parameter is `foo`.
+
+#### Setting parameters as required
+
+```php
+$routes = (new Routes)
+	->add(
+		(new Route("/:controller/:action/:id", "\Controller\WithId\\"))
+			->setRequired(array("id"))
+	)
+	->add(new Route("/:controller/:action/:id", "\Controller\\"));
+```
+
+The example above sets the `id` parameter to be required. So the URI `/Hello/World/123` will match the first route and the controller `\Controller\WithId\Hello\` will be used.
+
 ### Advanced routing
 
 This is a fully working route:
@@ -212,46 +261,6 @@ An example URL that matches this route is:
 `/hello/abc/world/def/foo`
 
 The controller will be `def` and the action will be `abc`.
-
-### White list and black list
-
-In order to have more control of our routes you can white list and black list parameter values.
-
-#### White list
-
-```php
-$routes = (new Routes)
-	->add(
-		(new Route(":controller/:action/:id", "\Controller\Special\\"))
-			->setWhitelist(array(
-				"controller" => array("foo"),
-			))
-	)
-	->add(new Route(":controller/:action/:id", "\Controller\\"));
-```
-
-We are creating a `Rotue` object and call `setWhitelist()` on it. We pass a dictionary to that method where the key is the name of the parameter. The value of the dictionary is an array of allowed values of the parameter. All other values than is specified here will not match the route.
-
-The example above will call the controller `\Controller\Special\Foo` when the `controller` parameter is `foo`.
-
-You can white list all parameters, not just the special onces.
-
-#### Black list
-
-```php
-$routes = (new Routes)
-	->add(
-		(new Route(":controller/:action/:id", "\Controller\\"))
-			->setBlacklist(array(
-				"controller" => array("foo"),
-			))
-	)
-	->add(new Route(":controller/:action/:id", "\Controller\Special\\"));
-```
-
-This time we call the `setBlacklist()` method on the `Route` object. We pass a dictionary to that method where the key is the name of the parameter and the value is an array of non-allowed parameter values.
-
-In this example above the controller `\Controller\Bar` will be called if the `controller` parameter is `bar`, but the controller `\Controller\Special\Foo` will be called when the `controller` parameter is `foo`.
 
 ### Why dynamic routing is used
 
