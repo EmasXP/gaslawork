@@ -5,6 +5,7 @@ namespace Gaslawork\Tests;
 use PHPUnit\Framework\TestCase;
 use \Gaslawork\Routing\Routes;
 use \Gaslawork\Routing\Route;
+use \Gaslawork\Routing\RequestUri;
 
 
 final class RoutingTest extends TestCase {
@@ -852,6 +853,107 @@ final class RoutingTest extends TestCase {
 		$route = $routes->findRoute("hello/world");
 
 		$this->assertEquals("foo_worldBar", $route->getAction());
+	}
+
+
+	public function testChangeDefaultControllerAndAction()
+	{
+		$route = (new Route("/:controller/:action", "\Controller\\"))
+			->setDefaults(array(
+				"controller" => "defaultcontroller",
+				"action" => "defaultaction",
+			));
+
+		$route->checkRoute(new RequestUri("/"), null);
+
+		$this->assertEquals("\Controller\Defaultcontroller", $route->getController());
+		$this->assertEquals("defaultactionAction", $route->getAction());
+	}
+
+
+	public function testChangeMissingDefaultController()
+	{
+		$routes = (new Routes)->add(
+			(new Route("/:controller/:action", "\Controller\\"))
+				->setDefaults(array(
+					"action" => "defaultaction",
+				))
+		);
+
+		$route = $routes->findRoute("/");
+
+		$this->assertNull($route);
+	}
+
+
+	public function testChangeMissingDefaultAction()
+	{
+		$routes = (new Routes)->add(
+			(new Route("/:controller/:action", "\Controller\\"))
+				->setDefaults(array(
+					"controller" => "defaultcontroller",
+				))
+		);
+
+		$route = $routes->findRoute("/");
+
+		$this->assertEquals("\Controller\Defaultcontroller", $route->getController());
+		$this->assertNull($route->getAction());
+	}
+
+
+	public function testDefaultCustomParameter()
+	{
+		$routes = (new Routes)->add(
+			(new Route("/:controller/:action/:id", "\Controller\\"))
+				->setDefaults(array(
+					"controller" => "index",
+					"action" => "index",
+					"id" => "123"
+				))
+		);
+
+		$route = $routes->findRoute("/");
+
+		$this->assertEquals("\Controller\Index", $route->getController());
+		$this->assertEquals("indexAction", $route->getAction());
+		$this->assertEquals("123", $route->getParam("id"));
+	}
+
+
+	public function testDefaultCustomParameterButMissingInPath()
+	{
+		$routes = (new Routes)->add(
+			(new Route("/:controller/:action", "\Controller\\"))
+				->setDefaults(array(
+					"controller" => "index",
+					"action" => "index",
+					"id" => "123"
+				))
+		);
+
+		$route = $routes->findRoute("/");
+
+		$this->assertEquals("\Controller\Index", $route->getController());
+		$this->assertEquals("indexAction", $route->getAction());
+		$this->assertEquals("123", $route->getParam("id"));
+	}
+
+
+	public function testMissingControllerInUriButSetDefault()
+	{
+		$routes = (new Routes)->add(
+			(new Route("/:action", "\Controller\\"))
+				->setDefaults(array(
+					"controller" => "hello",
+					"action" => "index",
+				))
+		);
+
+		$route = $routes->findRoute("/");
+
+		$this->assertEquals("\Controller\Hello", $route->getController());
+		$this->assertEquals("indexAction", $route->getAction());
 	}
 
 }
