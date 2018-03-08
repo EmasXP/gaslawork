@@ -1037,4 +1037,54 @@ final class RoutingTest extends TestCase {
 		);
 	}
 
+
+	public function testRouteUriExplode()
+	{
+		$this->assertEquals(
+			array("hello", "world"),
+			(new RequestUri("hello/world"))
+				->getExploded()
+		);
+	}
+
+
+	public function testRouteUriExplodeUsingBackslash()
+	{
+		$this->assertEquals(
+			array("hello", "world"),
+			(new RequestUri("hello\world"))
+				->getExploded()
+		);
+	}
+
+
+	public function testRouteUriExplodeSlashPrefixAndSuffix()
+	{
+		$this->assertEquals(
+			array("hello", "world"),
+			(new RequestUri("/hello/world/"))
+				->getExploded()
+		);
+	}
+
+
+	public function testRouteUriExplodeBackslashPrefixAndSuffix()
+	{
+		$this->assertEquals(
+			array("hello", "world"),
+			(new RequestUri("\\hello/world\\"))
+				->getExploded()
+		);
+	}
+
+
+	public function testRouteUriExplodeMultipleSlashes()
+	{
+		$this->assertEquals(
+			array("hello", "world", "foo", "bar"),
+			(new RequestUri("////\\//hello/world\\foo/bar\\\\\\//"))
+				->getExploded()
+		);
+	}
+
 }
