@@ -134,6 +134,29 @@ class App {
 	}
 
 
+	/**
+	 * Validates the name of the controller.
+	 *
+	 * It allows all the allowed characters of a class name, and also allows backslashes
+	 * to make it work with namespaces.
+	 *
+	 * This is needed to make sure the auto loader does not try to load illegal things,
+	 * for example "Controller\..\Hello". That is of course not an allowed name, but if
+	 * we are unlucky the auto loader might still try to open that file to see if the
+	 * class exists.
+	 *
+	 * @param string $controller
+	 * @return boolean
+	 */
+	protected function validControllerPath($controller)
+	{
+		return (bool)preg_match(
+			"/^[a-zA-Z\\\_\x7f-\xff][a-zA-Z0-9\\\_\x7f-\xff]*$/",
+			$controller
+		);
+	}
+
+
 	public function findAndExecuteRoute($uri, $http_method)
 	{
 		$route = $this->router->findRoute($uri, $http_method);
@@ -149,6 +172,11 @@ class App {
 		);
 
 		$controller_path = $route->getController();
+
+		if ( ! $this->validControllerPath($controller_path))
+		{
+			return print "404";
+		}
 
 		if ( ! class_exists($controller_path))
 		{
