@@ -102,29 +102,7 @@ URL                       | Controller (Class)               | Action (Method)
 /foo                      | \Controller\Foo      | indexAction
 /foo/bar                  | \Controller\Foo      | barAction
 
-#### Action prefix and suffix
-
 You may have noticed in the previous example that the action (method) names are suffixed with `Action`. This is because of security. For example, calling `index()` on the `Index` class is treated as calling the constructor.
-
-You can change the suffix by using this method:
-
-```php
-$route->setActionSuffix("Hello"); // indexHello
-```
-
-And there is also a setting for adding a prefix:
-
-```php
-$route->setActionPrefix("action_"); // action_indexAction
-```
-
-In the example above both the prefix and suffix was added. To have only suffix, we need to write like this:
-
-```php
-// action_index:
-$route->setActionPrefix("action_")
-    ->setActionSuffix(""); // Suffix can also be null instead of an empty string
-```
 
 #### Fetching parameters
 
@@ -269,7 +247,30 @@ Many other frameworks choose to map URLs to controllers but Gaslawork's routes a
 ### To write about
 
 * :directory
-* required
+
+## Controllers and Actions
+
+#### Action prefix and suffix
+
+Action (method) names are by default suffixed with `Action`.  But you can change the suffix by setting the `action_suffix` on the `App` object:
+
+```php
+$app->action_suffix = "Hello"; // indexHello
+```
+
+And there is also a setting for adding a prefix:
+
+```php
+$app->action_prefix = "action_"; // action_indexAction
+```
+
+In the example above both the prefix and suffix was added. To have only suffix, we need to write like this:
+
+```php
+// action_index:
+$app->action_prefix = "action_";
+$app->action_suffix = "";
+```
 
 
 ## Web servers

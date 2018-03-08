@@ -17,8 +17,6 @@ class Route implements RouteInterface {
 	protected $params = array();
 	protected $controller;
 	protected $action;
-	protected $action_prefix;
-	protected $action_suffix = "Action";
 
 
 	public function __construct($route, $namespace_prefix)
@@ -52,20 +50,6 @@ class Route implements RouteInterface {
 	public function setBlacklist(array $blacklist)
 	{
 		$this->blacklist = $blacklist;
-		return $this;
-	}
-
-
-	public function setActionPrefix($action_prefix)
-	{
-		$this->action_prefix = $action_prefix;
-		return $this;
-	}
-
-
-	public function setActionSuffix($action_suffix)
-	{
-		$this->action_suffix = $action_suffix;
 		return $this;
 	}
 
@@ -203,16 +187,7 @@ class Route implements RouteInterface {
 			return $this->action;
 		}
 
-		$action = $this->getParam("action");
-
-		if ($action === null)
-		{
-			return null;
-		}
-
-		return $this->action = $this->action_prefix
-			.$action
-			.$this->action_suffix;
+		return $this->action = $this->getParam("action");
 	}
 
 

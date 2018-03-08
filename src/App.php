@@ -10,6 +10,8 @@ class App {
 	protected $_index_file;
 	public $base_url = "/";
 	public $index_file;
+	public $action_prefix;
+	public $action_suffix = "Action";
 
 	protected static $instance;
 
@@ -189,6 +191,10 @@ class App {
 
 		if ($action !== null)
 		{
+			$action = $this->action_prefix
+				.$action
+				.$this->action_suffix;
+
 			if ( ! method_exists($controller, $action))
 			{
 				return print "404";
