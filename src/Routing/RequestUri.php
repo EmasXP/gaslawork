@@ -24,7 +24,14 @@ class RequestUri {
 	{
 		if ($this->exploded_url === null)
 		{
-			$this->exploded_url = explode("/", trim($this->url, "/"));
+			$this->exploded_url = explode(
+				"/",
+				strtr(
+					trim($this->url, "/\\"),
+					"\\",
+					"/"
+				)
+			);
 		}
 
 		return $this->exploded_url;
