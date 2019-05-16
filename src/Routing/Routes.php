@@ -15,13 +15,20 @@ class Routes {
 	}
 
 
-	public function findRoute($url, $method = null)
+	/**
+	 * Find the first matching route.
+	 *
+	 * @param string $uri
+	 * @param string $method
+	 * @return RouteInterface
+	 */
+	public function findRoute($uri, $method = null)
 	{
-		$route_url = new RequestUri($url);
+		$route_uri = new RequestUri($uri);
 
 		foreach ($this->routes as $route)
 		{
-			if ( ! $route->checkRoute($route_url, $method))
+			if ( ! $route->checkRoute($route_uri, $method))
 			{
 				continue;
 			}
