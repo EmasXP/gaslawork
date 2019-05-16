@@ -18,7 +18,7 @@ class Request {
 
 
 	public function __construct(
-		$route,
+		Routing\RouteInterface $route,
 		$uri
 	)
 	{
