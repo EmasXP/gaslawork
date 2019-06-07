@@ -20,24 +20,19 @@ class Controller {
 
     public function __get($name)
     {
-        if (App::current()->has($name))
-        {
-            return App::current()->get($name);
-        }
+        return App::current()->get($name);
+    }
 
-        $trace = debug_backtrace();
 
-        trigger_error(
-            "Undefined property: "
-                .get_class($trace[0]["object"])
-                ."::$"
-                .$name
-                ." in ".$trace[0]["file"]
-                ." on line ".$trace[0]["line"],
-            E_USER_NOTICE
-        );
+    public function get($name)
+    {
+        return App::current()->get($name);
+    }
 
-        return null;
+
+    public function has($name)
+    {
+        return App::current()->has($name);
     }
 
 }

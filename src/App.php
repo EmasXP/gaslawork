@@ -5,8 +5,7 @@ namespace Gaslawork;
 class App {
 
     protected $router;
-    protected $dependencies = array();
-    protected $loaded_dependencies = array();
+    protected $container;
     protected $_index_file;
     public $base_url = "/";
     public $index_file;
@@ -16,20 +15,29 @@ class App {
     protected static $instance;
 
 
-    public static function instance(Routing\Routes $router = null)
+    public static function instance(
+        Routing\Routes $router = null,
+        \Psr\Container\ContainerInterface $container = null
+    )
     {
         if (self::$instance === null)
         {
-            return new self($router);
+            return new self($router, $container);
         }
+
+        $app = self::current();
 
         if ($router !== null)
         {
-            return self::current()
-                ->setRouter($router);
+            $app->setRouter($router);
         }
 
-        return self::current();
+        if ($container !== null)
+        {
+            $app->setContainer($container);
+        }
+
+        return $app;
     }
 
 
@@ -39,9 +47,13 @@ class App {
     }
 
 
-    public function __construct(Routing\Routes $router)
+    public function __construct(
+        Routing\Routes $router,
+        \Psr\Container\ContainerInterface $container = null
+    )
     {
         $this->router = $router;
+        $this->container = $container;
 
         if (self::$instance !== null)
         {
@@ -216,35 +228,43 @@ class App {
     }
 
 
-    public function set($name, callable $callable)
+    public function setContainer(\Psr\Container\ContainerInterface $container)
     {
-        $this->dependencies[$name] = $callable;
-
-        unset($this->loaded_dependencies[$name]);
-
+        $this->container = $container;
         return $this;
+    }
+
+
+    public function getContainer()
+    {
+        if ($this->container === null)
+        {
+            $this->container = new Container;
+        }
+
+        return $this->container;
     }
 
 
     public function get($name)
     {
-        if (isset($this->loaded_dependencies[$name]))
+        if ($this->container === null)
         {
-            return $this->loaded_dependencies[$name];
+            throw new Exception\ContainerEntryNotFoundException("$name cannot be fetched since no container has been created.");
         }
 
-        if ( ! isset($this->dependencies[$name]))
-        {
-            throw new Exception\NonExistingDependencyException("Dependency $name does not exist.");
-        }
-
-        return $this->loaded_dependencies[$name] = $this->dependencies[$name]();
+        return $this->container->get($name);
     }
 
 
     public function has($name)
     {
-        return isset($this->dependencies[$name]);
+        if ($this->container === null)
+        {
+            return false;
+        }
+
+        return $this->container->has($name);
     }
 
 }
