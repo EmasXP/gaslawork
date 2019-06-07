@@ -1,13 +1,14 @@
 STEP 1
+- 404 exceptions
 - Write tests for fetching parameters
+- Write tests for App:
+    - Using container
 - Write tests and documentation for App:
 	- Controller::__invoke()
-	- 404 exceptions
 	- Action prefix & suffix
-- Finalize the docuentation:
+- Finalize the documentation:
 	- nginx: https://docs.koseven.ga/guide/kohana/tutorials/clean-urls
 	- Controllers & Actions
-	- Dependency injection
 	- Hello world
 	- Views
 	- Database
@@ -28,11 +29,16 @@ STEP 2
 - Documentation
 	- Write about all the things that are missing in the documentation
 	- Maybe the documentation can be more fun?
+- A way of fetching the request body. Request::getBody() maybe.
 
 
 STEP 3
 - Response::redirect()?
 - Response::status()?
+- Response::json()?
+- Request::jsonBody()?
+- Container::__construct(array $entries = null)?
+- Container::__get()?
 
 
 TESTS TO WRITE:
