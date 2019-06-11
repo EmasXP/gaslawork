@@ -274,13 +274,13 @@ $app->action_suffix = "";
 
 ## Dependency container
 
-You do not need to use a dependency container if you do not want to. You can skip this section if you don't want to use a dependency container in Gaslawork (and if you are not curious about how it works).
+You do not have to use a dependency container if you do not want to. You can skip this section if you don't want to use a dependency container in Gaslawork (and if you are not curious about how it works).
 
-Gaslaworks ships with it's own dependency container, and you are free to change to another one as long as it implements the [PSR-11](https://www.php-fig.org/psr/psr-11/) interfaces. This section is going to explain how to use Gaslawork's build-in dependency container, but I'm also going to describe how to change to another own further down.
+Gaslawork ships with its own dependency container, and you are free to change to another one as long as it implements the [PSR-11](https://www.php-fig.org/psr/psr-11/) interfaces. This section is going to explain how to use Gaslawork's build-in dependency container, but I'm also going to describe how to change to another one further down.
 
 ### Setting up services
 
-There are two ways of setting up the container, and you can mix them both. The first way is so pass the container to the App constructor:
+There are two ways of setting up the container, and you can mix them both. The first way is to pass the container to the App constructor:
 
 ```php
 $container = (new \Gaslawork\Container)
@@ -289,13 +289,13 @@ $container = (new \Gaslawork\Container)
         return $pdo;
     });
 
-$app = \Gaslawork\App($routes, $container);
+$app = new \Gaslawork\App($routes, $container);
 ```
 
 And the other way is to get the Container object from the App object:
 
 ```php
-$app = \Gaslawork\App($routes);
+$app = new \Gaslawork\App($routes);
 
 $app->getContainer()
     ->add("db", function($c){
@@ -304,7 +304,7 @@ $app->getContainer()
     });
 ```
 
-If you would have passed a Container to the constructor, that would have been returned by `getContainer()`, but in the example above `getContainer()` creates a new Container object since none has been created yet.
+If you would have passed a Container to the constructor, that object would have been returned by `getContainer()`, but in the example above `getContainer()` creates a new Container object since none has been created yet.
 
 ### Getting a service
 
@@ -342,6 +342,7 @@ You can add properties into the container:
 
 ```php
 $container = (new \Gaslawork\Container)
+    ->set("database_username", "myuser")
     ->set("database_password", "mypass");
 ```
 
