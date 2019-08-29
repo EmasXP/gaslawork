@@ -171,13 +171,16 @@ class App {
     }
 
 
-    public function findAndExecuteRoute($uri, $http_method)
+    protected function findAndExecuteRoute($uri, $http_method)
     {
         $route = $this->router->findRoute($uri, $http_method);
 
         if ($route === null)
         {
-            return print "404";
+            throw new \Gaslawork\Exception\NotFoundException(
+                $uri,
+                "No route found for URI"
+            );
         }
 
         new \Gaslawork\Request(
@@ -189,12 +192,18 @@ class App {
 
         if ( ! $this->validControllerPath($controller_path))
         {
-            return print "404";
+            throw new \Gaslawork\Exception\NotFoundException(
+                $uri,
+                "The controller path $controller_path is invalid"
+            );
         }
 
         if ( ! class_exists($controller_path))
         {
-            return print "404";
+            throw new \Gaslawork\Exception\NotFoundException(
+                $uri,
+                "The controller $controller_path does not exist"
+            );
         }
 
         $controller = new $controller_path;
@@ -209,7 +218,10 @@ class App {
 
             if ( ! method_exists($controller, $action))
             {
-                return print "404";
+                throw new \Gaslawork\Exception\NotFoundException(
+                    $uri,
+                    "Method $action does not exist in $controller_path"
+                );
             }
 
             return $controller->$action();
@@ -221,10 +233,39 @@ class App {
 
     public function run()
     {
-        return $this->findAndExecuteRoute(
-            $this->getUri(),
-            (isset($_SERVER["REQUEST_METHOD"]) ? $_SERVER["REQUEST_METHOD"] : null)
-        );
+        try
+        {
+            return $this->findAndExecuteRoute(
+                $this->getUri(),
+                (isset($_SERVER["REQUEST_METHOD"]) ? $_SERVER["REQUEST_METHOD"] : null)
+            );
+        }
+        catch (\Gaslawork\Exception\NotFoundException $e)
+        {
+            if ($this->has("notFoundHandler"))
+            {
+                $this->get("notFoundHandler")($e);
+            }
+
+            $this->defaultNotFoundHandler($e);
+        }
+    }
+
+
+    protected function defaultNotFoundHandler(\Gaslawork\Exception\NotFoundException $e)
+    {
+        Response::status(404);
+
+        print "<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 3.2 Final//EN\">\n";
+        print "<title>404 Not Found</title>\n";
+        print "<h1>Not Found</h1>\n";
+        print "<p>The requested URL ";
+        $uri = $e->getUri();
+        if ( ! empty($uri))
+        {
+            print "<i>".htmlspecialchars($uri)."</i> ";
+        }
+        print "was not found on the server.</p>";
     }
 
 
