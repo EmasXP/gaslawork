@@ -24,8 +24,8 @@ url: "" # the base hostname & protocol for your site, e.g. http://example.com
 
 # Build settings
 markdown: kramdown
-theme: minimal
-#theme: jekyll-theme-minimal
+#theme: minimal
+theme: jekyll-theme-minimal
 #plugins:
 #  - jekyll-feed
 
