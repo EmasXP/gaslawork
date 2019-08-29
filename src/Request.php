@@ -25,7 +25,7 @@ class Request {
         $this->route = $route;
         $this->uri = $uri;
 
-        return self::$instance = $this;
+        self::$instance = $this;
     }
 
 
