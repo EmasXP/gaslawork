@@ -15,7 +15,7 @@ There are two ways of setting up the container, and you can mix them both. The f
 
 ```php
 $container = (new \Gaslawork\Container)
-    ->add("db", function($c){
+    ->set("db", function($c){
         $pdo = new \PDO("...");
         return $pdo;
     });
@@ -29,7 +29,7 @@ And the other way is to get the Container object from the App object:
 $app = new \Gaslawork\App($routes);
 
 $app->getContainer()
-    ->add("db", function($c){
+    ->set("db", function($c){
         $pdo = new \PDO("...");
         return $pdo;
     });
