@@ -245,6 +245,7 @@ class App {
             if ($this->has("notFoundHandler"))
             {
                 $this->get("notFoundHandler")($e);
+                return;
             }
 
             $this->defaultNotFoundHandler($e);
