@@ -4,7 +4,7 @@ title: Gaslawork documentation
 
 # Gaslawork documentation
 
-This is the documentation for the Gaslawork PHP micro web framework. The goal of Gaslawork is to be as quick as possible. Each piece of the framework is built using  a lot of thought and time (and anxiety), so each piece is fast as possible. 
+This is the documentation for the Gaslawork PHP micro web framework. The goal of Gaslawork is to be as quick as possible. Each piece of the framework is built using a lot of thought and time (and anxiety), so each piece adds flexibility while loosing minimal performance. 
 
 ## Hello world
 
@@ -15,7 +15,7 @@ use \Gaslawork\Routing\Route;
 $routes = (new Routes)
     ->add(new Route("/:controller/:action/:id", "\Controller\\"));
 
-$app = new Gaslawork\App($routes);
+$app = new \Gaslawork\App($routes);
 
 $app->run();
 ```
@@ -35,7 +35,7 @@ class Index extends \Gaslawork\Controller {
 
 This is how you say "Hello, world!" in Gaslawork. These are the basic concepts:
 
-* [Routes]({{ site.baseurl }}/routing): Routes a incoming request URL to a _Controller_ and _Action_.
+* [Routes]({{ site.baseurl }}/routing): Routes an incoming request URL to a _Controller_ and _Action_.
 * [Controller]({{ site.baseurl }}/controllers): A controller is a PHP class containing _Actions_.
 * Action: A action is a method of the controller. Here is where you process the request and returns a response.
 
