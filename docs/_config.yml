@@ -46,3 +46,4 @@ header_pages:
   - Routing.md
   - Controllers.md
   - Dependency container.md
+  - 404 Not Found.md
