@@ -32,7 +32,7 @@ use \Gaslawork\Routing\Route;
 $routes = (new Routes)
     ->add(new Route("/:controller/:action/:id", "\Controller\\"));
 
-$app = new Gaslawork\App($routes);
+$app = new \Gaslawork\App($routes);
 // $app->base_url = "/";
 // $app->index_file = "index.php";
 
