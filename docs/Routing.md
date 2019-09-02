@@ -26,8 +26,8 @@ I'm now going to explain how the routing internals work. You do not _need_ to kn
 
 - Gaslawork internally calls the `findRoute()` of the routing (`Routes`) object.
 - `Routes` iterates through all the routes added and calls `checkRoute()` on them. We have added the built-in `Route` in this example, but you are free to write your own route classes. I'll describe how to do that in a later section.
-- `Routes` returns the route object back to Gaslawork when route's `checkRoute()` returns `true`
-- The path to the controller (and in this case also the action) is fetched by calling `getController()` and `getAction()` of the route object.
+- `checkRoute()` returns a `RouteDataInterface` on success (and `NULL` otherwise), and that "route data" object returned back to Gaslawork.
+- The path to the controller (and in this case also the action) is fetched by calling `getController()` and `getAction()` on the "route data" object.
 - Gaslawork creates an object of the controller and calls the action.
 
 ## Parameters (and special parameters)
