@@ -26,19 +26,19 @@ I'm now going to explain how the routing internals work. You do not _need_ to kn
 
 - Gaslawork internally calls the `findRoute()` of the routing (`Routes`) object.
 - `Routes` iterates through all the routes added and calls `checkRoute()` on them. We have added the built-in `Route` in this example, but you are free to write your own route classes. I'll describe how to do that in a later section.
-- `checkRoute()` returns a `RouteDataInterface` on success (and `NULL` otherwise), and that "route data" object returned back to Gaslawork.
+- `checkRoute()` returns a `RouteDataInterface` object on success (and `NULL` otherwise), and that "route data" object is returned back to Gaslawork. Side note: `Route::checkRoute()` actually returns `$this` since the `Route` class implements `RouteDataInterface`.
 - The path to the controller (and in this case also the action) is fetched by calling `getController()` and `getAction()` on the "route data" object.
 - Gaslawork creates an object of the controller and calls the action.
 
 ## Parameters (and special parameters)
 
-In the example above we have put `/:controller/:action/:id` as the "target", and `\Controller\\` as the "namespace prefix". Parts that begins with `:` is considered as "parameters", and there are three special parameters:
+In the example above we have put `/:controller/:action/:id` as the "target", and `\Controller\\` as the "namespace prefix". Parts that begins with `:` are considered as "parameters", and there are three special parameters:
 
 - :directory
 - :controller
 - :action
 
-These parameters decide which controller and action should be executed. These parameters has default values:
+These three parameters decide which controller and action should be executed. These two parameters has default values:
 
 - :controller - `index`
 - :action - `index`
