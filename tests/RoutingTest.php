@@ -889,7 +889,7 @@ final class RoutingTest extends TestCase {
 		$route = (new Route("/:controller/:id", "\Controller\\"))
 			->setRequired(array("id"));
 
-		$this->assertFalse(
+		$this->assertNull(
 			$route->checkRoute(new RequestUri("/"), null)
 		);
 	}
@@ -900,7 +900,7 @@ final class RoutingTest extends TestCase {
 		$route = (new Route("/:controller/:id1/:id2", "\Controller\\"))
 			->setRequired(array("id2"));
 
-		$this->assertFalse(
+		$this->assertNull(
 			$route->checkRoute(new RequestUri("/hello/world"), null)
 		);
 	}
@@ -911,7 +911,7 @@ final class RoutingTest extends TestCase {
 		$route = (new Route("/:controller/:id1/:id2", "\Controller\\"))
 			->setRequired(array("id1", "id2"));
 
-		$this->assertFalse(
+		$this->assertNull(
 			$route->checkRoute(new RequestUri("/hello/world"), null)
 		);
 	}
@@ -922,31 +922,43 @@ final class RoutingTest extends TestCase {
 		$route = (new Route("/:controller/:id", "\Controller\\"))
 			->setRequired(array("id"));
 
-		$this->assertTrue(
-			$route->checkRoute(new RequestUri("/hello/world"), null)
-		);
+        $route_data = $route->checkRoute(new RequestUri("/hello/world"), null);
+
+        $this->assertNotNull($route_data);
+        $this->assertInstanceOf(
+            \Gaslawork\Routing\RouteDataInterface::class,
+            $route_data
+        );
 	}
 
 
 	public function testRequiredSuccessAgain()
 	{
 		$route = (new Route("/:controller/:id1/:id2", "\Controller\\"))
-			->setRequired(array("id2"));
+            ->setRequired(array("id2"));
 
-		$this->assertTrue(
-			$route->checkRoute(new RequestUri("/hello/world/foo"), null)
-		);
+        $route_data = $route->checkRoute(new RequestUri("/hello/world/foo"), null);
+
+        $this->assertNotNull($route_data);
+        $this->assertInstanceOf(
+            \Gaslawork\Routing\RouteDataInterface::class,
+            $route_data
+        );
 	}
 
 
 	public function testRequiredSuccessTwoParams()
 	{
 		$route = (new Route("/:controller/:id1/:id2", "\Controller\\"))
-			->setRequired(array("id1", "id2"));
+            ->setRequired(array("id1", "id2"));
 
-		$this->assertTrue(
-			$route->checkRoute(new RequestUri("/hello/world/foo"), null)
-		);
+        $route_data = $route->checkRoute(new RequestUri("/hello/world/foo"), null);
+
+        $this->assertNotNull($route_data);
+        $this->assertInstanceOf(
+            \Gaslawork\Routing\RouteDataInterface::class,
+            $route_data
+        );
 	}
 
 
@@ -957,11 +969,15 @@ final class RoutingTest extends TestCase {
 			->setDefaults(array(
 				"controller" => "index",
 				"id2" => "bar",
-			));
+            ));
 
-		$this->assertTrue(
-			$route->checkRoute(new RequestUri("/hello/world"), null)
-		);
+        $route_data = $route->checkRoute(new RequestUri("/hello/world"), null);
+
+        $this->assertNotNull($route_data);
+        $this->assertInstanceOf(
+            \Gaslawork\Routing\RouteDataInterface::class,
+            $route_data
+        );
 	}
 
 

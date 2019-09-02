@@ -2,7 +2,7 @@
 
 namespace Gaslawork\Routing;
 
-class Route implements RouteInterface {
+class Route implements RouteInterface, RouteDataInterface {
 
     protected $route;
     protected $namespace_prefix;
@@ -65,7 +65,7 @@ class Route implements RouteInterface {
     }
 
 
-    public function checkRoute(RequestUri $url, $method)
+    public function checkRoute(RequestUri $url, $method): ?RouteDataInterface
     {
         $exploded = $this->getRouteExploded();
         $url_exploded = $url->getExploded();
@@ -101,7 +101,7 @@ class Route implements RouteInterface {
                     && in_array($param_name, $this->required)
                 )
                 {
-                    return false;
+                    return null;
                 }
 
                 if (
@@ -110,7 +110,7 @@ class Route implements RouteInterface {
                     && ! in_array($param_value, $this->whitelist[$param_name])
                 )
                 {
-                    return false;
+                    return null;
                 }
                 elseif (
                     $this->blacklist !== null
@@ -118,7 +118,7 @@ class Route implements RouteInterface {
                     && in_array($param_value, $this->blacklist[$param_name])
                 )
                 {
-                    return false;
+                    return null;
                 }
 
                 $params[$param_name] = $param_value;
@@ -128,7 +128,7 @@ class Route implements RouteInterface {
                 || $url_exploded[$i] != $piece
             )
             {
-                return false;
+                return null;
             }
         }
 
@@ -143,12 +143,12 @@ class Route implements RouteInterface {
             )
         )
         {
-            return false;
+            return null;
         }
 
         $this->params = $params;
 
-        return true;
+        return $this;
     }
 
 

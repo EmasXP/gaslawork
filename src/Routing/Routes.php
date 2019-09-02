@@ -20,20 +20,20 @@ class Routes {
      *
      * @param string $uri
      * @param string $method
-     * @return RouteInterface
+     * @return RouteDataInterface|null
      */
-    public function findRoute($uri, $method = null)
+    public function findRoute($uri, $method = null): ?RouteDataInterface
     {
         $route_uri = new RequestUri($uri);
 
         foreach ($this->routes as $route)
         {
-            if ( ! $route->checkRoute($route_uri, $method))
-            {
-                continue;
-            }
+            $route_data = $route->checkRoute($route_uri, $method);
 
-            return $route;
+            if ($route_data !== null)
+            {
+                return $route_data;
+            }
         }
 
         return null;

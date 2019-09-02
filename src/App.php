@@ -173,9 +173,9 @@ class App {
 
     protected function findAndExecuteRoute($uri, $http_method)
     {
-        $route = $this->router->findRoute($uri, $http_method);
+        $route_data = $this->router->findRoute($uri, $http_method);
 
-        if ($route === null)
+        if ($route_data === null)
         {
             throw new \Gaslawork\Exception\NotFoundException(
                 $uri,
@@ -184,11 +184,11 @@ class App {
         }
 
         new \Gaslawork\Request(
-            $route,
+            $route_data,
             $uri
         );
 
-        $controller_path = $route->getController();
+        $controller_path = $route_data->getController();
 
         if ( ! $this->validControllerPath($controller_path))
         {
@@ -208,7 +208,7 @@ class App {
 
         $controller = new $controller_path;
 
-        $action = $route->getAction();
+        $action = $route_data->getAction();
 
         if ($action !== null)
         {

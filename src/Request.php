@@ -4,7 +4,7 @@ namespace Gaslawork;
 
 class Request {
 
-    protected $route;
+    protected $route_data;
     protected $uri;
     protected $base_url;
 
@@ -18,11 +18,11 @@ class Request {
 
 
     public function __construct(
-        Routing\RouteInterface $route,
+        Routing\RouteDataInterface $route_data,
         $uri
     )
     {
-        $this->route = $route;
+        $this->route_data = $route_data;
         $this->uri = $uri;
 
         self::$instance = $this;
@@ -31,14 +31,14 @@ class Request {
 
     public function getParam($name)
     {
-        return $this->route
+        return $this->route_data
             ->getParam($name);
     }
 
 
     public function getParams()
     {
-        return $this->route
+        return $this->route_data
             ->getParams();
     }
 
