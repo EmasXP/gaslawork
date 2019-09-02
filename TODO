@@ -1,9 +1,9 @@
 STEP 1
 - 404 exceptions
-    - Documentation
     - Test non-404
     - Test default rendered 404
     - Test custom rendered 404
+- Rename Routes to Router?
 - Write tests for fetching parameters
 - Write tests for App:
     - Using container
@@ -13,11 +13,11 @@ STEP 1
 - Finalize the documentation:
 	- nginx: https://docs.koseven.ga/guide/kohana/tutorials/clean-urls
 	- Controllers & Actions
-	- Hello world
 	- Views
 	- Database
 	- Configuration
     - Exception handling
+    - "\Controller\\" should be "\\Controller\\"
 - Tips & Tricks
 	- Extend Route to set defaults on suffix/prefix or namespace prefix
 	- Performance tweaks:
@@ -35,14 +35,15 @@ STEP 2
 	- Write about all the things that are missing in the documentation
 	- Maybe the documentation can be more fun?
 - A way of fetching the request body. Request::getBody() maybe.
+- Even faster - less dynamic - routes
+- A REST Route and Controller
 
 
 STEP 3
 - Response::redirect()?
 - Response::json()?
-- Request::jsonBody()?
+- Request::jsonBody()? Request::getJsonBody()?
 - Container::__construct(array $entries = null)?
-- Container::__get()?
 
 
 TESTS TO WRITE:
