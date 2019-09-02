@@ -231,6 +231,18 @@ class App {
     }
 
 
+    protected function handleNotFoundException(\Gaslawork\Exception\NotFoundException $e)
+    {
+        if ($this->has("notFoundHandler"))
+        {
+            $this->get("notFoundHandler")($e);
+            return;
+        }
+
+        $this->defaultNotFoundHandler($e);
+    }
+
+
     public function run()
     {
         try
@@ -242,13 +254,7 @@ class App {
         }
         catch (\Gaslawork\Exception\NotFoundException $e)
         {
-            if ($this->has("notFoundHandler"))
-            {
-                $this->get("notFoundHandler")($e);
-                return;
-            }
-
-            $this->defaultNotFoundHandler($e);
+            $this->handleNotFoundException($e);
         }
     }
 
