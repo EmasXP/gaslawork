@@ -16,7 +16,7 @@ class App {
 
 
     public static function instance(
-        Routing\Router $router = null,
+        Routing\RouterInterface $router = null,
         \Psr\Container\ContainerInterface $container = null
     )
     {
@@ -48,7 +48,7 @@ class App {
 
 
     public function __construct(
-        Routing\Router $router,
+        Routing\RouterInterface $router,
         \Psr\Container\ContainerInterface $container = null
     )
     {
@@ -64,7 +64,7 @@ class App {
     }
 
 
-    public function setRouter(Routing\Router $router)
+    public function setRouter(Routing\RouterInterface $router)
     {
         $this->router = $router;
         return $this;

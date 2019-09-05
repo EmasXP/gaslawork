@@ -1,5 +1,4 @@
 STEP 1
-- Interface for Router
 - Write tests for fetching parameters
 - Write tests for App:
     - Using container
