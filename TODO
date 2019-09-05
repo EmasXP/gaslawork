@@ -1,7 +1,5 @@
 STEP 1
-- Rename Router::findRoute() to find()?
-- Rename Route::checkRoute() to check()?
-- Rename Routes to Router?
+- Interface for Router
 - Write tests for fetching parameters
 - Write tests for App:
     - Using container
@@ -25,6 +23,7 @@ STEP 1
 - Go though the code:
 	- Can some methods be improved or split apart?
 	- Add comments on methods and classes
+- <title> for the documentation
 - Add to Packagist
 
 
@@ -35,11 +34,19 @@ STEP 2
 - A way of fetching the request body. Request::getBody() maybe.
 - Even faster - less dynamic - routes
 - A REST Route and Controller
+- Fetching and setting HTTP header(s)
+- Method for checking if CLI
+- Methos for checking if AJAX
 
 
 STEP 3
-- Response::redirect()?
-- Response::json()?
+- Response::redirect($location, $status = 302) // Is 302 correct?
+	- Also throw Halt (or Stop?) exception that is catched internally
+- Response::forbidden()
+- Response::json()
+	- Content-Type: application/json
+	- JSON encode
+	- JSON exception on failure
 - Request::jsonBody()? Request::getJsonBody()?
 - Container::__construct(array $entries = null)?
 
