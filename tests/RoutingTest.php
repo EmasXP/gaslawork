@@ -15,7 +15,7 @@ final class RoutingTest extends TestCase {
         $routes = (new Router)
             ->add(new Route("/:controller/:action/:id", "\Application\Controller\\"));
 
-        $route = $routes->findRoute("/");
+        $route = $routes->find("/");
 
         $this->assertTrue($route !== null);
 
@@ -29,7 +29,7 @@ final class RoutingTest extends TestCase {
         $routes = (new Router)
             ->add(new Route("/:controller/:action/:id", "\Application\Controller\\"));
 
-        $route = $routes->findRoute("/hello");
+        $route = $routes->find("/hello");
 
         $this->assertTrue($route !== null);
 
@@ -43,7 +43,7 @@ final class RoutingTest extends TestCase {
         $routes = (new Router)
             ->add(new Route("/:controller/:action/:id", "\Application\Controller\\"));
 
-        $route = $routes->findRoute("/hello/world");
+        $route = $routes->find("/hello/world");
 
         $this->assertTrue($route !== null);
 
@@ -57,7 +57,7 @@ final class RoutingTest extends TestCase {
         $routes = (new Router)
             ->add(new Route("/:action/:id", "\Application\Controller\\"));
 
-        $route = $routes->findRoute("/");
+        $route = $routes->find("/");
 
         $this->assertTrue($route !== null);
 
@@ -71,7 +71,7 @@ final class RoutingTest extends TestCase {
         $routes = (new Router)
             ->add(new Route("/:action/:id", "\Application\Controller\\"));
 
-        $route = $routes->findRoute("/hello");
+        $route = $routes->find("/hello");
 
         $this->assertTrue($route !== null);
 
@@ -85,7 +85,7 @@ final class RoutingTest extends TestCase {
         $routes = (new Router)
             ->add(new Route("/:controller/:id", "\Application\Controller\\"));
 
-        $route = $routes->findRoute("/");
+        $route = $routes->find("/");
 
         $this->assertTrue($route !== null);
 
@@ -99,7 +99,7 @@ final class RoutingTest extends TestCase {
         $routes = (new Router)
             ->add(new Route("/:controller/:id", "\Application\Controller\\"));
 
-        $route = $routes->findRoute("/hello");
+        $route = $routes->find("/hello");
 
         $this->assertTrue($route !== null);
 
@@ -114,7 +114,7 @@ final class RoutingTest extends TestCase {
             ->add(new Route("/hello/:controller/:id", "\Hello\\"))
             ->add(new Route("/world/:controller/:id", "\World\\"));
 
-        $route = $routes->findRoute("/world");
+        $route = $routes->find("/world");
 
         $this->assertTrue($route !== null);
 
@@ -129,7 +129,7 @@ final class RoutingTest extends TestCase {
             ->add(new Route("/hello/:controller/:id", "\Hello\\"))
             ->add(new Route("/world/:controller/:id", "\World\\"));
 
-        $route = $routes->findRoute("/hello");
+        $route = $routes->find("/hello");
 
         $this->assertTrue($route !== null);
 
@@ -144,7 +144,7 @@ final class RoutingTest extends TestCase {
             ->add(new Route("/hello/:controller/:id", "\Hello\\"))
             ->add(new Route("/world/:controller/:id", "\World\\"));
 
-        $route = $routes->findRoute("/world/foo");
+        $route = $routes->find("/world/foo");
 
         $this->assertTrue($route !== null);
 
@@ -159,7 +159,7 @@ final class RoutingTest extends TestCase {
             ->add(new Route("/hello/:controller/:id", "\Hello\\"))
             ->add(new Route("/world/:controller/:id", "\World\\"));
 
-        $route = $routes->findRoute("/hello/foo");
+        $route = $routes->find("/hello/foo");
 
         $this->assertTrue($route !== null);
 
@@ -174,7 +174,7 @@ final class RoutingTest extends TestCase {
             ->add(new Route("/hello/:controller/:action/:id", "\Hello\\"))
             ->add(new Route("/world/:controller/:action/:id", "\World\\"));
 
-        $route = $routes->findRoute("/world/foo/bar");
+        $route = $routes->find("/world/foo/bar");
 
         $this->assertTrue($route !== null);
 
@@ -189,7 +189,7 @@ final class RoutingTest extends TestCase {
             ->add(new Route("/hello/:controller/:action/:id", "\Hello\\"))
             ->add(new Route("/world/:controller/:action/:id", "\World\\"));
 
-        $route = $routes->findRoute("/hello/foo/bar");
+        $route = $routes->find("/hello/foo/bar");
 
         $this->assertTrue($route !== null);
 
@@ -204,7 +204,7 @@ final class RoutingTest extends TestCase {
             ->add(new Route("/a/:controller/b/:action/c/:id", "\First\\"))
             ->add(new Route("/d/:controller/e/:action/f/:id", "\Second\\"));
 
-        $route = $routes->findRoute("/d/hello/e/world/f");
+        $route = $routes->find("/d/hello/e/world/f");
 
         $this->assertTrue($route !== null);
 
@@ -219,7 +219,7 @@ final class RoutingTest extends TestCase {
             ->add(new Route("/a/:controller/b/:action/c/:id", "\First\\"))
             ->add(new Route("/d/:controller/e/:action/f/:id", "\Second\\"));
 
-        $route = $routes->findRoute("/a/hello/b/world/c");
+        $route = $routes->find("/a/hello/b/world/c");
 
         $this->assertTrue($route !== null);
 
@@ -233,7 +233,7 @@ final class RoutingTest extends TestCase {
         $routes = (new Router)
             ->add(new Route("/:action/:controller/:id", "\Application\Controller\\"));
 
-        $route = $routes->findRoute("/hello/world");
+        $route = $routes->find("/hello/world");
 
         $this->assertTrue($route !== null);
 
@@ -247,7 +247,7 @@ final class RoutingTest extends TestCase {
         $routes = (new Router)
             ->add(new Route("/hello/:controller/:id", "\Application\Controller\\"));
 
-        $route = $routes->findRoute("/world");
+        $route = $routes->find("/world");
 
         $this->assertNull($route);
     }
@@ -259,7 +259,7 @@ final class RoutingTest extends TestCase {
             ->add(new Route("/:controller/:action/:id", "\First\\"))
             ->add(new Route("/:controller/:action/:id", "\Second\\"));
 
-        $route = $routes->findRoute("/hello");
+        $route = $routes->find("/hello");
 
         $this->assertTrue($route !== null);
 
@@ -273,7 +273,7 @@ final class RoutingTest extends TestCase {
             ->add(new Route("/:controller/:action/:id", "\First\\"))
             ->add(new Route("/hello/:action/:id", "\Second\\"));
 
-        $route = $routes->findRoute("/hello");
+        $route = $routes->find("/hello");
 
         $this->assertTrue($route !== null);
 
@@ -287,7 +287,7 @@ final class RoutingTest extends TestCase {
             ->add(new Route("/hello/:action/:id", "\First\\"))
             ->add(new Route("/:controller/:action/:id", "\Second\\"));
 
-        $route = $routes->findRoute("/hello");
+        $route = $routes->find("/hello");
 
         $this->assertTrue($route !== null);
 
@@ -300,7 +300,7 @@ final class RoutingTest extends TestCase {
         $routes = (new Router)
             ->add(new Route(":controller/:action/:id", "\Application\Controller\\"));
 
-        $route = $routes->findRoute("/hello");
+        $route = $routes->find("/hello");
 
         $this->assertTrue($route !== null);
 
@@ -313,7 +313,7 @@ final class RoutingTest extends TestCase {
         $routes = (new Router)
             ->add(new Route("/:controller/:action/:id", "\Application\Controller\\"));
 
-        $route = $routes->findRoute("hello");
+        $route = $routes->find("hello");
 
         $this->assertTrue($route !== null);
 
@@ -326,7 +326,7 @@ final class RoutingTest extends TestCase {
         $routes = (new Router)
             ->add(new Route(":controller/:action/:id", "\Application\Controller\\"));
 
-        $route = $routes->findRoute("hello");
+        $route = $routes->find("hello");
 
         $this->assertTrue($route !== null);
 
@@ -350,7 +350,7 @@ final class RoutingTest extends TestCase {
                     ))
             );
 
-        $route = $routes->findRoute("bar");
+        $route = $routes->find("bar");
 
         $this->assertTrue($route !== null);
 
@@ -374,7 +374,7 @@ final class RoutingTest extends TestCase {
                     ))
             );
 
-        $route = $routes->findRoute("foo");
+        $route = $routes->find("foo");
 
         $this->assertTrue($route !== null);
 
@@ -398,7 +398,7 @@ final class RoutingTest extends TestCase {
                     ))
             );
 
-        $route = $routes->findRoute("hello");
+        $route = $routes->find("hello");
 
         $this->assertNull($route);
     }
@@ -421,7 +421,7 @@ final class RoutingTest extends TestCase {
             )
             ->add(new Route(":controller/:action/:id", "\Third\\"));
 
-        $route = $routes->findRoute("hello");
+        $route = $routes->find("hello");
 
         $this->assertTrue($route !== null);
 
@@ -440,7 +440,7 @@ final class RoutingTest extends TestCase {
             )
             ->add(new Route(":controller/:id", "\Second\\"));
 
-        $route = $routes->findRoute("hello/12");
+        $route = $routes->find("hello/12");
 
         $this->assertTrue($route !== null);
 
@@ -460,7 +460,7 @@ final class RoutingTest extends TestCase {
             )
             ->add(new Route(":controller/:id", "\Second\\"));
 
-        $route = $routes->findRoute("hello/13");
+        $route = $routes->find("hello/13");
 
         $this->assertTrue($route !== null);
 
@@ -478,7 +478,7 @@ final class RoutingTest extends TestCase {
                     ))
             );
 
-        $route = $routes->findRoute("hello/123");
+        $route = $routes->find("hello/123");
 
         $this->assertTrue($route !== null);
 
@@ -497,7 +497,7 @@ final class RoutingTest extends TestCase {
                     ))
             );
 
-        $route = $routes->findRoute("hello/abc");
+        $route = $routes->find("hello/abc");
 
         $this->assertTrue($route !== null);
 
@@ -516,7 +516,7 @@ final class RoutingTest extends TestCase {
                     ))
             );
 
-        $route = $routes->findRoute("hello/world");
+        $route = $routes->find("hello/world");
 
         $this->assertNull($route);
     }
@@ -538,7 +538,7 @@ final class RoutingTest extends TestCase {
                     ))
             );
 
-        $route = $routes->findRoute("foo");
+        $route = $routes->find("foo");
 
         $this->assertTrue($route !== null);
 
@@ -562,7 +562,7 @@ final class RoutingTest extends TestCase {
                     ))
             );
 
-        $route = $routes->findRoute("bar");
+        $route = $routes->find("bar");
 
         $this->assertTrue($route !== null);
 
@@ -586,7 +586,7 @@ final class RoutingTest extends TestCase {
                     ))
             );
 
-        $route = $routes->findRoute("hello");
+        $route = $routes->find("hello");
 
         $this->assertTrue($route !== null);
 
@@ -605,7 +605,7 @@ final class RoutingTest extends TestCase {
             )
             ->add(new Route(":controller/:action/:id", "\Second\\"));
 
-        $route = $routes->findRoute("bar");
+        $route = $routes->find("bar");
 
         $this->assertTrue($route !== null);
 
@@ -624,7 +624,7 @@ final class RoutingTest extends TestCase {
             )
             ->add(new Route(":controller/:id", "\Second\\"));
 
-        $route = $routes->findRoute("hello/1024");
+        $route = $routes->find("hello/1024");
 
         $this->assertTrue($route !== null);
 
@@ -644,7 +644,7 @@ final class RoutingTest extends TestCase {
             )
             ->add(new Route(":controller/:id", "\Second\\"));
 
-        $route = $routes->findRoute("hello/12");
+        $route = $routes->find("hello/12");
 
         $this->assertTrue($route !== null);
 
@@ -662,7 +662,7 @@ final class RoutingTest extends TestCase {
                     ))
             );
 
-        $route = $routes->findRoute("hello/123");
+        $route = $routes->find("hello/123");
 
         $this->assertNull($route);
     }
@@ -678,7 +678,7 @@ final class RoutingTest extends TestCase {
                     ))
             );
 
-        $route = $routes->findRoute("hello/abc");
+        $route = $routes->find("hello/abc");
 
         $this->assertNull($route);
     }
@@ -694,7 +694,7 @@ final class RoutingTest extends TestCase {
                     ))
             );
 
-        $route = $routes->findRoute("hello/world");
+        $route = $routes->find("hello/world");
 
         $this->assertTrue($route !== null);
 
@@ -716,7 +716,7 @@ final class RoutingTest extends TestCase {
                     ))
             );
 
-        $route = $routes->findRoute("hello/123");
+        $route = $routes->find("hello/123");
 
         $this->assertNull($route);
     }
@@ -735,7 +735,7 @@ final class RoutingTest extends TestCase {
                     ))
             );
 
-        $route = $routes->findRoute("hello/123/abcd");
+        $route = $routes->find("hello/123/abcd");
 
         $this->assertTrue($route !== null);
 
@@ -758,7 +758,7 @@ final class RoutingTest extends TestCase {
                     ))
             );
 
-        $route = $routes->findRoute("hello/123/abc");
+        $route = $routes->find("hello/123/abc");
 
         $this->assertNull($route);
     }
@@ -777,7 +777,7 @@ final class RoutingTest extends TestCase {
                     ))
             );
 
-        $route = $routes->findRoute("hello/1234/abcd");
+        $route = $routes->find("hello/1234/abcd");
 
         $this->assertNull($route);
     }
@@ -791,7 +791,7 @@ final class RoutingTest extends TestCase {
                 "action" => "defaultaction",
             ));
 
-        $route->checkRoute(new RequestUri("/"), null);
+        $route->check(new RequestUri("/"), null);
 
         $this->assertEquals("\Controller\Defaultcontroller", $route->getController());
         $this->assertEquals("defaultaction", $route->getAction());
@@ -807,7 +807,7 @@ final class RoutingTest extends TestCase {
                 ))
         );
 
-        $route = $routes->findRoute("/");
+        $route = $routes->find("/");
 
         $this->assertNull($route);
     }
@@ -822,7 +822,7 @@ final class RoutingTest extends TestCase {
                 ))
         );
 
-        $route = $routes->findRoute("/");
+        $route = $routes->find("/");
 
         $this->assertEquals("\Controller\Defaultcontroller", $route->getController());
         $this->assertNull($route->getAction());
@@ -840,7 +840,7 @@ final class RoutingTest extends TestCase {
                 ))
         );
 
-        $route = $routes->findRoute("/");
+        $route = $routes->find("/");
 
         $this->assertEquals("\Controller\Index", $route->getController());
         $this->assertEquals("index", $route->getAction());
@@ -859,7 +859,7 @@ final class RoutingTest extends TestCase {
                 ))
         );
 
-        $route = $routes->findRoute("/");
+        $route = $routes->find("/");
 
         $this->assertEquals("\Controller\Index", $route->getController());
         $this->assertEquals("index", $route->getAction());
@@ -877,7 +877,7 @@ final class RoutingTest extends TestCase {
                 ))
         );
 
-        $route = $routes->findRoute("/");
+        $route = $routes->find("/");
 
         $this->assertEquals("\Controller\Hello", $route->getController());
         $this->assertEquals("index", $route->getAction());
@@ -890,7 +890,7 @@ final class RoutingTest extends TestCase {
             ->setRequired(array("id"));
 
         $this->assertNull(
-            $route->checkRoute(new RequestUri("/"), null)
+            $route->check(new RequestUri("/"), null)
         );
     }
 
@@ -901,7 +901,7 @@ final class RoutingTest extends TestCase {
             ->setRequired(array("id2"));
 
         $this->assertNull(
-            $route->checkRoute(new RequestUri("/hello/world"), null)
+            $route->check(new RequestUri("/hello/world"), null)
         );
     }
 
@@ -912,7 +912,7 @@ final class RoutingTest extends TestCase {
             ->setRequired(array("id1", "id2"));
 
         $this->assertNull(
-            $route->checkRoute(new RequestUri("/hello/world"), null)
+            $route->check(new RequestUri("/hello/world"), null)
         );
     }
 
@@ -922,7 +922,7 @@ final class RoutingTest extends TestCase {
         $route = (new Route("/:controller/:id", "\Controller\\"))
             ->setRequired(array("id"));
 
-        $route_data = $route->checkRoute(new RequestUri("/hello/world"), null);
+        $route_data = $route->check(new RequestUri("/hello/world"), null);
 
         $this->assertNotNull($route_data);
         $this->assertInstanceOf(
@@ -937,7 +937,7 @@ final class RoutingTest extends TestCase {
         $route = (new Route("/:controller/:id1/:id2", "\Controller\\"))
             ->setRequired(array("id2"));
 
-        $route_data = $route->checkRoute(new RequestUri("/hello/world/foo"), null);
+        $route_data = $route->check(new RequestUri("/hello/world/foo"), null);
 
         $this->assertNotNull($route_data);
         $this->assertInstanceOf(
@@ -952,7 +952,7 @@ final class RoutingTest extends TestCase {
         $route = (new Route("/:controller/:id1/:id2", "\Controller\\"))
             ->setRequired(array("id1", "id2"));
 
-        $route_data = $route->checkRoute(new RequestUri("/hello/world/foo"), null);
+        $route_data = $route->check(new RequestUri("/hello/world/foo"), null);
 
         $this->assertNotNull($route_data);
         $this->assertInstanceOf(
@@ -971,7 +971,7 @@ final class RoutingTest extends TestCase {
                 "id2" => "bar",
             ));
 
-        $route_data = $route->checkRoute(new RequestUri("/hello/world"), null);
+        $route_data = $route->check(new RequestUri("/hello/world"), null);
 
         $this->assertNotNull($route_data);
         $this->assertInstanceOf(

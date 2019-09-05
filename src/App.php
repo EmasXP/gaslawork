@@ -173,7 +173,7 @@ class App {
 
     protected function findAndExecuteRoute($uri, $http_method)
     {
-        $route_data = $this->router->findRoute($uri, $http_method);
+        $route_data = $this->router->find($uri, $http_method);
 
         if ($route_data === null)
         {

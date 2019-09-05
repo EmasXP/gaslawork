@@ -24,9 +24,9 @@ The `Router` object will hold all the routes, and we `add` a `Route` object to i
 
 I'm now going to explain how the routing internals work. You do not _need_ to know this, but I find it comforting knowing the internals of the framework I'm using, and maybe you do too:
 
-- Gaslawork internally calls the `findRoute()` of the routing (`Router`) object.
-- `Router` iterates through all the routes added and calls `checkRoute()` on them. We have added the built-in `Route` in this example, but you are free to write your own route classes. I'll describe how to do that in a later section.
-- `checkRoute()` returns a `RouteDataInterface` object on success (and `NULL` otherwise), and that "route data" object is returned back to Gaslawork. Side note: `Route::checkRoute()` actually returns `$this` since the `Route` class implements `RouteDataInterface`.
+- Gaslawork internally calls the `find()` of the routing (`Router`) object.
+- `Router` iterates through all the routes added and calls `check()` on them. We have added the built-in `Route` in this example, but you are free to write your own route classes. I'll describe how to do that in a later section.
+- `check()` returns a `RouteDataInterface` object on success (and `NULL` otherwise), and that "route data" object is returned back to Gaslawork. Side note: `Route::check()` actually returns `$this` since the `Route` class implements `RouteDataInterface`.
 - The path to the controller (and in this case also the action) is fetched by calling `getController()` and `getAction()` on the "route data" object.
 - Gaslawork creates an object of the controller and calls the action.
 

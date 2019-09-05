@@ -22,13 +22,13 @@ class Router {
      * @param string $method
      * @return RouteDataInterface|null
      */
-    public function findRoute($uri, $method = null): ?RouteDataInterface
+    public function find($uri, $method = null): ?RouteDataInterface
     {
         $route_uri = new RequestUri($uri);
 
         foreach ($this->routes as $route)
         {
-            $route_data = $route->checkRoute($route_uri, $method);
+            $route_data = $route->check($route_uri, $method);
 
             if ($route_data !== null)
             {

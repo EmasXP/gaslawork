@@ -4,6 +4,6 @@ namespace Gaslawork\Routing;
 
 interface RouteInterface {
 
-    public function checkRoute(RequestUri $url, $method): ?RouteDataInterface;
+    public function check(RequestUri $url, $method): ?RouteDataInterface;
 
 }
