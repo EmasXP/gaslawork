@@ -5,10 +5,10 @@ This project is under heavy development. I'm still in the phase of investigating
 ## Hello world
 
 ```php
-use \Gaslawork\Routing\Routes;
+use \Gaslawork\Routing\Router;
 use \Gaslawork\Routing\Route;
 
-$routes = (new Routes)
+$routes = (new Router)
     ->add(new Route("/:controller/:action/:id", "\Controller\\"));
 
 $app = new \Gaslawork\App($routes);

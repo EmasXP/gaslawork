@@ -3,7 +3,7 @@
 namespace Gaslawork\Routing;
 
 
-class Routes {
+class Router {
 
     protected $routes = array();
 

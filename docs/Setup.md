@@ -26,10 +26,10 @@ And now we are going to create your index file. It is good practice to have the 
 ```php
 require '../vendor/autoload.php';
 
-use \Gaslawork\Routing\Routes;
+use \Gaslawork\Routing\Router;
 use \Gaslawork\Routing\Route;
 
-$routes = (new Routes)
+$routes = (new Router)
     ->add(new Route("/:controller/:action/:id", "\Controller\\"));
 
 $app = new \Gaslawork\App($routes);

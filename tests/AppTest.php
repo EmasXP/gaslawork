@@ -4,7 +4,7 @@ namespace Gaslawork\Tests;
 
 use PHPUnit\Framework\TestCase;
 use Gaslawork\App;
-use Gaslawork\Routing\Routes;
+use Gaslawork\Routing\Router;
 use Gaslawork\Routing\Route;
 
 
@@ -15,7 +15,7 @@ final class AppTest extends TestCase {
         $this->expectException(\Gaslawork\Exception\NotFoundException::class);
         $this->expectExceptionMessage("No route found for URI");
 
-        $app = \Gaslawork\App::instance(new Routes);
+        $app = \Gaslawork\App::instance(new Router);
         PHPUnitUtil::callMethod($app, "findAndExecuteRoute", ["nonexisting", "GET"]);
     }
 
@@ -25,7 +25,7 @@ final class AppTest extends TestCase {
         $this->expectExceptionMessage("The controller path \Controller\... is invalid");
 
         $app = \Gaslawork\App::instance(
-            (new Routes)
+            (new Router)
                 ->add(new Route("/:controller", "\Controller\\"))
         );
         PHPUnitUtil::callMethod($app, "findAndExecuteRoute", ["...", "GET"]);
@@ -37,7 +37,7 @@ final class AppTest extends TestCase {
         $this->expectExceptionMessage("The controller \Controller\Hello does not exist");
 
         $app = \Gaslawork\App::instance(
-            (new Routes)
+            (new Router)
                 ->add(new Route("/:controller", "\Controller\\"))
         );
         PHPUnitUtil::callMethod($app, "findAndExecuteRoute", ["hello", "GET"]);
@@ -49,7 +49,7 @@ final class AppTest extends TestCase {
         $this->expectExceptionMessage("Method nonexistingAction does not exist in \Gaslawork\Tests\Dummycontroller");
 
         $app = \Gaslawork\App::instance(
-            (new Routes)
+            (new Router)
                 ->add(new Route("/:controller/:action", "\Gaslawork\Tests\\"))
         );
         PHPUnitUtil::callMethod($app, "findAndExecuteRoute", ["Dummycontroller/nonexisting", "GET"]);
@@ -60,7 +60,7 @@ final class AppTest extends TestCase {
         $expected = "<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 3.2 Final//EN\">\n<title>404 Not Found</title>\n<h1>Not Found</h1>\n<p>The requested URL <i>uri</i> was not found on the server.</p>";
         $this->expectOutputString($expected);
 
-        $app = \Gaslawork\App::instance(new Routes);
+        $app = \Gaslawork\App::instance(new Router);
         $e = new \Gaslawork\Exception\NotFoundException("uri", "Notfound!");
         PHPUnitUtil::callMethod($app, "handleNotFoundException", [$e]);
     }
@@ -70,7 +70,7 @@ final class AppTest extends TestCase {
         $expected = "<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 3.2 Final//EN\">\n<title>404 Not Found</title>\n<h1>Not Found</h1>\n<p>The requested URL <i>nonexisting</i> was not found on the server.</p>";
         $this->expectOutputString($expected);
 
-        $app = \Gaslawork\App::instance(new Routes);
+        $app = \Gaslawork\App::instance(new Router);
 
         try
         {
@@ -99,7 +99,7 @@ final class AppTest extends TestCase {
                 }
             );
 
-        $app = \Gaslawork\App::instance(new Routes, $container);
+        $app = \Gaslawork\App::instance(new Router, $container);
         $e = new \Gaslawork\Exception\NotFoundException("theuri", "Notfound!");
         PHPUnitUtil::callMethod($app, "handleNotFoundException", [$e]);
     }
@@ -109,7 +109,7 @@ final class AppTest extends TestCase {
         $this->expectOutputString("World!");
 
         $app = \Gaslawork\App::instance(
-            (new Routes)
+            (new Router)
                 ->add(new Route("/:controller/:action", "\Gaslawork\Tests\\"))
         );
 

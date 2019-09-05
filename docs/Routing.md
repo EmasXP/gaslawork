@@ -9,23 +9,23 @@ permalink: /routing/
 Gaslawork uses dynamic routing. Here is an example using one single route:
 
 ```php
-use Gaslawork\Routing\Routes;
+use Gaslawork\Routing\Router;
 use Gaslawork\Routing\Route;
 
-$routes = (new Routes)
+$routes = (new Router)
     ->add(new Route("/:controller/:action/:id", "\Controller\\"));
 ```
 
 In a perfect world this is the only route you will ever add.
 
-The `Routes` object will hold all the routes, and we `add` a `Route` object to it.
+The `Router` object will hold all the routes, and we `add` a `Route` object to it.
 
 ## Deep dive into the internals
 
 I'm now going to explain how the routing internals work. You do not _need_ to know this, but I find it comforting knowing the internals of the framework I'm using, and maybe you do too:
 
-- Gaslawork internally calls the `findRoute()` of the routing (`Routes`) object.
-- `Routes` iterates through all the routes added and calls `checkRoute()` on them. We have added the built-in `Route` in this example, but you are free to write your own route classes. I'll describe how to do that in a later section.
+- Gaslawork internally calls the `findRoute()` of the routing (`Router`) object.
+- `Router` iterates through all the routes added and calls `checkRoute()` on them. We have added the built-in `Route` in this example, but you are free to write your own route classes. I'll describe how to do that in a later section.
 - `checkRoute()` returns a `RouteDataInterface` object on success (and `NULL` otherwise), and that "route data" object is returned back to Gaslawork. Side note: `Route::checkRoute()` actually returns `$this` since the `Route` class implements `RouteDataInterface`.
 - The path to the controller (and in this case also the action) is fetched by calling `getController()` and `getAction()` on the "route data" object.
 - Gaslawork creates an object of the controller and calls the action.
@@ -79,7 +79,7 @@ class Index extends \Gaslawork\Controller {
 All parameters can have default values.
 
 ```php
-$routes = (new Routes)->add(
+$routes = (new Router)->add(
     (new Route("/:controller/:action/:id", "\Controller\\"))
         ->setDefaults(array(
             "controller" => "welcome",
@@ -93,7 +93,7 @@ The example above will have the default `controller` to be `welcome` and the def
 You can set defaults for all parameters:
 
 ```php
-$routes = (new Routes)->add(
+$routes = (new Router)->add(
     new Route("/:controller/:action/:id", "\Controller\\"))
         ->setDefaults(array(
             "controller" => "welcome",
@@ -110,7 +110,7 @@ Since the `setDefaults()` method overwrites all preexisting defaults, you can re
 You can also set a default for a parameter that is not in the "target":
 
 ```php
-$routes = (new Routes)->add(
+$routes = (new Router)->add(
     (new Route("/:action", "\Controller\\"))
         ->setDefaults(array(
             "controller" => "hello",
@@ -122,7 +122,7 @@ $routes = (new Routes)->add(
 In this example the controller will always be `\Controller\Hello`. You can use this idea to totally remove actions from your application (or a specific route), and only use controllers:
 
 ```php
-$routes = (new Routes)->add(
+$routes = (new Router)->add(
     (new Route("/:controller", "\Controller\\"))
         ->setDefaults(array(
             "controller" => "index",
@@ -135,7 +135,7 @@ This route does not have an action, and can never have, so the `__invoke()` meth
 ### White listing parameters
 
 ```php
-$routes = (new Routes)
+$routes = (new Router)
     ->add(
         (new Route("/:controller/:action/:id", "\Controller\Special\\"))
             ->setWhitelist(array(
@@ -154,7 +154,7 @@ You can white list all parameters, not just the special onces.
 ### Black listing parameters
 
 ```php
-$routes = (new Routes)
+$routes = (new Router)
     ->add(
         (new Route("/:controller/:action/:id", "\Controller\\"))
             ->setBlacklist(array(
@@ -171,7 +171,7 @@ In this example above the controller `\Controller\Bar` will be called if the `co
 ### Setting parameters as required
 
 ```php
-$routes = (new Routes)
+$routes = (new Router)
     ->add(
         (new Route("/:controller/:action/:id", "\Controller\WithId\\"))
             ->setRequired(array("id"))
