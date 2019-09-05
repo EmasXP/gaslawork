@@ -18,7 +18,6 @@ STEP 1
 	- Performance tweaks:
 		- Help composer by manually including Gaslawork files
 		- Composer optimize
-- array() -> []
 - Go though the code:
 	- Can some methods be improved or split apart?
 	- Add comments on methods and classes

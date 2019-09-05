@@ -5,7 +5,7 @@ namespace Gaslawork\Routing;
 
 class Router implements RouterInterface {
 
-    protected $routes = array();
+    protected $routes = [];
 
 
     public function add(RouteInterface $route)

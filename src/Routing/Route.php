@@ -7,14 +7,14 @@ class Route implements RouteInterface, RouteDataInterface {
     protected $route;
     protected $namespace_prefix;
     protected $exploded_route;
-    protected $defaults = array(
+    protected $defaults = [
         "controller" => "index",
         "action" => "index",
-    );
+    ];
     protected $required;
     protected $whitelist;
     protected $blacklist;
-    protected $params = array();
+    protected $params = [];
     protected $controller;
     protected $action;
 
@@ -70,7 +70,7 @@ class Route implements RouteInterface, RouteDataInterface {
         $exploded = $this->getRouteExploded();
         $url_exploded = $url->getExploded();
 
-        $params = array();
+        $params = [];
 
         foreach ($exploded as $i => $piece)
         {
