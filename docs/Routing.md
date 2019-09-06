@@ -81,10 +81,10 @@ All parameters can have default values.
 ```php
 $routes = (new Router)->add(
     (new Route("/:controller/:action/:id", "\Controller\\"))
-        ->setDefaults(array(
+        ->setDefaults([
             "controller" => "welcome",
             "action" => "hello",
-        ))
+        ])
 );
 ```
 
@@ -95,11 +95,11 @@ You can set defaults for all parameters:
 ```php
 $routes = (new Router)->add(
     new Route("/:controller/:action/:id", "\Controller\\"))
-        ->setDefaults(array(
+        ->setDefaults([
             "controller" => "welcome",
             "action" => "hello",
             "id" => "123",
-        ))
+        ])
 );
 ```
 
@@ -112,10 +112,10 @@ You can also set a default for a parameter that is not in the "target":
 ```php
 $routes = (new Router)->add(
     (new Route("/:action", "\Controller\\"))
-        ->setDefaults(array(
+        ->setDefaults([
             "controller" => "hello",
             "action" => "index",
-        ))
+        ])
 );
 ```
 
@@ -124,9 +124,9 @@ In this example the controller will always be `\Controller\Hello`. You can use t
 ```php
 $routes = (new Router)->add(
     (new Route("/:controller", "\Controller\\"))
-        ->setDefaults(array(
+        ->setDefaults([
             "controller" => "index",
-        ))
+        ])
 );
 ```
 
@@ -138,9 +138,9 @@ This route does not have an action, and can never have, so the `__invoke()` meth
 $routes = (new Router)
     ->add(
         (new Route("/:controller/:action/:id", "\Controller\Special\\"))
-            ->setWhitelist(array(
-                "controller" => array("foo"),
-            ))
+            ->setWhitelist([
+                "controller" => ["foo"],
+            ])
     )
     ->add(new Route("/:controller/:action/:id", "\Controller\\"));
 ```
@@ -157,9 +157,9 @@ You can white list all parameters, not just the special onces.
 $routes = (new Router)
     ->add(
         (new Route("/:controller/:action/:id", "\Controller\\"))
-            ->setBlacklist(array(
-                "controller" => array("foo"),
-            ))
+            ->setBlacklist([
+                "controller" => ["foo"],
+            ])
     )
     ->add(new Route("/:controller/:action/:id", "\Controller\Special\\"));
 ```
@@ -174,7 +174,7 @@ In this example above the controller `\Controller\Bar` will be called if the `co
 $routes = (new Router)
     ->add(
         (new Route("/:controller/:action/:id", "\Controller\WithId\\"))
-            ->setRequired(array("id"))
+            ->setRequired(["id"])
     )
     ->add(new Route("/:controller/:action/:id", "\Controller\\"));
 ```
