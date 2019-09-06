@@ -9,4 +9,16 @@ class Dummycontroller extends \Gaslawork\Controller {
         print "World!";
     }
 
+
+    public function echoIdAction()
+    {
+        print $this->getParam("id");
+    }
+
+
+    public function silentAction()
+    {
+
+    }
+
 }

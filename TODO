@@ -1,5 +1,4 @@
 STEP 1
-- Write tests for fetching parameters
 - Write tests for App:
     - Using container
 - Write tests and documentation for App:
@@ -51,10 +50,6 @@ STEP 3
 
 TESTS TO WRITE:
 - Controller:
-	- Fetch param from dummy route via $this->get_param()
-		- That exist
-		- That does not exist
-	- Fetch params from dummy route via $this->get_params()
 	- Fetch dependency via controller
 	- Fetch dependency that does not exist via controller
 - App::validControllerPath()

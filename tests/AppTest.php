@@ -116,4 +116,69 @@ final class AppTest extends TestCase {
         PHPUnitUtil::callMethod($app, "findAndExecuteRoute", ["Dummycontroller/hello", "GET"]);
     }
 
+    public function testFetchParams()
+    {
+        $app = \Gaslawork\App::instance(
+            (new Router)
+                ->add(new Route("/:controller/:action/:id1/:id2", "\Gaslawork\Tests\\"))
+        );
+        PHPUnitUtil::callMethod($app, "findAndExecuteRoute", ["Dummycontroller/silent/first/second", "GET"]);
+
+        $this->assertEquals("first", \Gaslawork\Request::current()->getParam("id1"));
+        $this->assertEquals("second", \Gaslawork\Request::current()->getParam("id2"));
+
+        $this->assertEquals(
+            [
+                "id1" => "first",
+                "id2" => "second",
+                "controller" => "Dummycontroller",
+                "action" => "silent",
+            ],
+            \Gaslawork\Request::current()->getParams()
+        );
+    }
+
+    public function testFetchParamFromController()
+    {
+        $this->expectOutputString("mootest");
+
+        $app = \Gaslawork\App::instance(
+            (new Router)
+                ->add(new Route("/:controller/:action/:id", "\Gaslawork\Tests\\"))
+        );
+
+        PHPUnitUtil::callMethod($app, "findAndExecuteRoute", ["Dummycontroller/echoId/mootest", "GET"]);
+    }
+
+    public function testFetchNonExistingParams()
+    {
+        $app = \Gaslawork\App::instance(
+            (new Router)
+                ->add(new Route("/:controller/:action", "\Gaslawork\Tests\\"))
+        );
+        PHPUnitUtil::callMethod($app, "findAndExecuteRoute", ["Dummycontroller/silent", "GET"]);
+
+        $this->assertNull(\Gaslawork\Request::current()->getParam("id1"));
+        $this->assertNull(\Gaslawork\Request::current()->getParam("id2"));
+
+        $this->assertEquals(
+            [
+                "controller" => "Dummycontroller",
+                "action" => "silent",
+            ],
+            \Gaslawork\Request::current()->getParams()
+        );
+    }
+
+    public function testFetchNonExisstingParamFromController()
+    {
+        $this->expectOutputString("");
+
+        $app = \Gaslawork\App::instance(
+            (new Router)
+                ->add(new Route("/:controller/:action/:no", "\Gaslawork\Tests\\"))
+        );
+
+        PHPUnitUtil::callMethod($app, "findAndExecuteRoute", ["Dummycontroller/echoId/mootest", "GET"]);
+    }
 }

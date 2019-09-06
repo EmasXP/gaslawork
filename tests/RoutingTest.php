@@ -1030,4 +1030,56 @@ final class RoutingTest extends TestCase {
         );
     }
 
+
+    public function testFetchParamsAdvancedRoute()
+    {
+        $routes = (new Router)
+            ->add(
+                (new Route("/:foo/:controller/:hello/:action/:world", "\Controller\\"))
+                    ->setDefaults([
+                        "hello" => "ThisShouldNotBeFoundInThisTest",
+                        "action" => "ThisShouldNotBeFoundEither",
+                        "world" => "lmn",
+                    ])
+            );
+
+        $route = $routes->find("abc/def/ghi/ijk");
+
+        $this->assertTrue($route !== null);
+
+        $this->assertEquals("abc", $route->getParam("foo"));
+        $this->assertEquals("\Controller\\Def", $route->getController());
+        $this->assertEquals("ghi", $route->getParam("hello"));
+        $this->assertEquals("ijk", $route->getAction());
+        $this->assertEquals("lmn", $route->getParam("world"));
+
+        $this->assertEquals(
+            [
+                "foo" => "abc",
+                "controller" => "def",
+                "hello" => "ghi",
+                "action" => "ijk",
+                "world" => "lmn",
+            ],
+            $route->getParams()
+        );
+    }
+
+
+    public function testFetchNonExistingParams()
+    {
+        $routes = (new Router)
+            ->add(
+                (new Route("/:controller/:id/:id2", "\Controller\\"))
+            );
+
+        $route = $routes->find("abc/def");
+
+        $this->assertTrue($route !== null);
+
+        $this->assertNull($route->getParam("foo"));
+        $this->assertNull($route->getParam("id2"));
+        $this->assertNull($route->getParam("id3"));
+    }
+
 }
