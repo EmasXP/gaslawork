@@ -181,4 +181,53 @@ final class AppTest extends TestCase {
 
         PHPUnitUtil::callMethod($app, "findAndExecuteRoute", ["Dummycontroller/echoId/mootest", "GET"]);
     }
+
+    public function testGetDependencyFromController()
+    {
+        $this->expectOutputString("bar");
+
+        $app = \Gaslawork\App::instance(
+            (new Router)
+                ->add(new Route("/:controller/:action/:id", "\Gaslawork\Tests\\"))
+        );
+
+        $container = new \Gaslawork\Container;
+        $container->set("foo", "bar");
+        $app->setContainer($container);
+
+        PHPUnitUtil::callMethod($app, "findAndExecuteRoute", ["Dummycontroller/echoDependency/foo", "GET"]);
+    }
+
+    public function testGetDependencyFromControllerAgain()
+    {
+        $this->expectOutputString("world");
+
+        $app = \Gaslawork\App::instance(
+            (new Router)
+                ->add(new Route("/:controller/:action/:id", "\Gaslawork\Tests\\"))
+        );
+
+        $container = new \Gaslawork\Container;
+        $container->set("hello", "world");
+        $app->setContainer($container);
+
+        PHPUnitUtil::callMethod($app, "findAndExecuteRoute", ["Dummycontroller/echoDependencyAgain/hello", "GET"]);
+    }
+
+    public function testGetNonExistingDependencyFromController()
+    {
+        $this->expectException(\Gaslawork\Exception\ContainerEntryNotFoundException::class);
+        $this->expectExceptionMessage("Service hello does not exist.");
+
+        $app = \Gaslawork\App::instance(
+            (new Router)
+                ->add(new Route("/:controller/:action/:id", "\Gaslawork\Tests\\"))
+        );
+
+        $container = new \Gaslawork\Container;
+        $container->set("foo", "bar");
+        $app->setContainer($container);
+
+        PHPUnitUtil::callMethod($app, "findAndExecuteRoute", ["Dummycontroller/echoDependencyAgain/hello", "GET"]);
+    }
 }

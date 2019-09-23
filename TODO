@@ -1,6 +1,4 @@
 STEP 1
-- Write tests for App:
-    - Using container
 - Write tests and documentation for App:
 	- Controller::__invoke()
 	- Action prefix & suffix

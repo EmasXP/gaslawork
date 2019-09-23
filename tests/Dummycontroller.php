@@ -21,4 +21,18 @@ class Dummycontroller extends \Gaslawork\Controller {
 
     }
 
+
+    public function echoDependencyAction()
+    {
+        $id = $this->getParam("id");
+        print $this->get($id);
+    }
+
+
+    public function echoDependencyAgainAction()
+    {
+        $id = $this->getParam("id");
+        print $this->$id;
+    }
+
 }
