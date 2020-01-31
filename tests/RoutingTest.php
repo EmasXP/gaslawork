@@ -13,7 +13,13 @@ final class RoutingTest extends TestCase {
     public function testFindDefault()
     {
         $routes = (new Router)
-            ->add(new Route("/:controller/:action/:id", "\Application\Controller\\"));
+            ->add(
+                (new Route("/:controller/:action/:id", "\Application\Controller\{+controller}"))
+                    ->setDefaults([
+                        "controller" => "Index",
+                        "action" => "index",
+                    ])
+            );
 
         $route = $routes->find("/");
 
@@ -27,7 +33,13 @@ final class RoutingTest extends TestCase {
     public function testFindCustomController()
     {
         $routes = (new Router)
-            ->add(new Route("/:controller/:action/:id", "\Application\Controller\\"));
+            ->add(
+                (new Route("/:controller/:action/:id", "\Application\Controller\{+controller}"))
+                    ->setDefaults([
+                        "controller" => "Index",
+                        "action" => "index",
+                    ])
+            );
 
         $route = $routes->find("/hello");
 
@@ -41,7 +53,13 @@ final class RoutingTest extends TestCase {
     public function testFindCustomControllerAndAction()
     {
         $routes = (new Router)
-            ->add(new Route("/:controller/:action/:id", "\Application\Controller\\"));
+            ->add(
+                (new Route("/:controller/:action/:id", "\Application\Controller\{+controller}"))
+                    ->setDefaults([
+                        "controller" => "Index",
+                        "action" => "index",
+                    ])
+            );
 
         $route = $routes->find("/hello/world");
 
@@ -55,7 +73,13 @@ final class RoutingTest extends TestCase {
     public function testFindDefaultWithoutControllerInTarget()
     {
         $routes = (new Router)
-            ->add(new Route("/:action/:id", "\Application\Controller\\"));
+            ->add(
+                (new Route("/:action/:id", "\Application\Controller\{+controller}"))
+                    ->setDefaults([
+                        "controller" => "Index",
+                        "action" => "index",
+                    ])
+            );
 
         $route = $routes->find("/");
 
@@ -69,7 +93,13 @@ final class RoutingTest extends TestCase {
     public function testFindCustomActionWithoutControllerInTarget()
     {
         $routes = (new Router)
-            ->add(new Route("/:action/:id", "\Application\Controller\\"));
+            ->add(
+                (new Route("/:action/:id", "\Application\Controller\{+controller}"))
+                    ->setDefaults([
+                        "controller" => "Index",
+                        "action" => "index",
+                    ])
+            );
 
         $route = $routes->find("/hello");
 
@@ -83,7 +113,13 @@ final class RoutingTest extends TestCase {
     public function testFindDefaultWithoutActionInTarget()
     {
         $routes = (new Router)
-            ->add(new Route("/:controller/:id", "\Application\Controller\\"));
+            ->add(
+                (new Route("/:controller/:id", "\Application\Controller\{+controller}"))
+                    ->setDefaults([
+                        "controller" => "Index",
+                        "action" => "index",
+                    ])
+            );
 
         $route = $routes->find("/");
 
@@ -97,7 +133,13 @@ final class RoutingTest extends TestCase {
     public function testFindCustomControllerWithoutActionInTarget()
     {
         $routes = (new Router)
-            ->add(new Route("/:controller/:id", "\Application\Controller\\"));
+            ->add(
+                (new Route("/:controller/:id", "\Application\Controller\{+controller}"))
+                    ->setDefaults([
+                        "controller" => "Index",
+                        "action" => "index",
+                    ])
+            );
 
         $route = $routes->find("/hello");
 
@@ -111,8 +153,20 @@ final class RoutingTest extends TestCase {
     public function testFindingCorrectOfTwoRoutes()
     {
         $routes = (new Router)
-            ->add(new Route("/hello/:controller/:id", "\Hello\\"))
-            ->add(new Route("/world/:controller/:id", "\World\\"));
+            ->add(
+                (new Route("/hello/:controller/:id", "\Hello\{+controller}"))
+                    ->setDefaults([
+                        "controller" => "Index",
+                        "action" => "index",
+                    ])
+            )
+            ->add(
+                (new Route("/world/:controller/:id", "\World\{+controller}"))
+                    ->setDefaults([
+                        "controller" => "Index",
+                        "action" => "index",
+                    ])
+            );
 
         $route = $routes->find("/world");
 
@@ -126,8 +180,20 @@ final class RoutingTest extends TestCase {
     public function testFindingCorrectOfTwoRoutesAgain()
     {
         $routes = (new Router)
-            ->add(new Route("/hello/:controller/:id", "\Hello\\"))
-            ->add(new Route("/world/:controller/:id", "\World\\"));
+            ->add(
+                (new Route("/hello/:controller/:id", "\Hello\{+controller}"))
+                    ->setDefaults([
+                        "controller" => "Index",
+                        "action" => "index",
+                    ])
+            )
+            ->add(
+                (new Route("/world/:controller/:id", "\World\{+controller}"))
+                    ->setDefaults([
+                        "controller" => "Index",
+                        "action" => "index",
+                    ])
+            );
 
         $route = $routes->find("/hello");
 
@@ -141,8 +207,20 @@ final class RoutingTest extends TestCase {
     public function testFindingCorrectOfTwoRoutesWithCustomController()
     {
         $routes = (new Router)
-            ->add(new Route("/hello/:controller/:id", "\Hello\\"))
-            ->add(new Route("/world/:controller/:id", "\World\\"));
+            ->add(
+                (new Route("/hello/:controller/:id", "\Hello\{+controller}"))
+                    ->setDefaults([
+                        "controller" => "Index",
+                        "action" => "index",
+                    ])
+            )
+            ->add(
+                (new Route("/world/:controller/:id", "\World\{+controller}"))
+                    ->setDefaults([
+                        "controller" => "Index",
+                        "action" => "index",
+                    ])
+            );
 
         $route = $routes->find("/world/foo");
 
@@ -156,8 +234,20 @@ final class RoutingTest extends TestCase {
     public function testFindingCorrectOfTwoRoutesWithCustomControllerAgain()
     {
         $routes = (new Router)
-            ->add(new Route("/hello/:controller/:id", "\Hello\\"))
-            ->add(new Route("/world/:controller/:id", "\World\\"));
+            ->add(
+                (new Route("/hello/:controller/:id", "\Hello\{+controller}"))
+                    ->setDefaults([
+                        "controller" => "Index",
+                        "action" => "index",
+                    ])
+            )
+            ->add(
+                (new Route("/world/:controller/:id", "\World\{+controller}"))
+                    ->setDefaults([
+                        "controller" => "Index",
+                        "action" => "index",
+                    ])
+            );
 
         $route = $routes->find("/hello/foo");
 
@@ -171,8 +261,20 @@ final class RoutingTest extends TestCase {
     public function testFindingCorrectOfTwoRoutesWithCustomControllerAndAction()
     {
         $routes = (new Router)
-            ->add(new Route("/hello/:controller/:action/:id", "\Hello\\"))
-            ->add(new Route("/world/:controller/:action/:id", "\World\\"));
+            ->add(
+                (new Route("/hello/:controller/:action/:id", "\Hello\{+controller}"))
+                    ->setDefaults([
+                        "controller" => "Index",
+                        "action" => "index",
+                    ])
+            )
+            ->add(
+                (new Route("/world/:controller/:action/:id", "\World\{+controller}"))
+                    ->setDefaults([
+                        "controller" => "Index",
+                        "action" => "index",
+                    ])
+            );
 
         $route = $routes->find("/world/foo/bar");
 
@@ -186,8 +288,20 @@ final class RoutingTest extends TestCase {
     public function testFindingCorrectOfTwoRoutesWithCustomControllerAndActionAgain()
     {
         $routes = (new Router)
-            ->add(new Route("/hello/:controller/:action/:id", "\Hello\\"))
-            ->add(new Route("/world/:controller/:action/:id", "\World\\"));
+            ->add(
+                (new Route("/hello/:controller/:action/:id", "\Hello\{+controller}"))
+                    ->setDefaults([
+                        "controller" => "Index",
+                        "action" => "index",
+                    ])
+            )
+            ->add(
+                (new Route("/world/:controller/:action/:id", "\World\{+controller}"))
+                    ->setDefaults([
+                        "controller" => "Index",
+                        "action" => "index",
+                    ])
+            );
 
         $route = $routes->find("/hello/foo/bar");
 
@@ -201,8 +315,20 @@ final class RoutingTest extends TestCase {
     public function testFindingCorrectOfTwoComplexRoutes()
     {
         $routes = (new Router)
-            ->add(new Route("/a/:controller/b/:action/c/:id", "\First\\"))
-            ->add(new Route("/d/:controller/e/:action/f/:id", "\Second\\"));
+            ->add(
+                (new Route("/a/:controller/b/:action/c/:id", "\First\{+controller}"))
+                    ->setDefaults([
+                        "controller" => "Index",
+                        "action" => "index",
+                    ])
+            )
+            ->add(
+                (new Route("/d/:controller/e/:action/f/:id", "\Second\{+controller}"))
+                    ->setDefaults([
+                        "controller" => "Index",
+                        "action" => "index",
+                    ])
+            );
 
         $route = $routes->find("/d/hello/e/world/f");
 
@@ -216,8 +342,20 @@ final class RoutingTest extends TestCase {
     public function testFindingCorrectOfTwoComplexRoutesAgain()
     {
         $routes = (new Router)
-            ->add(new Route("/a/:controller/b/:action/c/:id", "\First\\"))
-            ->add(new Route("/d/:controller/e/:action/f/:id", "\Second\\"));
+            ->add(
+                (new Route("/a/:controller/b/:action/c/:id", "\First\{+controller}"))
+                    ->setDefaults([
+                        "controller" => "Index",
+                        "action" => "index",
+                    ])
+            )
+            ->add(
+                (new Route("/d/:controller/e/:action/f/:id", "\Second\{+controller}"))
+                    ->setDefaults([
+                        "controller" => "Index",
+                        "action" => "index",
+                    ])
+            );
 
         $route = $routes->find("/a/hello/b/world/c");
 
@@ -231,7 +369,13 @@ final class RoutingTest extends TestCase {
     public function testFindingRouteWhereActionIsBeforeController()
     {
         $routes = (new Router)
-            ->add(new Route("/:action/:controller/:id", "\Application\Controller\\"));
+            ->add(
+                (new Route("/:action/:controller/:id", "\Application\Controller\{+controller}"))
+                    ->setDefaults([
+                        "controller" => "Index",
+                        "action" => "index",
+                    ])
+            );
 
         $route = $routes->find("/hello/world");
 
@@ -245,7 +389,13 @@ final class RoutingTest extends TestCase {
     public function testNotFindingRoute()
     {
         $routes = (new Router)
-            ->add(new Route("/hello/:controller/:id", "\Application\Controller\\"));
+            ->add(
+                (new Route("/hello/:controller/:id", "\Application\Controller\\"))
+                    ->setDefaults([
+                        "controller" => "Index",
+                        "action" => "index",
+                    ])
+            );
 
         $route = $routes->find("/world");
 
@@ -256,8 +406,20 @@ final class RoutingTest extends TestCase {
     public function testFindingFirstRouteWhenSeveralMatches()
     {
         $routes = (new Router)
-            ->add(new Route("/:controller/:action/:id", "\First\\"))
-            ->add(new Route("/:controller/:action/:id", "\Second\\"));
+            ->add(
+                (new Route("/:controller/:action/:id", "\First\{+controller}"))
+                    ->setDefaults([
+                        "controller" => "Index",
+                        "action" => "index",
+                    ])
+            )
+            ->add(
+                (new Route("/:controller/:action/:id", "\Second\{+controller}"))
+                    ->setDefaults([
+                        "controller" => "Index",
+                        "action" => "index",
+                    ])
+            );
 
         $route = $routes->find("/hello");
 
@@ -270,8 +432,20 @@ final class RoutingTest extends TestCase {
     public function testFindingFirstRouteWhenSeveralMatchesAgain()
     {
         $routes = (new Router)
-            ->add(new Route("/:controller/:action/:id", "\First\\"))
-            ->add(new Route("/hello/:action/:id", "\Second\\"));
+            ->add(
+                (new Route("/:controller/:action/:id", "\First\{+controller}"))
+                    ->setDefaults([
+                        "controller" => "Index",
+                        "action" => "index",
+                    ])
+            )
+            ->add(
+                (new Route("/hello/:action/:id", "\Second\{+controller}"))
+                    ->setDefaults([
+                        "controller" => "Index",
+                        "action" => "index",
+                    ])
+            );
 
         $route = $routes->find("/hello");
 
@@ -284,8 +458,20 @@ final class RoutingTest extends TestCase {
     public function testFindingFirstRouteWhenSeveralMatchesOnceAgain()
     {
         $routes = (new Router)
-            ->add(new Route("/hello/:action/:id", "\First\\"))
-            ->add(new Route("/:controller/:action/:id", "\Second\\"));
+            ->add(
+                (new Route("/hello/:action/:id", "\First\{+controller}"))
+                    ->setDefaults([
+                        "controller" => "Index",
+                        "action" => "index",
+                    ])
+            )
+            ->add(
+                (new Route("/:controller/:action/:id", "\Second\{+controller}"))
+                    ->setDefaults([
+                        "controller" => "Index",
+                        "action" => "index",
+                    ])
+            );
 
         $route = $routes->find("/hello");
 
@@ -298,7 +484,13 @@ final class RoutingTest extends TestCase {
     public function testFindingRouteWithoutSlashPrefix()
     {
         $routes = (new Router)
-            ->add(new Route(":controller/:action/:id", "\Application\Controller\\"));
+            ->add(
+                (new Route(":controller/:action/:id", "\Application\Controller\{+controller}"))
+                    ->setDefaults([
+                        "controller" => "Index",
+                        "action" => "index",
+                    ])
+            );
 
         $route = $routes->find("/hello");
 
@@ -311,7 +503,13 @@ final class RoutingTest extends TestCase {
     public function testFindingRouteWithoutSlashPrefixAgain()
     {
         $routes = (new Router)
-            ->add(new Route("/:controller/:action/:id", "\Application\Controller\\"));
+            ->add(
+                (new Route("/:controller/:action/:id", "\Application\Controller\{+controller}"))
+                    ->setDefaults([
+                        "controller" => "Index",
+                        "action" => "index",
+                    ])
+            );
 
         $route = $routes->find("hello");
 
@@ -324,7 +522,13 @@ final class RoutingTest extends TestCase {
     public function testFindingRouteWithoutSlashPrefixOnceAgain()
     {
         $routes = (new Router)
-            ->add(new Route(":controller/:action/:id", "\Application\Controller\\"));
+            ->add(
+                (new Route(":controller/:action/:id", "\Application\Controller\{+controller}"))
+                    ->setDefaults([
+                        "controller" => "Index",
+                        "action" => "index",
+                    ])
+            );
 
         $route = $routes->find("hello");
 
@@ -338,13 +542,21 @@ final class RoutingTest extends TestCase {
     {
         $routes = (new Router)
             ->add(
-                (new Route(":controller/:action/:id", "\First\\"))
+                (new Route(":controller/:action/:id", "\First\{+controller}"))
+                    ->setDefaults([
+                        "controller" => "Index",
+                        "action" => "index",
+                    ])
                     ->setWhitelist(array(
                         "controller" => array("foo"),
                     ))
             )
             ->add(
-                (new Route(":controller/:action/:id", "\Second\\"))
+                (new Route(":controller/:action/:id", "\Second\{+controller}"))
+                    ->setDefaults([
+                        "controller" => "Index",
+                        "action" => "index",
+                    ])
                     ->setWhitelist(array(
                         "controller" => array("bar"),
                     ))
@@ -362,13 +574,21 @@ final class RoutingTest extends TestCase {
     {
         $routes = (new Router)
             ->add(
-                (new Route(":controller/:action/:id", "\First\\"))
+                (new Route(":controller/:action/:id", "\First\{+controller}"))
+                    ->setDefaults([
+                        "controller" => "Index",
+                        "action" => "index",
+                    ])
                     ->setWhitelist(array(
                         "controller" => array("foo"),
                     ))
             )
             ->add(
-                (new Route(":controller/:action/:id", "\Second\\"))
+                (new Route(":controller/:action/:id", "\Second\{+controller}"))
+                    ->setDefaults([
+                        "controller" => "Index",
+                        "action" => "index",
+                    ])
                     ->setWhitelist(array(
                         "controller" => array("bar"),
                     ))
@@ -386,13 +606,21 @@ final class RoutingTest extends TestCase {
     {
         $routes = (new Router)
             ->add(
-                (new Route(":controller/:action/:id", "\First\\"))
+                (new Route(":controller/:action/:id", "\First\{+controller}"))
+                    ->setDefaults([
+                        "controller" => "Index",
+                        "action" => "index",
+                    ])
                     ->setWhitelist(array(
                         "controller" => array("foo"),
                     ))
             )
             ->add(
-                (new Route(":controller/:action/:id", "\Second\\"))
+                (new Route(":controller/:action/:id", "\Second\{+controller}"))
+                    ->setDefaults([
+                        "controller" => "Index",
+                        "action" => "index",
+                    ])
                     ->setWhitelist(array(
                         "controller" => array("bar"),
                     ))
@@ -408,18 +636,32 @@ final class RoutingTest extends TestCase {
     {
         $routes = (new Router)
             ->add(
-                (new Route(":controller/:action/:id", "\First\\"))
+                (new Route(":controller/:action/:id", "\First\{+controller}"))
+                    ->setDefaults([
+                        "controller" => "Index",
+                        "action" => "index",
+                    ])
                     ->setWhitelist(array(
                         "controller" => array("foo"),
                     ))
             )
             ->add(
-                (new Route(":controller/:action/:id", "\Second\\"))
+                (new Route(":controller/:action/:id", "\Second\{+controller}"))
+                    ->setDefaults([
+                        "controller" => "Index",
+                        "action" => "index",
+                    ])
                     ->setWhitelist(array(
                         "controller" => array("bar"),
                     ))
             )
-            ->add(new Route(":controller/:action/:id", "\Third\\"));
+            ->add(
+                (new Route(":controller/:action/:id", "\Third\{+controller}"))
+                    ->setDefaults([
+                        "controller" => "Index",
+                        "action" => "index",
+                    ])
+            );
 
         $route = $routes->find("hello");
 
@@ -433,12 +675,22 @@ final class RoutingTest extends TestCase {
     {
         $routes = (new Router)
             ->add(
-                (new Route(":controller/:id", "\First\\"))
+                (new Route(":controller/:id", "\First\{+controller}"))
+                    ->setDefaults([
+                        "controller" => "Index",
+                        "action" => "index",
+                    ])
                     ->setWhitelist(array(
                         "id" => array("12"),
                     ))
             )
-            ->add(new Route(":controller/:id", "\Second\\"));
+            ->add(
+                (new Route(":controller/:id", "\Second\{+controller}"))
+                    ->setDefaults([
+                        "controller" => "Index",
+                        "action" => "index",
+                    ])
+            );
 
         $route = $routes->find("hello/12");
 
@@ -453,12 +705,22 @@ final class RoutingTest extends TestCase {
     {
         $routes = (new Router)
             ->add(
-                (new Route(":controller/:id", "\First\\"))
+                (new Route(":controller/:id", "\First\{+controller}"))
+                    ->setDefaults([
+                        "controller" => "Index",
+                        "action" => "index",
+                    ])
                     ->setWhitelist(array(
                         "id" => array("12"),
                     ))
             )
-            ->add(new Route(":controller/:id", "\Second\\"));
+            ->add(
+                (new Route(":controller/:id", "\Second\{+controller}"))
+                    ->setDefaults([
+                        "controller" => "Index",
+                        "action" => "index",
+                    ])
+            );
 
         $route = $routes->find("hello/13");
 
@@ -472,7 +734,11 @@ final class RoutingTest extends TestCase {
     {
         $routes = (new Router)
             ->add(
-                (new Route(":controller/:id", "\Controller\\"))
+                (new Route(":controller/:id", "\Controller\{+controller}"))
+                    ->setDefaults([
+                        "controller" => "Index",
+                        "action" => "index",
+                    ])
                     ->setWhitelist(array(
                         "id" => array("123", "abc"),
                     ))
@@ -491,7 +757,11 @@ final class RoutingTest extends TestCase {
     {
         $routes = (new Router)
             ->add(
-                (new Route(":controller/:id", "\Controller\\"))
+                (new Route(":controller/:id", "\Controller\{+controller}"))
+                    ->setDefaults([
+                        "controller" => "Index",
+                        "action" => "index",
+                    ])
                     ->setWhitelist(array(
                         "id" => array("123", "abc"),
                     ))
@@ -510,7 +780,11 @@ final class RoutingTest extends TestCase {
     {
         $routes = (new Router)
             ->add(
-                (new Route(":controller/:id", "\Controller\\"))
+                (new Route(":controller/:id", "\Controller\{+controller}"))
+                    ->setDefaults([
+                        "controller" => "Index",
+                        "action" => "index",
+                    ])
                     ->setWhitelist(array(
                         "id" => array("123", "abc"),
                     ))
@@ -526,13 +800,21 @@ final class RoutingTest extends TestCase {
     {
         $routes = (new Router)
             ->add(
-                (new Route(":controller/:action/:id", "\First\\"))
+                (new Route(":controller/:action/:id", "\First\{+controller}"))
+                    ->setDefaults([
+                        "controller" => "Index",
+                        "action" => "index",
+                    ])
                     ->setBlacklist(array(
                         "controller" => array("foo"),
                     ))
             )
             ->add(
-                (new Route(":controller/:action/:id", "\Second\\"))
+                (new Route(":controller/:action/:id", "\Second\{+controller}"))
+                    ->setDefaults([
+                        "controller" => "Index",
+                        "action" => "index",
+                    ])
                     ->setBlacklist(array(
                         "controller" => array("bar"),
                     ))
@@ -550,13 +832,21 @@ final class RoutingTest extends TestCase {
     {
         $routes = (new Router)
             ->add(
-                (new Route(":controller/:action/:id", "\First\\"))
+                (new Route(":controller/:action/:id", "\First\{+controller}"))
+                    ->setDefaults([
+                        "controller" => "Index",
+                        "action" => "index",
+                    ])
                     ->setBlacklist(array(
                         "controller" => array("foo"),
                     ))
             )
             ->add(
-                (new Route(":controller/:action/:id", "\Second\\"))
+                (new Route(":controller/:action/:id", "\Second\{+controller}"))
+                    ->setDefaults([
+                        "controller" => "Index",
+                        "action" => "index",
+                    ])
                     ->setBlacklist(array(
                         "controller" => array("bar"),
                     ))
@@ -574,13 +864,21 @@ final class RoutingTest extends TestCase {
     {
         $routes = (new Router)
             ->add(
-                (new Route(":controller/:action/:id", "\First\\"))
+                (new Route(":controller/:action/:id", "\First\{+controller}"))
+                    ->setDefaults([
+                        "controller" => "Index",
+                        "action" => "index",
+                    ])
                     ->setBlacklist(array(
                         "controller" => array("foo"),
                     ))
             )
             ->add(
-                (new Route(":controller/:action/:id", "\Second\\"))
+                (new Route(":controller/:action/:id", "\Second\{+controller}"))
+                    ->setDefaults([
+                        "controller" => "Index",
+                        "action" => "index",
+                    ])
                     ->setBlacklist(array(
                         "controller" => array("bar"),
                     ))
@@ -598,12 +896,22 @@ final class RoutingTest extends TestCase {
     {
         $routes = (new Router)
             ->add(
-                (new Route(":controller/:action/:id", "\First\\"))
+                (new Route(":controller/:action/:id", "\First\{+controller}"))
+                    ->setDefaults([
+                        "controller" => "Index",
+                        "action" => "index",
+                    ])
                     ->setBlacklist(array(
                         "controller" => array("bar"),
                     ))
             )
-            ->add(new Route(":controller/:action/:id", "\Second\\"));
+            ->add(
+                (new Route(":controller/:action/:id", "\Second\{+controller}"))
+                    ->setDefaults([
+                        "controller" => "Index",
+                        "action" => "index",
+                    ])
+            );
 
         $route = $routes->find("bar");
 
@@ -617,12 +925,22 @@ final class RoutingTest extends TestCase {
     {
         $routes = (new Router)
             ->add(
-                (new Route(":controller/:id", "\First\\"))
+                (new Route(":controller/:id", "\First\{+controller}"))
+                    ->setDefaults([
+                        "controller" => "Index",
+                        "action" => "index",
+                    ])
                     ->setBlacklist(array(
                         "id" => array("12"),
                     ))
             )
-            ->add(new Route(":controller/:id", "\Second\\"));
+            ->add(
+                (new Route(":controller/:id", "\Second\{+controller}"))
+                    ->setDefaults([
+                        "controller" => "Index",
+                        "action" => "index",
+                    ])
+            );
 
         $route = $routes->find("hello/1024");
 
@@ -637,12 +955,22 @@ final class RoutingTest extends TestCase {
     {
         $routes = (new Router)
             ->add(
-                (new Route(":controller/:id", "\First\\"))
+                (new Route(":controller/:id", "\First\{+controller}"))
+                    ->setDefaults([
+                        "controller" => "Index",
+                        "action" => "index",
+                    ])
                     ->setBlacklist(array(
                         "id" => array("12"),
                     ))
             )
-            ->add(new Route(":controller/:id", "\Second\\"));
+            ->add(
+                (new Route(":controller/:id", "\Second\{+controller}"))
+                    ->setDefaults([
+                        "controller" => "Index",
+                        "action" => "index",
+                    ])
+            );
 
         $route = $routes->find("hello/12");
 
@@ -656,7 +984,11 @@ final class RoutingTest extends TestCase {
     {
         $routes = (new Router)
             ->add(
-                (new Route(":controller/:id", "\Controller\\"))
+                (new Route(":controller/:id", "\Controller\{+controller}"))
+                    ->setDefaults([
+                        "controller" => "Index",
+                        "action" => "index",
+                    ])
                     ->setBlacklist(array(
                         "id" => array("123", "abc"),
                     ))
@@ -672,7 +1004,11 @@ final class RoutingTest extends TestCase {
     {
         $routes = (new Router)
             ->add(
-                (new Route(":controller/:id", "\Controller\\"))
+                (new Route(":controller/:id", "\Controller\{+controller}"))
+                    ->setDefaults([
+                        "controller" => "Index",
+                        "action" => "index",
+                    ])
                     ->setBlacklist(array(
                         "id" => array("123", "abc"),
                     ))
@@ -688,7 +1024,11 @@ final class RoutingTest extends TestCase {
     {
         $routes = (new Router)
             ->add(
-                (new Route(":controller/:id", "\Controller\\"))
+                (new Route(":controller/:id", "\Controller\{+controller}"))
+                    ->setDefaults([
+                        "controller" => "Index",
+                        "action" => "index",
+                    ])
                     ->setBlacklist(array(
                         "id" => array("123", "abc"),
                     ))
@@ -707,7 +1047,11 @@ final class RoutingTest extends TestCase {
     {
         $routes = (new Router)
             ->add(
-                (new Route(":controller/:id", "\Controller\\"))
+                (new Route(":controller/:id", "\Controller\{+controller}"))
+                    ->setDefaults([
+                        "controller" => "Index",
+                        "action" => "index",
+                    ])
                     ->setWhitelist(array(
                         "id" => array("123"),
                     ))
@@ -726,7 +1070,11 @@ final class RoutingTest extends TestCase {
     {
         $routes = (new Router)
             ->add(
-                (new Route(":controller/:id1/:id2", "\Controller\\"))
+                (new Route(":controller/:id1/:id2", "\Controller\{+controller}"))
+                    ->setDefaults([
+                        "controller" => "Index",
+                        "action" => "index",
+                    ])
                     ->setWhitelist(array(
                         "id1" => array("123"),
                     ))
@@ -749,7 +1097,11 @@ final class RoutingTest extends TestCase {
     {
         $routes = (new Router)
             ->add(
-                (new Route(":controller/:id1/:id2", "\Controller\\"))
+                (new Route(":controller/:id1/:id2", "\Controller\{+controller}"))
+                    ->setDefaults([
+                        "controller" => "Index",
+                        "action" => "index",
+                    ])
                     ->setWhitelist(array(
                         "id1" => array("123"),
                     ))
@@ -768,7 +1120,11 @@ final class RoutingTest extends TestCase {
     {
         $routes = (new Router)
             ->add(
-                (new Route(":controller/:id1/:id2", "\Controller\\"))
+                (new Route(":controller/:id1/:id2", "\Controller\{+controller}"))
+                    ->setDefaults([
+                        "controller" => "Index",
+                        "action" => "index",
+                    ])
                     ->setWhitelist(array(
                         "id1" => array("123"),
                     ))
@@ -785,7 +1141,7 @@ final class RoutingTest extends TestCase {
 
     public function testChangeDefaultControllerAndAction()
     {
-        $route = (new Route("/:controller/:action", "\Controller\\"))
+        $route = (new Route("/:controller/:action", "\Controller\{+controller}"))
             ->setDefaults(array(
                 "controller" => "defaultcontroller",
                 "action" => "defaultaction",
@@ -798,25 +1154,10 @@ final class RoutingTest extends TestCase {
     }
 
 
-    public function testChangeMissingDefaultController()
-    {
-        $routes = (new Router)->add(
-            (new Route("/:controller/:action", "\Controller\\"))
-                ->setDefaults(array(
-                    "action" => "defaultaction",
-                ))
-        );
-
-        $route = $routes->find("/");
-
-        $this->assertNull($route);
-    }
-
-
     public function testChangeMissingDefaultAction()
     {
         $routes = (new Router)->add(
-            (new Route("/:controller/:action", "\Controller\\"))
+            (new Route("/:controller/:action", "\Controller\{+controller}"))
                 ->setDefaults(array(
                     "controller" => "defaultcontroller",
                 ))
@@ -832,7 +1173,7 @@ final class RoutingTest extends TestCase {
     public function testDefaultCustomParameter()
     {
         $routes = (new Router)->add(
-            (new Route("/:controller/:action/:id", "\Controller\\"))
+            (new Route("/:controller/:action/:id", "\Controller\{+controller}"))
                 ->setDefaults(array(
                     "controller" => "index",
                     "action" => "index",
@@ -851,7 +1192,7 @@ final class RoutingTest extends TestCase {
     public function testDefaultCustomParameterButMissingInPath()
     {
         $routes = (new Router)->add(
-            (new Route("/:controller/:action", "\Controller\\"))
+            (new Route("/:controller/:action", "\Controller\{+controller}"))
                 ->setDefaults(array(
                     "controller" => "index",
                     "action" => "index",
@@ -870,7 +1211,7 @@ final class RoutingTest extends TestCase {
     public function testMissingControllerInUriButSetDefault()
     {
         $routes = (new Router)->add(
-            (new Route("/:action", "\Controller\\"))
+            (new Route("/:action", "\Controller\{+controller}"))
                 ->setDefaults(array(
                     "controller" => "hello",
                     "action" => "index",
@@ -886,7 +1227,11 @@ final class RoutingTest extends TestCase {
 
     public function testRequiredFail()
     {
-        $route = (new Route("/:controller/:id", "\Controller\\"))
+        $route = (new Route("/:controller/:id", "\Controller\{+controller}"))
+            ->setDefaults([
+                "controller" => "Index",
+                "action" => "index",
+            ])
             ->setRequired(array("id"));
 
         $this->assertNull(
@@ -897,7 +1242,11 @@ final class RoutingTest extends TestCase {
 
     public function testRequiredFailAgain()
     {
-        $route = (new Route("/:controller/:id1/:id2", "\Controller\\"))
+        $route = (new Route("/:controller/:id1/:id2", "\Controller\{+controller}"))
+            ->setDefaults([
+                "controller" => "Index",
+                "action" => "index",
+            ])
             ->setRequired(array("id2"));
 
         $this->assertNull(
@@ -908,7 +1257,11 @@ final class RoutingTest extends TestCase {
 
     public function testRequiredFailTwoParams()
     {
-        $route = (new Route("/:controller/:id1/:id2", "\Controller\\"))
+        $route = (new Route("/:controller/:id1/:id2", "\Controller\{+controller}"))
+            ->setDefaults([
+                "controller" => "Index",
+                "action" => "index",
+            ])
             ->setRequired(array("id1", "id2"));
 
         $this->assertNull(
@@ -919,7 +1272,11 @@ final class RoutingTest extends TestCase {
 
     public function testRequiredSuccess()
     {
-        $route = (new Route("/:controller/:id", "\Controller\\"))
+        $route = (new Route("/:controller/:id", "\Controller\{+controller}"))
+            ->setDefaults([
+                "controller" => "Index",
+                "action" => "index",
+            ])
             ->setRequired(array("id"));
 
         $route_data = $route->check(new RequestUri("/hello/world"), null);
@@ -934,7 +1291,11 @@ final class RoutingTest extends TestCase {
 
     public function testRequiredSuccessAgain()
     {
-        $route = (new Route("/:controller/:id1/:id2", "\Controller\\"))
+        $route = (new Route("/:controller/:id1/:id2", "\Controller\{+controller}"))
+            ->setDefaults([
+                "controller" => "Index",
+                "action" => "index",
+            ])
             ->setRequired(array("id2"));
 
         $route_data = $route->check(new RequestUri("/hello/world/foo"), null);
@@ -949,7 +1310,11 @@ final class RoutingTest extends TestCase {
 
     public function testRequiredSuccessTwoParams()
     {
-        $route = (new Route("/:controller/:id1/:id2", "\Controller\\"))
+        $route = (new Route("/:controller/:id1/:id2", "\Controller\{+controller}"))
+            ->setDefaults([
+                "controller" => "Index",
+                "action" => "index",
+            ])
             ->setRequired(array("id1", "id2"));
 
         $route_data = $route->check(new RequestUri("/hello/world/foo"), null);
@@ -964,7 +1329,7 @@ final class RoutingTest extends TestCase {
 
     public function testRequiredSuccessTwoParamsWithDefaultOnSecond()
     {
-        $route = (new Route("/:controller/:id1/:id2", "\Controller\\"))
+        $route = (new Route("/:controller/:id1/:id2", "\Controller\{+controller}"))
             ->setRequired(array("id1", "id2"))
             ->setDefaults(array(
                 "controller" => "index",
@@ -1035,7 +1400,7 @@ final class RoutingTest extends TestCase {
     {
         $routes = (new Router)
             ->add(
-                (new Route("/:foo/:controller/:hello/:action/:world", "\Controller\\"))
+                (new Route("/:foo/:controller/:hello/:action/:world", "\Controller\{+controller}"))
                     ->setDefaults([
                         "hello" => "ThisShouldNotBeFoundInThisTest",
                         "action" => "ThisShouldNotBeFoundEither",
@@ -1070,7 +1435,11 @@ final class RoutingTest extends TestCase {
     {
         $routes = (new Router)
             ->add(
-                (new Route("/:controller/:id/:id2", "\Controller\\"))
+                (new Route("/:controller/:id/:id2", "\Controller\{+controller}"))
+                    ->setDefaults([
+                        "controller" => "Index",
+                        "action" => "index",
+                    ])
             );
 
         $route = $routes->find("abc/def");

@@ -5,12 +5,9 @@ namespace Gaslawork\Routing;
 class Route implements RouteInterface, RouteDataInterface {
 
     protected $route;
-    protected $namespace_prefix;
+    protected $map_to;
     protected $exploded_route;
-    protected $defaults = [
-        "controller" => "index",
-        "action" => "index",
-    ];
+    protected $defaults = [];
     protected $required;
     protected $whitelist;
     protected $blacklist;
@@ -19,10 +16,10 @@ class Route implements RouteInterface, RouteDataInterface {
     protected $action;
 
 
-    public function __construct($route, $namespace_prefix)
+    public function __construct($route, $map_to)
     {
         $this->route = $route;
-        $this->namespace_prefix = $namespace_prefix;
+        $this->map_to = $map_to;
     }
 
 
@@ -132,20 +129,6 @@ class Route implements RouteInterface, RouteDataInterface {
             }
         }
 
-        if (
-            (
-                ! isset($params["controller"])
-                || empty($params["controller"])
-            )
-            && (
-                ! isset($this->defaults["controller"])
-                || empty($this->defaults["controller"])
-            )
-        )
-        {
-            return null;
-        }
-
         $this->params = $params;
 
         return $this;
@@ -159,24 +142,65 @@ class Route implements RouteInterface, RouteDataInterface {
             return $this->controller;
         }
 
-        $class_path = $this->namespace_prefix;
+        $controller = "";
+        $param_name = "";
+        $reading_param = false;
+        $param_mod = null;
 
-        if (
-            strlen($class_path) == 0
-            || $class_path[strlen($class_path)-1] != "\\"
-        )
+        $map_to_length = strlen($this->map_to);
+
+        for ($i = 0; $i < $map_to_length; $i++)
         {
-            $class_path .= "\\";
+            $char = $this->map_to[$i];
+
+            if ($reading_param)
+            {
+                if ($param_mod === null)
+                {
+                    if ($char == "+")
+                    {
+                        $param_mod = $char;
+                        continue;
+                    }
+
+                    $param_mod = false;
+                }
+
+                if ($char != "}")
+                {
+                    $param_name .= $char;
+                    continue;
+                }
+
+                $param_value = $this->getParam($param_name);
+
+                if ($param_value !== null)
+                {
+                    if ($param_mod == "+")
+                    {
+                        $controller .= ucfirst($param_value);
+                    }
+                    else
+                    {
+                        $controller .= $param_value;
+                    }
+                }
+                $param_name = "";
+                $reading_param = false;
+                continue;
+            }
+
+            elseif ($char == "{")
+            {
+                $reading_param = true;
+                $param_mod = null;
+                continue;
+            }
+
+            $controller .= $char;
         }
 
-        if (isset($this->params["directory"]))
-        {
-            $class_path .= $this->params["directory"]."\\";
-        }
-
-        $class_path .= ucfirst($this->getParam("controller"));
-
-        return $this->controller = $class_path;
+        return $this->controller = $controller;
     }
 
 
