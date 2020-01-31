@@ -30,7 +30,13 @@ use \Gaslawork\Routing\Router;
 use \Gaslawork\Routing\Route;
 
 $routes = (new Router)
-    ->add(new Route("/:controller/:action/:id", "\Controller\\"));
+    ->add(
+        (new Route("/:controller/:action/:id", "\\Controller\\{+controller}"))
+            ->setDefaults([
+                "controller" => "Index",
+                "action" => "index",
+            ])
+    );
 
 $app = new \Gaslawork\App($routes);
 // $app->base_url = "/";
