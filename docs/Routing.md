@@ -36,9 +36,43 @@ I'm now going to explain how the routing internals work. You do not _need_ to kn
 - The path to the controller (and in this case also the action) is fetched by calling `getController()` and `getAction()` on the "route data" object.
 - Gaslawork creates an object of the controller and calls the action.
 
+## A brief explanation of the controller and the action
+
+[Controllers]({{ site.baseurl }}/controllers) has its on documentation, but to make sense of this document I'll give you a short explanation.
+
+A "controller" is a PHP class that has one or more methods (functions). These methods are what we call "actions". Gaslawork will create a new instance of the controller (class), and then execute the correct action (method).
+
+A very simple controller looks like this:
+
+```php
+namespace Controller;
+
+class Index extends \Gaslawork\Controller {
+
+    public function indexAction()
+    {
+        print "Hello, world!";
+    }
+
+}
+```
+
+The path to the controller is `\Controller\Index` (since the namespace is `Controller`  and the class name is `Index`). 
+
+When this controller/action combination is found by the router, an instance of `\Controller\Index` is created, and the `indexAction()` is called.
+
+A controller can contain as many methods as you like.
+
+## The target and the handler
+
+The `Route` object takes two variables:
+
+* The "route" (called "target" in the documentation for the sake of clarity). This is what is going to be searched for when an incoming request are being routed.
+* The "handler". When the route matches the incoming request, this defines which controller is going to be used.
+
 ## Parameters
 
-In the example above we have put `/:controller/:action/:id` as the "target", and `\\Controller\\{+controller}` as the "map to". Parts that begins with `:` are considered as "parameters". A parameter can be used in the "map to" to build the controller path. In the example above we are using the parameter `:controller` from the target as the `{+controller}`  parameter in the "map to". The plus sign means that the first character should be converted to upper case.  Not using the plus sign would use the parameter as is (`{controller}`).
+In the example above we have put `/:controller/:action/:id` as the "target", and `\\Controller\\{+controller}` as the "handler". Parts in the "target" that begins with `:` are considered as "parameters". A parameter can later be fetched from by the controller, but can also be used in the "handler" to build the controller path. In the example above we are using the parameter `controller`  as `{+controller}`  in the "handler". The plus sign means that the first character should be converted to upper case. Not using the plus sign (`{controller}`) uses the parameter as is.
 
 There is one special parameter named "action" which decides which action (method) in the controller is going to be run.
 
