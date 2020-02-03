@@ -5,7 +5,7 @@ namespace Gaslawork\Routing;
 class Route implements RouteInterface, RouteDataInterface {
 
     protected $route;
-    protected $map_to;
+    protected $handler;
     protected $exploded_route;
     protected $defaults = [];
     protected $required;
@@ -16,10 +16,10 @@ class Route implements RouteInterface, RouteDataInterface {
     protected $action;
 
 
-    public function __construct($route, $map_to)
+    public function __construct(string $route, string $handler)
     {
         $this->route = $route;
-        $this->map_to = $map_to;
+        $this->handler = $handler;
     }
 
 
@@ -147,11 +147,11 @@ class Route implements RouteInterface, RouteDataInterface {
         $reading_param = false;
         $param_mod = null;
 
-        $map_to_length = strlen($this->map_to);
+        $handler_length = strlen($this->handler);
 
-        for ($i = 0; $i < $map_to_length; $i++)
+        for ($i = 0; $i < $handler_length; $i++)
         {
-            $char = $this->map_to[$i];
+            $char = $this->handler[$i];
 
             if ($reading_param)
             {

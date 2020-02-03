@@ -1,5 +1,5 @@
 STEP 1
-- Using param in map_to that is not defined in the URI and does not have default, raise an exception.
+- Using param in handler that is not defined in the URI and does not have default, raise an exception.
 - Write tests and documentation for App:
 	- Controller::__invoke()
 	- Action prefix & suffix
@@ -51,4 +51,8 @@ TESTS TO WRITE:
 	- Fetch dependency via controller
 	- Fetch dependency that does not exist via controller
 - App::validControllerPath()
-- Using param in map_to with and without mod.
+- Using param in handler with and without mod.
+
+
+DOCUMENTATION TO WRITE:
+- Using Route("/:directory/:controller/", "\\Controller\\{+directory}\\{+controller}")
