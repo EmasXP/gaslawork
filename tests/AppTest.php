@@ -26,7 +26,7 @@ final class AppTest extends TestCase {
 
         $app = \Gaslawork\App::instance(
             (new Router)
-                ->add(new Route("/:controller", "\Controller\\"))
+                ->add(new Route("/:controller", "\Controller\{+controller}"))
         );
         PHPUnitUtil::callMethod($app, "findAndExecuteRoute", ["...", "GET"]);
     }
@@ -38,7 +38,7 @@ final class AppTest extends TestCase {
 
         $app = \Gaslawork\App::instance(
             (new Router)
-                ->add(new Route("/:controller", "\Controller\\"))
+                ->add(new Route("/:controller", "\Controller\{+controller}"))
         );
         PHPUnitUtil::callMethod($app, "findAndExecuteRoute", ["hello", "GET"]);
     }
@@ -50,7 +50,7 @@ final class AppTest extends TestCase {
 
         $app = \Gaslawork\App::instance(
             (new Router)
-                ->add(new Route("/:controller/:action", "\Gaslawork\Tests\\"))
+                ->add(new Route("/:controller/:action", "\Gaslawork\Tests\{+controller}"))
         );
         PHPUnitUtil::callMethod($app, "findAndExecuteRoute", ["Dummycontroller/nonexisting", "GET"]);
     }
@@ -110,7 +110,7 @@ final class AppTest extends TestCase {
 
         $app = \Gaslawork\App::instance(
             (new Router)
-                ->add(new Route("/:controller/:action", "\Gaslawork\Tests\\"))
+                ->add(new Route("/:controller/:action", "\Gaslawork\Tests\{+controller}"))
         );
 
         PHPUnitUtil::callMethod($app, "findAndExecuteRoute", ["Dummycontroller/hello", "GET"]);
@@ -120,7 +120,7 @@ final class AppTest extends TestCase {
     {
         $app = \Gaslawork\App::instance(
             (new Router)
-                ->add(new Route("/:controller/:action/:id1/:id2", "\Gaslawork\Tests\\"))
+                ->add(new Route("/:controller/:action/:id1/:id2", "\Gaslawork\Tests\{+controller}"))
         );
         PHPUnitUtil::callMethod($app, "findAndExecuteRoute", ["Dummycontroller/silent/first/second", "GET"]);
 
@@ -144,7 +144,7 @@ final class AppTest extends TestCase {
 
         $app = \Gaslawork\App::instance(
             (new Router)
-                ->add(new Route("/:controller/:action/:id", "\Gaslawork\Tests\\"))
+                ->add(new Route("/:controller/:action/:id", "\Gaslawork\Tests\{+controller}"))
         );
 
         PHPUnitUtil::callMethod($app, "findAndExecuteRoute", ["Dummycontroller/echoId/mootest", "GET"]);
@@ -154,7 +154,7 @@ final class AppTest extends TestCase {
     {
         $app = \Gaslawork\App::instance(
             (new Router)
-                ->add(new Route("/:controller/:action", "\Gaslawork\Tests\\"))
+                ->add(new Route("/:controller/:action", "\Gaslawork\Tests\{+controller}"))
         );
         PHPUnitUtil::callMethod($app, "findAndExecuteRoute", ["Dummycontroller/silent", "GET"]);
 
@@ -176,7 +176,7 @@ final class AppTest extends TestCase {
 
         $app = \Gaslawork\App::instance(
             (new Router)
-                ->add(new Route("/:controller/:action/:no", "\Gaslawork\Tests\\"))
+                ->add(new Route("/:controller/:action/:no", "\Gaslawork\Tests\{+controller}"))
         );
 
         PHPUnitUtil::callMethod($app, "findAndExecuteRoute", ["Dummycontroller/echoId/mootest", "GET"]);
@@ -188,7 +188,7 @@ final class AppTest extends TestCase {
 
         $app = \Gaslawork\App::instance(
             (new Router)
-                ->add(new Route("/:controller/:action/:id", "\Gaslawork\Tests\\"))
+                ->add(new Route("/:controller/:action/:id", "\Gaslawork\Tests\{+controller}"))
         );
 
         $container = new \Gaslawork\Container;
@@ -204,7 +204,7 @@ final class AppTest extends TestCase {
 
         $app = \Gaslawork\App::instance(
             (new Router)
-                ->add(new Route("/:controller/:action/:id", "\Gaslawork\Tests\\"))
+                ->add(new Route("/:controller/:action/:id", "\Gaslawork\Tests\{+controller}"))
         );
 
         $container = new \Gaslawork\Container;
@@ -221,7 +221,7 @@ final class AppTest extends TestCase {
 
         $app = \Gaslawork\App::instance(
             (new Router)
-                ->add(new Route("/:controller/:action/:id", "\Gaslawork\Tests\\"))
+                ->add(new Route("/:controller/:action/:id", "\Gaslawork\Tests\{+controller}"))
         );
 
         $container = new \Gaslawork\Container;
