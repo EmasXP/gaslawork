@@ -1451,4 +1451,228 @@ final class RoutingTest extends TestCase {
         $this->assertNull($route->getParam("id3"));
     }
 
+
+    public function testRouteHandler()
+    {
+        $route = new Route("/:directory/:controller/:id", "\Controller\{+directory}\{+controller}");
+        $route_data = $route->check(new RequestUri("/hello/world"), "GET");
+        $this->assertEquals("\Controller\Hello\World", $route_data->getController());
+    }
+
+
+    public function testRouteHandlerUsingDefaultValues()
+    {
+        $route = new Route("/:directory/:controller/:id", "\Controller\{+directory}\{+controller}");
+        $route->setDefaults([
+            "controller" => "Pizza",
+        ]);
+        $route_data = $route->check(new RequestUri("/hello"), "GET");
+        $this->assertEquals("\Controller\Hello\Pizza", $route_data->getController());
+    }
+
+
+    public function testRouteHandlerUsingLowercaseDefaultValues()
+    {
+        $route = new Route("/:directory/:controller/:id", "\Controller\{+directory}\{+controller}");
+        $route->setDefaults([
+            "controller" => "pizza",
+        ]);
+        $route_data = $route->check(new RequestUri("/hello"), "GET");
+        $this->assertEquals("\Controller\Hello\Pizza", $route_data->getController());
+    }
+
+
+    public function testRouteHandlerWithTrailingSlashInUri()
+    {
+        $route = new Route("/:directory/:controller/:id", "\Controller\{+directory}\{+controller}");
+        $route->setDefaults([
+            "controller" => "pizza",
+        ]);
+        $route_data = $route->check(new RequestUri("/hello/"), "GET");
+        $this->assertEquals("\Controller\Hello\Pizza", $route_data->getController());
+    }
+
+
+    public function testRouteHandlerWithDoubleTrailingSlashInUri()
+    {
+        $route = new Route("/:directory/:controller/:id", "\Controller\{+directory}\{+controller}");
+        $route->setDefaults([
+            "controller" => "pizza",
+        ]);
+        $route_data = $route->check(new RequestUri("/hello//"), "GET");
+        $this->assertEquals("\Controller\Hello\Pizza", $route_data->getController());
+    }
+
+
+    public function testRouteHandlerWithDoubleSlashAndParameterInUri()
+    {
+        $route = new Route("/:directory/:controller/:id", "\Controller\{+directory}\{+controller}");
+        $route->setDefaults([
+            "controller" => "pizza",
+        ]);
+        $route_data = $route->check(new RequestUri("/hello//moo"), "GET");
+        $this->assertEquals("\Controller\Hello\Pizza", $route_data->getController());
+    }
+
+
+    public function testRouteHandlerUriOverrideDefaults()
+    {
+        $route = new Route("/:directory/:controller/:id", "\Controller\{+directory}\{+controller}");
+        $route->setDefaults([
+            "directory" => "kebab",
+            "controller" => "pizza",
+        ]);
+        $route_data = $route->check(new RequestUri("/hello/world"), "GET");
+        $this->assertEquals("\Controller\Hello\World", $route_data->getController());
+    }
+
+
+    public function testRouteHandlerCaseMod()
+    {
+        $route = new Route("/:directory/:controller/:id", "\Controller\{+directory}\{controller}");
+        $route_data = $route->check(new RequestUri("/hello/world"), "GET");
+        $this->assertEquals("\Controller\Hello\world", $route_data->getController());
+    }
+
+
+    public function testRouteHandlerCaseModUsingDefault()
+    {
+        $route = new Route("/:directory/:controller/:id", "\Controller\{+directory}\{controller}");
+        $route->setDefaults([
+            "directory" => "kebab",
+            "controller" => "pizza",
+        ]);
+        $route_data = $route->check(new RequestUri("/"), "GET");
+        $this->assertEquals("\Controller\Kebab\pizza", $route_data->getController());
+    }
+
+
+    public function testRouteHandlerCaseModUsingDefaultAgain()
+    {
+        $route = new Route("/:directory/:controller/:id", "\Controller\{+directory}\{controller}");
+        $route->setDefaults([
+            "directory" => "Kebab",
+            "controller" => "Pizza",
+        ]);
+        $route_data = $route->check(new RequestUri("/"), "GET");
+        $this->assertEquals("\Controller\Kebab\Pizza", $route_data->getController());
+    }
+
+
+    public function testRouteHandlerMissingHandlerParameter()
+    {
+        $this->expectException(\Gaslawork\Exception\UndefinedRouteHandlerParameterException::class);
+        $this->expectExceptionMessage("The parameter controller is needed by the route's handler but is undefined or empty.");
+
+        $route = new Route("/:directory/:controller/:id", "\Controller\{+directory}\{+controller}");
+        $route_data = $route->check(new RequestUri("/hello/"), "GET");
+        $route_data->getController();
+    }
+
+
+    public function testRouteHandlerMissingHandlerParameterWithDoubleTrailingSlashInUri()
+    {
+        $this->expectException(\Gaslawork\Exception\UndefinedRouteHandlerParameterException::class);
+        $this->expectExceptionMessage("The parameter controller is needed by the route's handler but is undefined or empty.");
+
+        $route = new Route("/:directory/:controller/:id", "\Controller\{+directory}\{+controller}");
+        $route_data = $route->check(new RequestUri("/hello//"), "GET");
+        $route_data->getController();
+    }
+
+
+    public function testRouteHandlerMissingHandlerParameterWithDoubleSlashAndParamInUri()
+    {
+        $this->expectException(\Gaslawork\Exception\UndefinedRouteHandlerParameterException::class);
+        $this->expectExceptionMessage("The parameter controller is needed by the route's handler but is undefined or empty.");
+
+        $route = new Route("/:directory/:controller/:id", "\Controller\{+directory}\{+controller}");
+        $route_data = $route->check(new RequestUri("/hello//moo"), "GET");
+        $route_data->getController();
+    }
+
+
+    public function testRouteHandlerMissingHandlerParameterWhenDefaultIsEmpty()
+    {
+        $this->expectException(\Gaslawork\Exception\UndefinedRouteHandlerParameterException::class);
+        $this->expectExceptionMessage("The parameter controller is needed by the route's handler but is undefined or empty.");
+
+        $route = new Route("/:directory/:controller/:id", "\Controller\{+directory}\{+controller}");
+        $route->setDefaults([
+            "controller" => "",
+        ]);
+        $route_data = $route->check(new RequestUri("/hello"), "GET");
+        $route_data->getController();
+    }
+
+
+    public function testRouteHandlerMissingHandlerParameterWhenDefaultIsEmptyWithDoubleTrailingSlash()
+    {
+        $this->expectException(\Gaslawork\Exception\UndefinedRouteHandlerParameterException::class);
+        $this->expectExceptionMessage("The parameter controller is needed by the route's handler but is undefined or empty.");
+
+        $route = new Route("/:directory/:controller/:id", "\Controller\{+directory}\{+controller}");
+        $route->setDefaults([
+            "controller" => "",
+        ]);
+        $route_data = $route->check(new RequestUri("/hello//"), "GET");
+        $route_data->getController();
+    }
+
+
+    public function testRouteHandlerMissingHandlerParameterWhenDefaultIsEmptyWithDoubleSlashAndParameter()
+    {
+        $this->expectException(\Gaslawork\Exception\UndefinedRouteHandlerParameterException::class);
+        $this->expectExceptionMessage("The parameter controller is needed by the route's handler but is undefined or empty.");
+
+        $route = new Route("/:directory/:controller/:id", "\Controller\{+directory}\{+controller}");
+        $route->setDefaults([
+            "controller" => "",
+        ]);
+        $route_data = $route->check(new RequestUri("/hello//moo"), "GET");
+        $route_data->getController();
+    }
+
+
+    public function testRouteHandlerMissingHandlerParameterWhenDefaultIsNull()
+    {
+        $this->expectException(\Gaslawork\Exception\UndefinedRouteHandlerParameterException::class);
+        $this->expectExceptionMessage("The parameter controller is needed by the route's handler but is undefined or empty.");
+
+        $route = new Route("/:directory/:controller/:id", "\Controller\{+directory}\{+controller}");
+        $route->setDefaults([
+            "controller" => null
+        ]);
+        $route_data = $route->check(new RequestUri("/hello"), "GET");
+        $route_data->getController();
+    }
+
+
+    public function testRouteHandlerMissingHandlerParameterWhenDefaultIsNullWithDoubleTrailingSlash()
+    {
+        $this->expectException(\Gaslawork\Exception\UndefinedRouteHandlerParameterException::class);
+        $this->expectExceptionMessage("The parameter controller is needed by the route's handler but is undefined or empty.");
+
+        $route = new Route("/:directory/:controller/:id", "\Controller\{+directory}\{+controller}");
+        $route->setDefaults([
+            "controller" => null,
+        ]);
+        $route_data = $route->check(new RequestUri("/hello//"), "GET");
+        $route_data->getController();
+    }
+
+
+    public function testRouteHandlerMissingHandlerParameterWhenDefaultIsNullWithDoubleSlashAndParameter()
+    {
+        $this->expectException(\Gaslawork\Exception\UndefinedRouteHandlerParameterException::class);
+        $this->expectExceptionMessage("The parameter controller is needed by the route's handler but is undefined or empty.");
+
+        $route = new Route("/:directory/:controller/:id", "\Controller\{+directory}\{+controller}");
+        $route->setDefaults([
+            "controller" => null,
+        ]);
+        $route_data = $route->check(new RequestUri("/hello//moo"), "GET");
+        $route_data->getController();
+    }
+
 }

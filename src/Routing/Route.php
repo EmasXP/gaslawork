@@ -179,13 +179,13 @@ class Route implements RouteInterface, RouteDataInterface {
 
             if ($subparts[0][0] == "+")
             {
-                $param_value = $this->getParam(substr($subparts[0], 1));
-                $out .= ucfirst($param_value).$subparts[1];
+                $out .= ucfirst($this->getParamForHandler(substr($subparts[0], 1)))
+                    .$subparts[1];
             }
             else
             {
-                $param_value = $this->getParam($subparts[0]);
-                $out .= $param_value.$subparts[1];
+                $out .= $this->getParamForHandler($subparts[0])
+                    .$subparts[1];
             }
         }
 
@@ -236,5 +236,36 @@ class Route implements RouteInterface, RouteDataInterface {
         return $this->params + $this->defaults;
     }
 
+
+    protected function getParamForHandler($name)
+    {
+        if (isset($this->params[$name]))
+        {
+            if (empty($this->params[$name]))
+            {
+                throw new \Gaslawork\Exception\UndefinedRouteHandlerParameterException(
+                    "The parameter $name is needed by the route's handler but is undefined or empty."
+                );
+            }
+
+            return $this->params[$name];
+        }
+
+        if (isset($this->defaults[$name]))
+        {
+            if (empty($this->defaults[$name]))
+            {
+                throw new \Gaslawork\Exception\UndefinedRouteHandlerParameterException(
+                    "The parameter $name is needed by the route's handler but is undefined or empty."
+                );
+            }
+
+            return $this->defaults[$name];
+        }
+
+        throw new \Gaslawork\Exception\UndefinedRouteHandlerParameterException(
+            "The parameter $name is needed by the route's handler but is undefined or empty."
+        );
+    }
 
 }

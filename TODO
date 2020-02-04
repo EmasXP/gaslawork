@@ -1,5 +1,4 @@
 STEP 1
-- Using param in handler that is not defined in the URI and does not have default, raise an exception.
 - Write tests and documentation for App:
 	- Controller::__invoke()
 	- Action prefix & suffix

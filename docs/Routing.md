@@ -74,6 +74,8 @@ The `Route` object takes two variables:
 
 In the example above we have put `/:controller/:action/:id` as the "target", and `\\Controller\\{+controller}` as the "handler". Parts in the "target" that begins with `:` are considered as "parameters". A parameter can later be fetched from by the controller, but can also be used in the "handler" to build the controller path. In the example above we are using the parameter `controller`  as `{+controller}`  in the "handler". The plus sign means that the first character should be converted to upper case. Not using the plus sign (`{controller}`) uses the parameter as is.
 
+A `\Gaslawork\Exception\UndefinedRouteHandlerParameterException` is going to be thrown if a parameter is used by the "handler" but the parameter is undefined or empty. Make sure that you either have default values set for the parameters used by the "handler", or that the parameters are set as required. We are going to learn how to set parameter defaults and required parameters later in this document.
+
 There is one special parameter named "action" which decides which action (method) in the controller is going to be run.
 
 In the example above we are specifying the default values of the parameters by using the method `setDefaults()`. The defaults are are used a when parameter is not set by the URL.
