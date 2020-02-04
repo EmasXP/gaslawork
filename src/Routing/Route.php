@@ -135,6 +135,64 @@ class Route implements RouteInterface, RouteDataInterface {
     }
 
 
+    protected function parseHandler(string $handler)
+    {
+        /*
+        You might look at this code and think "well, this is an odd implementation" - and you are
+        quite right, but it's the fastest one.
+
+        It first splits the handler by {, and then again by }. Let's take an example:
+        \Controller\{+directory}\{+controller}
+
+        The first indent indent in this list is the $parts, and the second indent is the $parts'
+        $subparts:
+            "\Controller\"
+                "\Controller\"
+            "+directory}\"
+                "+directory"
+                "\"
+            "+controller}"
+                "+controller"
+                ""
+        */
+
+        $parts = explode("{", $handler);
+
+        $number_of_parts = count($parts);
+
+        if ($number_of_parts == 1)
+        {
+            return $parts[0];
+        }
+
+        $out = $parts[0];
+
+        for ($i = 1; $i < $number_of_parts; $i++)
+        {
+            $subparts = explode("}", $parts[$i]);
+
+            if (count($subparts) == 1)
+            {
+                $out .= $parts[$i];
+                continue;
+            }
+
+            if ($subparts[0][0] == "+")
+            {
+                $param_value = $this->getParam(substr($subparts[0], 1));
+                $out .= ucfirst($param_value).$subparts[1];
+            }
+            else
+            {
+                $param_value = $this->getParam($subparts[0]);
+                $out .= $param_value.$subparts[1];
+            }
+        }
+
+        return $out;
+    }
+
+
     public function getController()
     {
         if ($this->controller !== null)
@@ -142,65 +200,7 @@ class Route implements RouteInterface, RouteDataInterface {
             return $this->controller;
         }
 
-        $controller = "";
-        $param_name = "";
-        $reading_param = false;
-        $param_mod = null;
-
-        $handler_length = strlen($this->handler);
-
-        for ($i = 0; $i < $handler_length; $i++)
-        {
-            $char = $this->handler[$i];
-
-            if ($reading_param)
-            {
-                if ($param_mod === null)
-                {
-                    if ($char == "+")
-                    {
-                        $param_mod = $char;
-                        continue;
-                    }
-
-                    $param_mod = false;
-                }
-
-                if ($char != "}")
-                {
-                    $param_name .= $char;
-                    continue;
-                }
-
-                $param_value = $this->getParam($param_name);
-
-                if ($param_value !== null)
-                {
-                    if ($param_mod == "+")
-                    {
-                        $controller .= ucfirst($param_value);
-                    }
-                    else
-                    {
-                        $controller .= $param_value;
-                    }
-                }
-                $param_name = "";
-                $reading_param = false;
-                continue;
-            }
-
-            elseif ($char == "{")
-            {
-                $reading_param = true;
-                $param_mod = null;
-                continue;
-            }
-
-            $controller .= $char;
-        }
-
-        return $this->controller = $controller;
+        return $this->controller = $this->parseHandler($this->handler);
     }
 
 
