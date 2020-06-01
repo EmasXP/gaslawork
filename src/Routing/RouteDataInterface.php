@@ -4,12 +4,12 @@ namespace Gaslawork\Routing;
 
 interface RouteDataInterface {
 
-    public function getController();
+    public function getController(): string;
 
-    public function getAction();
+    public function getAction(): ?string;
 
-    public function getParam($name);
+    public function getParam(string $name);
 
-    public function getParams();
+    public function getParams(): array;
 
 }

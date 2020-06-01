@@ -2,17 +2,39 @@
 
 namespace Gaslawork\Routing;
 
+use Gaslawork\Exception\UndefinedRouteHandlerParameterException;
+
+
 class Route implements RouteInterface, RouteDataInterface {
 
+    /** @var string */
     protected $route;
+
+    /** @var string */
     protected $handler;
+
+    /** @var string[]|null */
     protected $exploded_route;
+
+    /** @var array<string,mixed> */
     protected $defaults = [];
+
+    /** @var string[] */
     protected $required;
+
+    /** @var array<string,mixed[]>|null */
     protected $whitelist;
+
+    /** @var array<string,mixed[]>|null */
     protected $blacklist;
+
+    /** @var array<string,mixed>  */
     protected $params = [];
+
+    /** @var string|null */
     protected $controller;
+
+    /** @var string|null */
     protected $action;
 
 
@@ -23,6 +45,12 @@ class Route implements RouteInterface, RouteDataInterface {
     }
 
 
+    /**
+     * Set the defaults of the parameters.
+     *
+     * @param array<string,mixed> $defaults
+     * @return $this
+     */
     public function setDefaults(array $defaults)
     {
         $this->defaults = $defaults;
@@ -30,6 +58,12 @@ class Route implements RouteInterface, RouteDataInterface {
     }
 
 
+    /**
+     * Set the required parameters.
+     *
+     * @param string[] $required
+     * @return $this
+     */
     public function setRequired(array $required)
     {
         $this->required = $required;
@@ -37,6 +71,12 @@ class Route implements RouteInterface, RouteDataInterface {
     }
 
 
+    /**
+     * Set the white list.
+     *
+     * @param array<string,mixed[]> $whitelist
+     * @return $this
+     */
     public function setWhitelist(array $whitelist)
     {
         $this->whitelist = $whitelist;
@@ -44,6 +84,12 @@ class Route implements RouteInterface, RouteDataInterface {
     }
 
 
+    /**
+     * Set the black list.
+     *
+     * @param array<string,mixed[]> $blacklist
+     * @return $this
+     */
     public function setBlacklist(array $blacklist)
     {
         $this->blacklist = $blacklist;
@@ -51,7 +97,12 @@ class Route implements RouteInterface, RouteDataInterface {
     }
 
 
-    protected function getRouteExploded()
+    /**
+     * Get the route exploded by "/".
+     *
+     * @return string[]
+     */
+    protected function getRouteExploded(): array
     {
         if ($this->exploded_route !== null)
         {
@@ -62,7 +113,17 @@ class Route implements RouteInterface, RouteDataInterface {
     }
 
 
-    public function check(RequestUri $url, $method): ?RouteDataInterface
+    /**
+     * Check if the route matches the passed URL.
+     *
+     * @param RequestUri $url
+     * @param string|null $method
+     * @return null|RouteDataInterface
+     */
+    public function check(
+        RequestUri $url,
+        ?string $method
+    ): ?RouteDataInterface
     {
         $exploded = $this->getRouteExploded();
         $url_exploded = $url->getExploded();
@@ -135,7 +196,17 @@ class Route implements RouteInterface, RouteDataInterface {
     }
 
 
-    protected function parseHandler(string $handler)
+    /**
+     * This method parses/renders a handler string using the route's parameters as variables.
+     *
+     * An handler string can be for example "\Controller\{+controller}". Let's say the "controller"
+     * parameter is "foo", then the response from this method is going to be "\Controller\Foo.
+     *
+     * @param string $handler
+     * @return string
+     * @throws UndefinedRouteHandlerParameterException
+     */
+    protected function parseHandler(string $handler): string
     {
         /*
         You might look at this code and think "well, this is an odd implementation" - and you are
@@ -193,7 +264,13 @@ class Route implements RouteInterface, RouteDataInterface {
     }
 
 
-    public function getController()
+    /**
+     * Get the controller found from after executing the check().
+     *
+     * @return string
+     * @throws UndefinedRouteHandlerParameterException
+     */
+    public function getController(): string
     {
         if ($this->controller !== null)
         {
@@ -204,7 +281,12 @@ class Route implements RouteInterface, RouteDataInterface {
     }
 
 
-    public function getAction()
+    /**
+     * Get the action found from after executing the check().
+     *
+     * @return string|null
+     */
+    public function getAction(): ?string
     {
         if ($this->action !== null)
         {
@@ -215,7 +297,13 @@ class Route implements RouteInterface, RouteDataInterface {
     }
 
 
-    public function getParam($name)
+    /**
+     * Get a parameter from after executing the check().
+     *
+     * @param string $name
+     * @return mixed
+     */
+    public function getParam(string $name)
     {
         if (isset($this->params[$name]))
         {
@@ -231,19 +319,32 @@ class Route implements RouteInterface, RouteDataInterface {
     }
 
 
-    public function getParams()
+    /**
+     * Get all the parameters from after executing the check().
+     *
+     * @return mixed[]
+     */
+    public function getParams(): array
     {
         return $this->params + $this->defaults;
     }
 
 
-    protected function getParamForHandler($name)
+    /**
+     * Gets a parameter and throw exception if the parameter is not set or is empty. This method
+     * is used by the parseHandler() method.
+     *
+     * @param string $name
+     * @return mixed
+     * @throws UndefinedRouteHandlerParameterException
+     */
+    protected function getParamForHandler(string $name)
     {
         if (isset($this->params[$name]))
         {
             if (empty($this->params[$name]))
             {
-                throw new \Gaslawork\Exception\UndefinedRouteHandlerParameterException(
+                throw new UndefinedRouteHandlerParameterException(
                     "The parameter $name is needed by the route's handler but is undefined or empty."
                 );
             }
@@ -255,7 +356,7 @@ class Route implements RouteInterface, RouteDataInterface {
         {
             if (empty($this->defaults[$name]))
             {
-                throw new \Gaslawork\Exception\UndefinedRouteHandlerParameterException(
+                throw new UndefinedRouteHandlerParameterException(
                     "The parameter $name is needed by the route's handler but is undefined or empty."
                 );
             }
@@ -263,7 +364,7 @@ class Route implements RouteInterface, RouteDataInterface {
             return $this->defaults[$name];
         }
 
-        throw new \Gaslawork\Exception\UndefinedRouteHandlerParameterException(
+        throw new UndefinedRouteHandlerParameterException(
             "The parameter $name is needed by the route's handler but is undefined or empty."
         );
     }
