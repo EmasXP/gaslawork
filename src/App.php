@@ -2,30 +2,64 @@
 
 namespace Gaslawork;
 
+use Gaslawork\Exception\ContainerEntryNotFoundException;
+use Gaslawork\Exception\GaslaworkException;
+use Gaslawork\Exception\InstanceAlreadyExistException;
+use Gaslawork\Exception\NotFoundException;
+use Gaslawork\Routing\RouterInterface;
+use Psr\Container\ContainerInterface;
+
+
 class App {
 
+    /** @var RouterInterface */
     protected $router;
+
+    /** @var ContainerInterface|null */
     protected $container;
+
+    /** @var string|null */
     protected $_index_file;
+
+    /** @var string */
     public $base_url = "/";
+
+    /** @var string|null */
     public $index_file;
+
+    /** @var string|null */
     public $action_prefix;
+
+    /** @var string|null */
     public $action_suffix = "Action";
 
+    /** @var static|null */
     protected static $instance;
 
 
+    /**
+     * Get the current instance, or create a new instance.
+     *
+     * @param RouterInterface|null $router
+     * @param ContainerInterface|null $container
+     * @return self|null
+     */
     public static function instance(
-        Routing\RouterInterface $router = null,
-        \Psr\Container\ContainerInterface $container = null
+        RouterInterface $router = null,
+        ContainerInterface $container = null
     )
     {
-        if (self::$instance === null)
+        $app = self::current();
+
+        if ($app === null)
         {
+            if ($router === null)
+            {
+                throw new GaslaworkException("The router must be specified when creating new App.");
+            }
+
             return new self($router, $container);
         }
-
-        $app = self::current();
 
         if ($router !== null)
         {
@@ -41,6 +75,11 @@ class App {
     }
 
 
+    /**
+     * Get the current instance.
+     *
+     * @return self|null
+     */
     public static function current()
     {
         return self::$instance;
@@ -48,8 +87,8 @@ class App {
 
 
     public function __construct(
-        Routing\RouterInterface $router,
-        \Psr\Container\ContainerInterface $container = null
+        RouterInterface $router,
+        ContainerInterface $container = null
     )
     {
         $this->router = $router;
@@ -57,27 +96,43 @@ class App {
 
         if (self::$instance !== null)
         {
-            throw new Exception\InstanceAlreadyExistException("An instance of App already exists.");
+            throw new InstanceAlreadyExistException("An instance of App already exists.");
         }
 
         self::$instance = $this;
     }
 
 
-    public function setRouter(Routing\RouterInterface $router)
+    /**
+     * Set the router object.
+     *
+     * @param RouterInterface $router
+     * @return $this
+     */
+    public function setRouter(RouterInterface $router)
     {
         $this->router = $router;
         return $this;
     }
 
 
-    public function getRouter()
+    /**
+     * Get the router object.
+     *
+     * @return RouterInterface
+     */
+    public function getRouter(): RouterInterface
     {
         return $this->router;
     }
 
 
-    public function getIndexFile()
+    /**
+     * Get the index file.
+     *
+     * @return string|null
+     */
+    public function getIndexFile(): ?string
     {
         if ($this->index_file)
         {
@@ -98,7 +153,13 @@ class App {
     }
 
 
-    protected function stripBaseUrlFromUri($uri)
+    /**
+     * Removes the base url from the passed URI.
+     *
+     * @param string $uri
+     * @return string
+     */
+    protected function stripBaseUrlFromUri(string $uri): string
     {
         $base_url = parse_url($this->base_url, PHP_URL_PATH);
 
@@ -110,19 +171,27 @@ class App {
             }
         }
 
+        $index_file = $this->getIndexFile();
+
         if (
-            $this->getIndexFile()
-            && strpos($uri, $this->getIndexFile()) === 0
+            $index_file !== null
+            && strpos($uri, $index_file) === 0
         )
         {
-            return substr($uri, strlen($this->getIndexFile()));
+            return substr($uri, strlen($index_file));
         }
 
         return $uri;
     }
 
 
-    protected function getUri()
+    /**
+     * Get the current URI.
+     *
+     * @return string
+     * @throws GaslaworkException
+     */
+    protected function getUri(): string
     {
         if (isset($_SERVER["PATH_INFO"]))
         {
@@ -162,7 +231,7 @@ class App {
      * @param string $controller
      * @return boolean
      */
-    protected function validControllerPath($controller)
+    protected function validControllerPath($controller): bool
     {
         return (bool)preg_match(
             "/^[a-zA-Z\\\_\x7f-\xff][a-zA-Z0-9\\\_\x7f-\xff]*$/",
@@ -171,19 +240,30 @@ class App {
     }
 
 
-    protected function findAndExecuteRoute($uri, $http_method)
+    /**
+     * Find the correct controller and action from the router and execute it.
+     *
+     * @param string $uri
+     * @param string|null $http_method
+     * @return mixed
+     * @throws NotFoundException
+     */
+    protected function findAndExecuteRoute(
+        string $uri,
+        ?string $http_method
+    )
     {
         $route_data = $this->router->find($uri, $http_method);
 
         if ($route_data === null)
         {
-            throw new \Gaslawork\Exception\NotFoundException(
+            throw new NotFoundException(
                 $uri,
                 "No route found for URI"
             );
         }
 
-        new \Gaslawork\Request(
+        new Request(
             $route_data,
             $uri
         );
@@ -192,7 +272,7 @@ class App {
 
         if ( ! $this->validControllerPath($controller_path))
         {
-            throw new \Gaslawork\Exception\NotFoundException(
+            throw new NotFoundException(
                 $uri,
                 "The controller path $controller_path is invalid"
             );
@@ -200,7 +280,7 @@ class App {
 
         if ( ! class_exists($controller_path))
         {
-            throw new \Gaslawork\Exception\NotFoundException(
+            throw new NotFoundException(
                 $uri,
                 "The controller $controller_path does not exist"
             );
@@ -218,7 +298,7 @@ class App {
 
             if ( ! method_exists($controller, $action))
             {
-                throw new \Gaslawork\Exception\NotFoundException(
+                throw new NotFoundException(
                     $uri,
                     "Method $action does not exist in $controller_path"
                 );
@@ -231,7 +311,14 @@ class App {
     }
 
 
-    protected function handleNotFoundException(\Gaslawork\Exception\NotFoundException $e)
+    /**
+     * Handle a 404 Not Found exception.
+     *
+     * @param NotFoundException $e
+     * @return void
+     * @throws ContainerEntryNotFoundException
+     */
+    protected function handleNotFoundException(NotFoundException $e)
     {
         if ($this->has("notFoundHandler"))
         {
@@ -243,6 +330,14 @@ class App {
     }
 
 
+    /**
+     * Run the application. Finds the correct controller and action from the router and executes it.
+     * This method handles 404 Not Found exceptions.
+     *
+     * @return mixed
+     * @throws ContainerEntryNotFoundException
+     * @throws GaslaworkException
+     */
     public function run()
     {
         try
@@ -252,14 +347,21 @@ class App {
                 (isset($_SERVER["REQUEST_METHOD"]) ? $_SERVER["REQUEST_METHOD"] : null)
             );
         }
-        catch (\Gaslawork\Exception\NotFoundException $e)
+        catch (Exception\NotFoundException $e)
         {
             $this->handleNotFoundException($e);
         }
     }
 
 
-    protected function defaultNotFoundHandler(\Gaslawork\Exception\NotFoundException $e)
+    /**
+     * The default handler of 404 Not Found. This method is used if a custom one has not been
+     * specified.
+     *
+     * @param NotFoundException $e
+     * @return void
+     */
+    protected function defaultNotFoundHandler(NotFoundException $e)
     {
         Response::status(404);
 
@@ -276,14 +378,28 @@ class App {
     }
 
 
-    public function setContainer(\Psr\Container\ContainerInterface $container)
+    /**
+     * Set the dependency container.
+     *
+     * @param ContainerInterface $container
+     * @return $this
+     */
+    public function setContainer(ContainerInterface $container)
     {
         $this->container = $container;
         return $this;
     }
 
 
-    public function getContainer()
+    /**
+     * Get the dependency container.
+     *
+     * This method creates a new instance of the built-in Container if a container has not been
+     * specified.
+     *
+     * @return ContainerInterface
+     */
+    public function getContainer(): ContainerInterface
     {
         if ($this->container === null)
         {
@@ -294,18 +410,31 @@ class App {
     }
 
 
+    /**
+     * Get an entry from the dependency container.
+     *
+     * @param string $name
+     * @return mixed
+     * @throws ContainerEntryNotFoundException
+     */
     public function get($name)
     {
         if ($this->container === null)
         {
-            throw new Exception\ContainerEntryNotFoundException("$name cannot be fetched since no container has been created.");
+            throw new ContainerEntryNotFoundException("$name cannot be fetched since no container has been created.");
         }
 
         return $this->container->get($name);
     }
 
 
-    public function has($name)
+    /**
+     * Check if an entry exist in the dependency container.
+     *
+     * @param string $name
+     * @return bool
+     */
+    public function has($name): bool
     {
         if ($this->container === null)
         {
