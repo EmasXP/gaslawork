@@ -5,9 +5,16 @@ namespace Gaslawork\Routing;
 
 class Router implements RouterInterface {
 
+    /** @var RouteInterface[]  */
     protected $routes = [];
 
 
+    /**
+     * Add a route to the router.
+     *
+     * @param RouteInterface $route
+     * @return $this
+     */
     public function add(RouteInterface $route)
     {
         $this->routes[] = $route;
