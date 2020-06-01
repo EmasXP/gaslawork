@@ -10,6 +10,12 @@ use Gaslawork\Routing\Route;
 
 final class AppTest extends TestCase {
 
+    public function testExceptionFetchingCurrentBeforeInitialized()
+    {
+        $this->expectException(\Gaslawork\Exception\GaslaworkException::class);
+        \Gaslawork\App::current();
+    }
+
     public function testNonExistingRoute()
     {
         $this->expectException(\Gaslawork\Exception\NotFoundException::class);

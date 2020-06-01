@@ -43,13 +43,13 @@ class App {
         ContainerInterface $container = null
     )
     {
-        $app = self::current();
+        $app = self::$instance;
 
         if ($app === null)
         {
             if ($router === null)
             {
-                throw new GaslaworkException("The router must be specified when creating new App.");
+                throw new GaslaworkException("The router must be specified when creating a new App.");
             }
 
             return new self($router, $container);
@@ -72,14 +72,26 @@ class App {
     /**
      * Get the current instance.
      *
-     * @return self|null
+     * @return self
+     * @throws GaslaworkException
      */
     public static function current()
     {
+        if (self::$instance === null)
+        {
+            throw new GaslaworkException("An App instance has not been initialized yet.");
+        }
+
         return self::$instance;
     }
 
 
+    /**
+     * @param RouterInterface $router
+     * @param ContainerInterface|null $container
+     * @return void
+     * @throws InstanceAlreadyExistException
+     */
     public function __construct(
         RouterInterface $router,
         ContainerInterface $container = null
