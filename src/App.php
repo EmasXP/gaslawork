@@ -27,12 +27,6 @@ class App {
     /** @var string|null */
     public $index_file;
 
-    /** @var string|null */
-    public $action_prefix;
-
-    /** @var string|null */
-    public $action_suffix = "Action";
-
     /** @var static|null */
     protected static $instance;
 
@@ -292,10 +286,6 @@ class App {
 
         if ($action !== null)
         {
-            $action = $this->action_prefix
-                .$action
-                .$this->action_suffix;
-
             if ( ! method_exists($controller, $action))
             {
                 throw new NotFoundException(

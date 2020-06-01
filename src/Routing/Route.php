@@ -11,7 +11,10 @@ class Route implements RouteInterface, RouteDataInterface {
     protected $route;
 
     /** @var string */
-    protected $handler;
+    protected $controller_handler;
+
+    /** @var string|null */
+    protected $action_handler;
 
     /** @var string[]|null */
     protected $exploded_route;
@@ -38,10 +41,15 @@ class Route implements RouteInterface, RouteDataInterface {
     protected $action;
 
 
-    public function __construct(string $route, string $handler)
+    public function __construct(
+        string $route,
+        string $controller_handler,
+        ?string $action_handler = null
+    )
     {
         $this->route = $route;
-        $this->handler = $handler;
+        $this->controller_handler = $controller_handler;
+        $this->action_handler = $action_handler;
     }
 
 
@@ -277,7 +285,7 @@ class Route implements RouteInterface, RouteDataInterface {
             return $this->controller;
         }
 
-        return $this->controller = $this->parseHandler($this->handler);
+        return $this->controller = $this->parseHandler($this->controller_handler);
     }
 
 
@@ -285,6 +293,7 @@ class Route implements RouteInterface, RouteDataInterface {
      * Get the action found from after executing the check().
      *
      * @return string|null
+     * @throws UndefinedRouteHandlerParameterException
      */
     public function getAction(): ?string
     {
@@ -293,7 +302,12 @@ class Route implements RouteInterface, RouteDataInterface {
             return $this->action;
         }
 
-        return $this->action = $this->getParam("action");
+        if ($this->action_handler === null)
+        {
+            return null;
+        }
+
+        return $this->action = $this->parseHandler($this->action_handler);
     }
 
 

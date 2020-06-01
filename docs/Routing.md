@@ -14,7 +14,7 @@ use Gaslawork\Routing\Route;
 
 $routes = (new Router)
     ->add(
-        (new Route("/:controller/:action/:id", "\\Controller\\{+controller}"))
+        (new Route("/:controller/:action/:id", "\\Controller\\{+controller}", "{action}Action"))
             ->setDefaults([
                 "controller" => "Index",
                 "action" => "index",
@@ -57,7 +57,7 @@ class Index extends \Gaslawork\Controller {
 }
 ```
 
-The path to the controller is `\Controller\Index` (since the namespace is `Controller`  and the class name is `Index`). 
+The path to the controller is `\Controller\Index` (since the namespace is `Controller`  and the class name is `Index`).
 
 When this controller/action combination is found by the router, an instance of `\Controller\Index` is created, and the `indexAction()` is called.
 
@@ -65,10 +65,11 @@ A controller can contain as many methods as you like.
 
 ## The target and the handler
 
-The `Route` object takes two variables:
+The `Route` object takes three variables:
 
 * The "route" (called "target" in the documentation for the sake of clarity). This is what is going to be searched for when an incoming request are being routed.
-* The "handler". When the route matches the incoming request, this defines which controller is going to be used.
+* The "controller handler". When the route matches the incoming request, this defines which controller is going to be used.
+* The "action handler". When the route matches the incoming request, this defines which action is going to be used. This can also be left as `NULL` if no action method should be used.
 
 ## Parameters
 
@@ -88,7 +89,7 @@ Here are some examples of URL's - using the route we defined in the example abov
 | /foo     | \Controller\Foo    | indexAction     |
 | /foo/bar | \Controller\Foo    | barAction       |
 
-You may have noticed in the previous example that the action (method) names are suffixed with `Action`. This is because of security. For example, calling `index()` on the `Index` class is treated as calling the constructor.
+You may have noticed in the previous example that the action (method) names are suffixed with `Action`. This is because of security. For example, calling `index()` on the `Index` class is treated as calling the constructor. You are free to change that by writing a different "action handler" string. Simply putting `"{action}"` in the "action handler" will use the method name as is (without any prefix or suffix). You are free to do however you like.
 
 ### Fetching parameters
 
@@ -113,7 +114,7 @@ All parameters can have default values.
 
 ```php
 $routes = (new Router)->add(
-    (new Route("/:controller/:action/:id", "\\Controller\\{+controller}"))
+    (new Route("/:controller/:action/:id", "\\Controller\\{+controller}", "{action}Action"))
         ->setDefaults([
             "controller" => "welcome",
             "action" => "hello",
@@ -127,7 +128,7 @@ You can set defaults for all parameters:
 
 ```php
 $routes = (new Router)->add(
-    new Route("/:controller/:action/:id", "\\Controller\\{+controller}"))
+    new Route("/:controller/:action/:id", "\\Controller\\{+controller}", "{action}Action"))
         ->setDefaults([
             "controller" => "welcome",
             "action" => "hello",
@@ -144,7 +145,7 @@ You can also set a default for a parameter that is not in the "target":
 
 ```php
 $routes = (new Router)->add(
-    (new Route("/:action", "\\Controller\\{+controller}"))
+    (new Route("/:action", "\\Controller\\{+controller}", "{action}Action"))
         ->setDefaults([
             "controller" => "hello",
             "action" => "index",
@@ -156,7 +157,7 @@ In this example the controller will always be `\Controller\Hello`. You can use t
 
 ```php
 $routes = (new Router)->add(
-    (new Route("/:controller", "\\Controller\\{+controller}"))
+    (new Route("/:controller", "\\Controller\\{+controller}", "{action}Action"))
         ->setDefaults([
             "controller" => "index",
         ])
@@ -170,7 +171,7 @@ This route does not have an action, and can never have, so the `__invoke()` meth
 ```php
 $routes = (new Router)
     ->add(
-        (new Route("/:controller/:action/:id", "\\Controller\\{+controller}"))
+        (new Route("/:controller/:action/:id", "\\Controller\\{+controller}", "{action}Action"))
             ->setDefaults([
                 "action" => "index",
             ])
@@ -178,7 +179,7 @@ $routes = (new Router)
                 "controller" => ["foo"],
             ])
     )
-    ->add(new Route("/:controller/:action/:id", "\\Controller\\{+controller}"));
+    ->add(new Route("/:controller/:action/:id", "\\Controller\\{+controller}", "{action}Action"));
 ```
 
 We are creating a `Route` object and call `setWhitelist()` on it. We pass a dictionary to that method where the key is the name of the parameter. The value of the dictionary is an array of allowed values of the parameter. All other values than is specified here will not match the route.
@@ -192,7 +193,7 @@ You can white list all parameters, not just the special onces.
 ```php
 $routes = (new Router)
     ->add(
-        (new Route("/:controller/:action/:id", "\\Controller\\{+controller}"))
+        (new Route("/:controller/:action/:id", "\\Controller\\{+controller}", "{action}Action"))
             ->setDefaults([
                 "controller" => "Index",
                 "action" => "index",
@@ -202,7 +203,7 @@ $routes = (new Router)
             ])
     )
     ->add(
-        (new Route("/:controller/:action/:id", "\\Controller\\Special\\{+controller}"))
+        (new Route("/:controller/:action/:id", "\\Controller\\Special\\{+controller}", "{action}Action"))
             ->setDefaults([
                 "controller" => "Index",
                 "action" => "index",
@@ -219,7 +220,7 @@ In this example above the controller `\Controller\Bar` will be called if the `co
 ```php
 $routes = (new Router)
     ->add(
-        (new Route("/:controller/:action/:id", "\\Controller\\WithId\\{+controller}"))
+        (new Route("/:controller/:action/:id", "\\Controller\\WithId\\{+controller}", "{action}Action"))
             ->setDefaults([
                 "controller" => "Index",
                 "action" => "index",
@@ -227,7 +228,7 @@ $routes = (new Router)
             ->setRequired(["id"])
     )
     ->add(
-        (new Route("/:controller/:action/:id", "\Controller\\"))
+        (new Route("/:controller/:action/:id", "\Controller\\", "{action}Action"))
             ->setDefaults([
                 "controller" => "Index",
                 "action" => "index",

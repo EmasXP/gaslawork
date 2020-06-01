@@ -31,7 +31,7 @@ use \Gaslawork\Routing\Route;
 
 $routes = (new Router)
     ->add(
-        (new Route("/:controller/:action/:id", "\\Controller\\{+controller}"))
+        (new Route("/:controller/:action/:id", "\\Controller\\{+controller}", "{action}Action"))
             ->setDefaults([
                 "controller" => "Index",
                 "action" => "index",

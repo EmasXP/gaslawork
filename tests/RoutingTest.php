@@ -14,7 +14,7 @@ final class RoutingTest extends TestCase {
     {
         $routes = (new Router)
             ->add(
-                (new Route("/:controller/:action/:id", "\Application\Controller\{+controller}"))
+                (new Route("/:controller/:action/:id", "\Application\Controller\{+controller}", "{action}Action"))
                     ->setDefaults([
                         "controller" => "Index",
                         "action" => "index",
@@ -26,7 +26,7 @@ final class RoutingTest extends TestCase {
         $this->assertTrue($route !== null);
 
         $this->assertEquals("\Application\Controller\Index", $route->getController());
-        $this->assertEquals("index", $route->getAction());
+        $this->assertEquals("indexAction", $route->getAction());
     }
 
 
@@ -34,7 +34,7 @@ final class RoutingTest extends TestCase {
     {
         $routes = (new Router)
             ->add(
-                (new Route("/:controller/:action/:id", "\Application\Controller\{+controller}"))
+                (new Route("/:controller/:action/:id", "\Application\Controller\{+controller}", "{action}Action"))
                     ->setDefaults([
                         "controller" => "Index",
                         "action" => "index",
@@ -46,7 +46,7 @@ final class RoutingTest extends TestCase {
         $this->assertTrue($route !== null);
 
         $this->assertEquals("\Application\Controller\Hello", $route->getController());
-        $this->assertEquals("index", $route->getAction());
+        $this->assertEquals("indexAction", $route->getAction());
     }
 
 
@@ -54,7 +54,7 @@ final class RoutingTest extends TestCase {
     {
         $routes = (new Router)
             ->add(
-                (new Route("/:controller/:action/:id", "\Application\Controller\{+controller}"))
+                (new Route("/:controller/:action/:id", "\Application\Controller\{+controller}", "{action}Action"))
                     ->setDefaults([
                         "controller" => "Index",
                         "action" => "index",
@@ -66,7 +66,7 @@ final class RoutingTest extends TestCase {
         $this->assertTrue($route !== null);
 
         $this->assertEquals("\Application\Controller\Hello", $route->getController());
-        $this->assertEquals("world", $route->getAction());
+        $this->assertEquals("worldAction", $route->getAction());
     }
 
 
@@ -74,7 +74,7 @@ final class RoutingTest extends TestCase {
     {
         $routes = (new Router)
             ->add(
-                (new Route("/:action/:id", "\Application\Controller\{+controller}"))
+                (new Route("/:action/:id", "\Application\Controller\{+controller}", "{action}Action"))
                     ->setDefaults([
                         "controller" => "Index",
                         "action" => "index",
@@ -86,7 +86,7 @@ final class RoutingTest extends TestCase {
         $this->assertTrue($route !== null);
 
         $this->assertEquals("\Application\Controller\Index", $route->getController());
-        $this->assertEquals("index", $route->getAction());
+        $this->assertEquals("indexAction", $route->getAction());
     }
 
 
@@ -94,7 +94,7 @@ final class RoutingTest extends TestCase {
     {
         $routes = (new Router)
             ->add(
-                (new Route("/:action/:id", "\Application\Controller\{+controller}"))
+                (new Route("/:action/:id", "\Application\Controller\{+controller}", "{action}Action"))
                     ->setDefaults([
                         "controller" => "Index",
                         "action" => "index",
@@ -106,7 +106,7 @@ final class RoutingTest extends TestCase {
         $this->assertTrue($route !== null);
 
         $this->assertEquals("\Application\Controller\Index", $route->getController());
-        $this->assertEquals("hello", $route->getAction());
+        $this->assertEquals("helloAction", $route->getAction());
     }
 
 
@@ -114,7 +114,7 @@ final class RoutingTest extends TestCase {
     {
         $routes = (new Router)
             ->add(
-                (new Route("/:controller/:id", "\Application\Controller\{+controller}"))
+                (new Route("/:controller/:id", "\Application\Controller\{+controller}", "{action}Action"))
                     ->setDefaults([
                         "controller" => "Index",
                         "action" => "index",
@@ -126,7 +126,7 @@ final class RoutingTest extends TestCase {
         $this->assertTrue($route !== null);
 
         $this->assertEquals("\Application\Controller\Index", $route->getController());
-        $this->assertEquals("index", $route->getAction());
+        $this->assertEquals("indexAction", $route->getAction());
     }
 
 
@@ -134,7 +134,7 @@ final class RoutingTest extends TestCase {
     {
         $routes = (new Router)
             ->add(
-                (new Route("/:controller/:id", "\Application\Controller\{+controller}"))
+                (new Route("/:controller/:id", "\Application\Controller\{+controller}", "{action}Action"))
                     ->setDefaults([
                         "controller" => "Index",
                         "action" => "index",
@@ -146,7 +146,7 @@ final class RoutingTest extends TestCase {
         $this->assertTrue($route !== null);
 
         $this->assertEquals("\Application\Controller\Hello", $route->getController());
-        $this->assertEquals("index", $route->getAction());
+        $this->assertEquals("indexAction", $route->getAction());
     }
 
 
@@ -154,14 +154,14 @@ final class RoutingTest extends TestCase {
     {
         $routes = (new Router)
             ->add(
-                (new Route("/hello/:controller/:id", "\Hello\{+controller}"))
+                (new Route("/hello/:controller/:id", "\Hello\{+controller}", "{action}Action"))
                     ->setDefaults([
                         "controller" => "Index",
                         "action" => "index",
                     ])
             )
             ->add(
-                (new Route("/world/:controller/:id", "\World\{+controller}"))
+                (new Route("/world/:controller/:id", "\World\{+controller}", "{action}Action"))
                     ->setDefaults([
                         "controller" => "Index",
                         "action" => "index",
@@ -173,7 +173,7 @@ final class RoutingTest extends TestCase {
         $this->assertTrue($route !== null);
 
         $this->assertEquals("\World\Index", $route->getController());
-        $this->assertEquals("index", $route->getAction());
+        $this->assertEquals("indexAction", $route->getAction());
     }
 
 
@@ -181,14 +181,14 @@ final class RoutingTest extends TestCase {
     {
         $routes = (new Router)
             ->add(
-                (new Route("/hello/:controller/:id", "\Hello\{+controller}"))
+                (new Route("/hello/:controller/:id", "\Hello\{+controller}", "{action}Action"))
                     ->setDefaults([
                         "controller" => "Index",
                         "action" => "index",
                     ])
             )
             ->add(
-                (new Route("/world/:controller/:id", "\World\{+controller}"))
+                (new Route("/world/:controller/:id", "\World\{+controller}", "{action}Action"))
                     ->setDefaults([
                         "controller" => "Index",
                         "action" => "index",
@@ -200,7 +200,7 @@ final class RoutingTest extends TestCase {
         $this->assertTrue($route !== null);
 
         $this->assertEquals("\Hello\Index", $route->getController());
-        $this->assertEquals("index", $route->getAction());
+        $this->assertEquals("indexAction", $route->getAction());
     }
 
 
@@ -208,14 +208,14 @@ final class RoutingTest extends TestCase {
     {
         $routes = (new Router)
             ->add(
-                (new Route("/hello/:controller/:id", "\Hello\{+controller}"))
+                (new Route("/hello/:controller/:id", "\Hello\{+controller}", "{action}Action"))
                     ->setDefaults([
                         "controller" => "Index",
                         "action" => "index",
                     ])
             )
             ->add(
-                (new Route("/world/:controller/:id", "\World\{+controller}"))
+                (new Route("/world/:controller/:id", "\World\{+controller}", "{action}Action"))
                     ->setDefaults([
                         "controller" => "Index",
                         "action" => "index",
@@ -227,7 +227,7 @@ final class RoutingTest extends TestCase {
         $this->assertTrue($route !== null);
 
         $this->assertEquals("\World\Foo", $route->getController());
-        $this->assertEquals("index", $route->getAction());
+        $this->assertEquals("indexAction", $route->getAction());
     }
 
 
@@ -235,14 +235,14 @@ final class RoutingTest extends TestCase {
     {
         $routes = (new Router)
             ->add(
-                (new Route("/hello/:controller/:id", "\Hello\{+controller}"))
+                (new Route("/hello/:controller/:id", "\Hello\{+controller}", "{action}Action"))
                     ->setDefaults([
                         "controller" => "Index",
                         "action" => "index",
                     ])
             )
             ->add(
-                (new Route("/world/:controller/:id", "\World\{+controller}"))
+                (new Route("/world/:controller/:id", "\World\{+controller}", "{action}Action"))
                     ->setDefaults([
                         "controller" => "Index",
                         "action" => "index",
@@ -254,7 +254,7 @@ final class RoutingTest extends TestCase {
         $this->assertTrue($route !== null);
 
         $this->assertEquals("\Hello\Foo", $route->getController());
-        $this->assertEquals("index", $route->getAction());
+        $this->assertEquals("indexAction", $route->getAction());
     }
 
 
@@ -262,14 +262,14 @@ final class RoutingTest extends TestCase {
     {
         $routes = (new Router)
             ->add(
-                (new Route("/hello/:controller/:action/:id", "\Hello\{+controller}"))
+                (new Route("/hello/:controller/:action/:id", "\Hello\{+controller}", "{action}Action"))
                     ->setDefaults([
                         "controller" => "Index",
                         "action" => "index",
                     ])
             )
             ->add(
-                (new Route("/world/:controller/:action/:id", "\World\{+controller}"))
+                (new Route("/world/:controller/:action/:id", "\World\{+controller}", "{action}Action"))
                     ->setDefaults([
                         "controller" => "Index",
                         "action" => "index",
@@ -281,7 +281,7 @@ final class RoutingTest extends TestCase {
         $this->assertTrue($route !== null);
 
         $this->assertEquals("\World\Foo", $route->getController());
-        $this->assertEquals("bar", $route->getAction());
+        $this->assertEquals("barAction", $route->getAction());
     }
 
 
@@ -289,14 +289,14 @@ final class RoutingTest extends TestCase {
     {
         $routes = (new Router)
             ->add(
-                (new Route("/hello/:controller/:action/:id", "\Hello\{+controller}"))
+                (new Route("/hello/:controller/:action/:id", "\Hello\{+controller}", "{action}Action"))
                     ->setDefaults([
                         "controller" => "Index",
                         "action" => "index",
                     ])
             )
             ->add(
-                (new Route("/world/:controller/:action/:id", "\World\{+controller}"))
+                (new Route("/world/:controller/:action/:id", "\World\{+controller}", "{action}Action"))
                     ->setDefaults([
                         "controller" => "Index",
                         "action" => "index",
@@ -308,7 +308,7 @@ final class RoutingTest extends TestCase {
         $this->assertTrue($route !== null);
 
         $this->assertEquals("\Hello\Foo", $route->getController());
-        $this->assertEquals("bar", $route->getAction());
+        $this->assertEquals("barAction", $route->getAction());
     }
 
 
@@ -316,14 +316,14 @@ final class RoutingTest extends TestCase {
     {
         $routes = (new Router)
             ->add(
-                (new Route("/a/:controller/b/:action/c/:id", "\First\{+controller}"))
+                (new Route("/a/:controller/b/:action/c/:id", "\First\{+controller}", "{action}Action"))
                     ->setDefaults([
                         "controller" => "Index",
                         "action" => "index",
                     ])
             )
             ->add(
-                (new Route("/d/:controller/e/:action/f/:id", "\Second\{+controller}"))
+                (new Route("/d/:controller/e/:action/f/:id", "\Second\{+controller}", "{action}Action"))
                     ->setDefaults([
                         "controller" => "Index",
                         "action" => "index",
@@ -335,7 +335,7 @@ final class RoutingTest extends TestCase {
         $this->assertTrue($route !== null);
 
         $this->assertEquals("\Second\Hello", $route->getController());
-        $this->assertEquals("world", $route->getAction());
+        $this->assertEquals("worldAction", $route->getAction());
     }
 
 
@@ -343,14 +343,14 @@ final class RoutingTest extends TestCase {
     {
         $routes = (new Router)
             ->add(
-                (new Route("/a/:controller/b/:action/c/:id", "\First\{+controller}"))
+                (new Route("/a/:controller/b/:action/c/:id", "\First\{+controller}", "{action}Action"))
                     ->setDefaults([
                         "controller" => "Index",
                         "action" => "index",
                     ])
             )
             ->add(
-                (new Route("/d/:controller/e/:action/f/:id", "\Second\{+controller}"))
+                (new Route("/d/:controller/e/:action/f/:id", "\Second\{+controller}", "{action}Action"))
                     ->setDefaults([
                         "controller" => "Index",
                         "action" => "index",
@@ -362,7 +362,7 @@ final class RoutingTest extends TestCase {
         $this->assertTrue($route !== null);
 
         $this->assertEquals("\First\Hello", $route->getController());
-        $this->assertEquals("world", $route->getAction());
+        $this->assertEquals("worldAction", $route->getAction());
     }
 
 
@@ -370,7 +370,7 @@ final class RoutingTest extends TestCase {
     {
         $routes = (new Router)
             ->add(
-                (new Route("/:action/:controller/:id", "\Application\Controller\{+controller}"))
+                (new Route("/:action/:controller/:id", "\Application\Controller\{+controller}", "{action}Action"))
                     ->setDefaults([
                         "controller" => "Index",
                         "action" => "index",
@@ -382,7 +382,7 @@ final class RoutingTest extends TestCase {
         $this->assertTrue($route !== null);
 
         $this->assertEquals("\Application\Controller\World", $route->getController());
-        $this->assertEquals("hello", $route->getAction());
+        $this->assertEquals("helloAction", $route->getAction());
     }
 
 
@@ -1141,7 +1141,7 @@ final class RoutingTest extends TestCase {
 
     public function testChangeDefaultControllerAndAction()
     {
-        $route = (new Route("/:controller/:action", "\Controller\{+controller}"))
+        $route = (new Route("/:controller/:action", "\Controller\{+controller}", "{action}Action"))
             ->setDefaults(array(
                 "controller" => "defaultcontroller",
                 "action" => "defaultaction",
@@ -1150,7 +1150,7 @@ final class RoutingTest extends TestCase {
         $route->check(new RequestUri("/"), null);
 
         $this->assertEquals("\Controller\Defaultcontroller", $route->getController());
-        $this->assertEquals("defaultaction", $route->getAction());
+        $this->assertEquals("defaultactionAction", $route->getAction());
     }
 
 
@@ -1173,7 +1173,7 @@ final class RoutingTest extends TestCase {
     public function testDefaultCustomParameter()
     {
         $routes = (new Router)->add(
-            (new Route("/:controller/:action/:id", "\Controller\{+controller}"))
+            (new Route("/:controller/:action/:id", "\Controller\{+controller}", "{action}Action"))
                 ->setDefaults(array(
                     "controller" => "index",
                     "action" => "index",
@@ -1184,7 +1184,7 @@ final class RoutingTest extends TestCase {
         $route = $routes->find("/");
 
         $this->assertEquals("\Controller\Index", $route->getController());
-        $this->assertEquals("index", $route->getAction());
+        $this->assertEquals("indexAction", $route->getAction());
         $this->assertEquals("123", $route->getParam("id"));
     }
 
@@ -1192,7 +1192,7 @@ final class RoutingTest extends TestCase {
     public function testDefaultCustomParameterButMissingInPath()
     {
         $routes = (new Router)->add(
-            (new Route("/:controller/:action", "\Controller\{+controller}"))
+            (new Route("/:controller/:action", "\Controller\{+controller}", "{action}Action"))
                 ->setDefaults(array(
                     "controller" => "index",
                     "action" => "index",
@@ -1203,7 +1203,7 @@ final class RoutingTest extends TestCase {
         $route = $routes->find("/");
 
         $this->assertEquals("\Controller\Index", $route->getController());
-        $this->assertEquals("index", $route->getAction());
+        $this->assertEquals("indexAction", $route->getAction());
         $this->assertEquals("123", $route->getParam("id"));
     }
 
@@ -1211,7 +1211,7 @@ final class RoutingTest extends TestCase {
     public function testMissingControllerInUriButSetDefault()
     {
         $routes = (new Router)->add(
-            (new Route("/:action", "\Controller\{+controller}"))
+            (new Route("/:action", "\Controller\{+controller}", "{action}Action"))
                 ->setDefaults(array(
                     "controller" => "hello",
                     "action" => "index",
@@ -1221,7 +1221,7 @@ final class RoutingTest extends TestCase {
         $route = $routes->find("/");
 
         $this->assertEquals("\Controller\Hello", $route->getController());
-        $this->assertEquals("index", $route->getAction());
+        $this->assertEquals("indexAction", $route->getAction());
     }
 
 
@@ -1400,7 +1400,7 @@ final class RoutingTest extends TestCase {
     {
         $routes = (new Router)
             ->add(
-                (new Route("/:foo/:controller/:hello/:action/:world", "\Controller\{+controller}"))
+                (new Route("/:foo/:controller/:hello/:action/:world", "\Controller\{+controller}", "{action}Action"))
                     ->setDefaults([
                         "hello" => "ThisShouldNotBeFoundInThisTest",
                         "action" => "ThisShouldNotBeFoundEither",
@@ -1415,7 +1415,7 @@ final class RoutingTest extends TestCase {
         $this->assertEquals("abc", $route->getParam("foo"));
         $this->assertEquals("\Controller\\Def", $route->getController());
         $this->assertEquals("ghi", $route->getParam("hello"));
-        $this->assertEquals("ijk", $route->getAction());
+        $this->assertEquals("ijkAction", $route->getAction());
         $this->assertEquals("lmn", $route->getParam("world"));
 
         $this->assertEquals(
@@ -1673,6 +1673,28 @@ final class RoutingTest extends TestCase {
         ]);
         $route_data = $route->check(new RequestUri("/hello//moo"), "GET");
         $route_data->getController();
+    }
+
+
+    public function testActionRouteHandler()
+    {
+        $route = new Route(":action", "", "action_{action}");
+        $route->setDefaults([
+            "action" => "pizza",
+        ]);
+        $route_data = $route->check(new RequestUri("/"), "GET");
+        $this->assertEquals("action_pizza", $route_data->getAction());
+    }
+
+
+    public function testNullActionRouteHandler()
+    {
+        $route = new Route(":action", "", null);
+        $route->setDefaults([
+            "action" => "pizza",
+        ]);
+        $route_data = $route->check(new RequestUri("/"), "GET");
+        $this->assertNull($route_data->getAction());
     }
 
 }
