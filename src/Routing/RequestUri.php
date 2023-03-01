@@ -2,20 +2,25 @@
 
 namespace Gaslawork\Routing;
 
-class RequestUri {
+use Psr\Http\Message\RequestInterface;
 
-    /** @var string */
+class RequestUri
+{
+
+    /**
+     * @var string
+     */
     protected $url;
 
-    /** @var string[]|null */
+    /**
+     * @var string[]|null
+     */
     protected $exploded_url;
 
-
-    public function __construct(string $url)
+    public function __construct(RequestInterface $request)
     {
-        $this->url = $url;
+        $this->url = $request->getUri()->getPath();
     }
-
 
     /**
      * Get the URL string.
@@ -27,7 +32,6 @@ class RequestUri {
         return $this->url;
     }
 
-
     /**
      * Get the URL exploded by "/".
      *
@@ -35,8 +39,7 @@ class RequestUri {
      */
     public function getExploded(): array
     {
-        if ($this->exploded_url === null)
-        {
+        if ($this->exploded_url === null) {
             $this->exploded_url = explode(
                 "/",
                 strtr(

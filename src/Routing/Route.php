@@ -3,60 +3,80 @@
 namespace Gaslawork\Routing;
 
 use Gaslawork\Exception\UndefinedRouteHandlerParameterException;
+use Psr\Http\Message\RequestInterface;
 
+class Route implements RouteInterface
+{
 
-class Route implements RouteInterface, RouteDataInterface {
-
-    /** @var string */
+    /**
+     * @var string
+     */
     protected $route;
 
-    /** @var string */
-    protected $controller_handler;
-
-    /** @var string|null */
-    protected $action_handler;
-
-    /** @var string[]|null */
-    protected $exploded_route;
-
-    /** @var array<string,mixed> */
-    protected $defaults = [];
-
-    /** @var string[] */
-    protected $required;
-
-    /** @var array<string,mixed[]>|null */
-    protected $whitelist;
-
-    /** @var array<string,mixed[]>|null */
-    protected $blacklist;
-
-    /** @var array<string,mixed>  */
-    protected $params = [];
-
-    /** @var string|null */
+    /**
+     * @var string&class-string
+     */
     protected $controller;
 
-    /** @var string|null */
-    protected $action;
+    /**
+     * @var string|null
+     */
+    protected $action_handler;
 
+    /**
+     * @var string[]|null
+     */
+    protected $exploded_route;
 
+    /**
+     * @var array<string,string>
+     */
+    protected $defaults = [];
+
+    /**
+     * @var string[]
+     */
+    protected $required;
+
+    /**
+     * @var array<string,string[]>|null
+     */
+    protected $whitelist;
+
+    /**
+     * @var array<string,string[]>|null
+     */
+    protected $blacklist;
+
+    /**
+     * @var null|((string|string[])[])
+     */
+    protected $compiled_action_handler;
+
+    /**
+     * @param string $route
+     * @param class-string $controller
+     * @param null|string $action_handler
+     * @return void
+     */
     public function __construct(
         string $route,
-        string $controller_handler,
+        string $controller,
         ?string $action_handler = null
-    )
-    {
+    ) {
         $this->route = $route;
-        $this->controller_handler = $controller_handler;
+        $this->controller = $controller;
         $this->action_handler = $action_handler;
+        $this->exploded_route = explode("/", trim($this->route, "/"));
+        if ($this->action_handler) {
+            $this->compiled_action_handler = $this->compileHandler($this->action_handler);
+        }
     }
-
 
     /**
      * Set the defaults of the parameters.
      *
-     * @param array<string,mixed> $defaults
+     * @param array<string,string> $defaults
      * @return $this
      */
     public function setDefaults(array $defaults)
@@ -64,7 +84,6 @@ class Route implements RouteInterface, RouteDataInterface {
         $this->defaults = $defaults;
         return $this;
     }
-
 
     /**
      * Set the required parameters.
@@ -78,11 +97,10 @@ class Route implements RouteInterface, RouteDataInterface {
         return $this;
     }
 
-
     /**
      * Set the white list.
      *
-     * @param array<string,mixed[]> $whitelist
+     * @param array<string,string[]> $whitelist
      * @return $this
      */
     public function setWhitelist(array $whitelist)
@@ -91,11 +109,10 @@ class Route implements RouteInterface, RouteDataInterface {
         return $this;
     }
 
-
     /**
      * Set the black list.
      *
-     * @param array<string,mixed[]> $blacklist
+     * @param array<string,string[]> $blacklist
      * @return $this
      */
     public function setBlacklist(array $blacklist)
@@ -104,117 +121,126 @@ class Route implements RouteInterface, RouteDataInterface {
         return $this;
     }
 
-
-    /**
-     * Get the route exploded by "/".
-     *
-     * @return string[]
-     */
-    protected function getRouteExploded(): array
+    public function getMinimumParts(): int
     {
-        if ($this->exploded_route !== null)
-        {
-            return $this->exploded_route;
+        $min = 0;
+
+        foreach ($this->exploded_route as $i => $piece) {
+            if (
+                strlen($piece) > 0
+                && $piece[0] == ":"
+            ) {
+                $param_name = substr($piece, 1);
+
+                if (
+                    $this->required !== null
+                    && in_array($param_name, $this->required)
+                    && (
+                        $this->defaults === null
+                        || !isset($this->defaults[$param_name])
+                    )
+                ) {
+                    $min = $i + 1;
+                }
+            } else {
+                $min = $i + 1;
+            }
         }
 
-        return $this->exploded_route = explode("/", trim($this->route, "/"));
+        if ($min == 0) {
+            return 1;
+        }
+
+        return $min;
     }
 
+    public function getMaximumParts(): int
+    {
+        return count($this->exploded_route);
+    }
 
     /**
      * Check if the route matches the passed URL.
      *
      * @param RequestUri $url
-     * @param string|null $method
+     * @param RequestInterface $request
      * @return null|RouteDataInterface
      */
     public function check(
         RequestUri $url,
-        ?string $method
-    ): ?RouteDataInterface
-    {
-        $exploded = $this->getRouteExploded();
+        RequestInterface $request
+    ): ?RouteDataInterface{
+        $exploded = $this->exploded_route;
         $url_exploded = $url->getExploded();
 
         $params = [];
 
-        foreach ($exploded as $i => $piece)
-        {
+        foreach ($exploded as $i => $piece) {
             if (
                 strlen($piece) > 0
                 && $piece[0] == ":"
-            )
-            {
+            ) {
                 $param_name = substr($piece, 1);
                 $param_value = null;
 
                 if (
                     isset($url_exploded[$i])
-                    && ! empty($url_exploded[$i])
-                )
-                {
+                    && !empty($url_exploded[$i])
+                ) {
                     $param_value = $url_exploded[$i];
-                }
-                elseif (
+                } elseif (
                     $this->defaults !== null
                     && isset($this->defaults[$param_name])
-                )
-                {
+                ) {
                     $param_value = $this->defaults[$param_name];
-                }
-                elseif (
+                } elseif (
                     $this->required !== null
                     && in_array($param_name, $this->required)
-                )
-                {
+                ) {
                     return null;
                 }
 
                 if (
                     $this->whitelist !== null
                     && isset($this->whitelist[$param_name])
-                    && ! in_array($param_value, $this->whitelist[$param_name])
-                )
-                {
+                    && !in_array($param_value, $this->whitelist[$param_name])
+                ) {
                     return null;
-                }
-                elseif (
+                } elseif (
                     $this->blacklist !== null
                     && isset($this->blacklist[$param_name])
                     && in_array($param_value, $this->blacklist[$param_name])
-                )
-                {
+                ) {
                     return null;
                 }
 
                 $params[$param_name] = $param_value;
-            }
-            elseif(
-                ! isset($url_exploded[$i])
+            } elseif (
+                !isset($url_exploded[$i])
                 || $url_exploded[$i] != $piece
-            )
-            {
+            ) {
                 return null;
             }
         }
 
-        $this->params = $params;
+        $params = $params + $this->defaults;
 
-        return $this;
+        return new RouteData(
+            $this->controller,
+            (
+                $this->action_handler === null
+                ? null
+                : $this->parseHandler($this->compiled_action_handler, $params)
+            ),
+            $params
+        );
     }
 
-
     /**
-     * This method parses/renders a handler string using the route's parameters as variables.
-     *
-     * An handler string can be for example "\Controller\{+controller}". Let's say the "controller"
-     * parameter is "foo", then the response from this method is going to be "\Controller\Foo.
-     *
      * @param string $handler
-     * @return string
-     * @throws UndefinedRouteHandlerParameterException
+     * @return (string|string[])[]
      */
-    protected function parseHandler(string $handler): string
+    protected function compileHandler(string $handler): array
     {
         /*
         You might look at this code and think "well, this is an odd implementation" - and you are
@@ -225,162 +251,92 @@ class Route implements RouteInterface, RouteDataInterface {
 
         The first indent indent in this list is the $parts, and the second indent is the $parts'
         $subparts:
-            "\Controller\"
-                "\Controller\"
-            "+directory}\"
-                "+directory"
-                "\"
-            "+controller}"
-                "+controller"
-                ""
-        */
+        "\Controller\"
+        "\Controller\"
+        "+directory}\"
+        "+directory"
+        "\"
+        "+controller}"
+        "+controller"
+        ""
+         */
 
         $parts = explode("{", $handler);
 
         $number_of_parts = count($parts);
 
-        if ($number_of_parts == 1)
-        {
-            return $parts[0];
+        if ($number_of_parts == 1) {
+            return [$parts[0]];
         }
 
-        $out = $parts[0];
+        $out = [$parts[0]];
 
-        for ($i = 1; $i < $number_of_parts; $i++)
-        {
+        for ($i = 1; $i < $number_of_parts; $i++) {
             $subparts = explode("}", $parts[$i]);
 
-            if (count($subparts) == 1)
-            {
-                $out .= $parts[$i];
+            if (count($subparts) == 1) {
+                $out[] = $parts[$i];
                 continue;
             }
 
-            if ($subparts[0][0] == "+")
-            {
-                $out .= ucfirst($this->getParamForHandler(substr($subparts[0], 1)))
-                    .$subparts[1];
+            if ($subparts[0][0] == "+") {
+                $out[] = ["+", substr($subparts[0], 1)];
+            } else {
+                $out[] = [null, $subparts[0]];
             }
-            else
-            {
-                $out .= $this->getParamForHandler($subparts[0])
-                    .$subparts[1];
-            }
+
+            $out[] = $subparts[1];
         }
 
         return $out;
     }
 
-
     /**
-     * Get the controller found from after executing the check().
-     *
-     * @return string
+     * @param (string|string[])[] $handler
+     * @param array<string,string> $params
+     * @return null|string
      * @throws UndefinedRouteHandlerParameterException
      */
-    public function getController(): string
-    {
-        if ($this->controller !== null)
-        {
-            return $this->controller;
-        }
+    protected function parseHandler(
+        array $handler,
+        array $params
+    ): ?string{
+        $getParamForHandler = function (string $name) use ($params) {
+            if (isset($params[$name])) {
+                if (empty($params[$name])) {
+                    throw new UndefinedRouteHandlerParameterException(
+                        "The parameter $name is needed by the route's handler but is undefined or empty."
+                    );
+                }
 
-        return $this->controller = $this->parseHandler($this->controller_handler);
-    }
-
-
-    /**
-     * Get the action found from after executing the check().
-     *
-     * @return string|null
-     * @throws UndefinedRouteHandlerParameterException
-     */
-    public function getAction(): ?string
-    {
-        if ($this->action !== null)
-        {
-            return $this->action;
-        }
-
-        if ($this->action_handler === null)
-        {
-            return null;
-        }
-
-        return $this->action = $this->parseHandler($this->action_handler);
-    }
-
-
-    /**
-     * Get a parameter from after executing the check().
-     *
-     * @param string $name
-     * @return mixed
-     */
-    public function getParam(string $name)
-    {
-        if (isset($this->params[$name]))
-        {
-            return $this->params[$name];
-        }
-
-        if (isset($this->defaults[$name]))
-        {
-            return $this->defaults[$name];
-        }
-
-        return null;
-    }
-
-
-    /**
-     * Get all the parameters from after executing the check().
-     *
-     * @return mixed[]
-     */
-    public function getParams(): array
-    {
-        return $this->params + $this->defaults;
-    }
-
-
-    /**
-     * Gets a parameter and throw exception if the parameter is not set or is empty. This method
-     * is used by the parseHandler() method.
-     *
-     * @param string $name
-     * @return mixed
-     * @throws UndefinedRouteHandlerParameterException
-     */
-    protected function getParamForHandler(string $name)
-    {
-        if (isset($this->params[$name]))
-        {
-            if (empty($this->params[$name]))
-            {
-                throw new UndefinedRouteHandlerParameterException(
-                    "The parameter $name is needed by the route's handler but is undefined or empty."
-                );
+                return $params[$name];
             }
 
-            return $this->params[$name];
-        }
+            throw new UndefinedRouteHandlerParameterException(
+                "The parameter $name is needed by the route's handler but is undefined or empty."
+            );
+        };
 
-        if (isset($this->defaults[$name]))
-        {
-            if (empty($this->defaults[$name]))
-            {
-                throw new UndefinedRouteHandlerParameterException(
-                    "The parameter $name is needed by the route's handler but is undefined or empty."
-                );
+        $out = $handler[0];
+
+        $number_of_parts = count($handler);
+
+        for ($i = 1; $i < $number_of_parts; $i++) {
+            $part = $handler[$i];
+
+            if (!is_array($part)) {
+                $out .= $part;
+                continue;
             }
 
-            return $this->defaults[$name];
+            if ($part[0] == "+") {
+                $out .= ucfirst($getParamForHandler($part[1]));
+            } else {
+                $out .= $getParamForHandler($part[1]);
+            }
         }
 
-        throw new UndefinedRouteHandlerParameterException(
-            "The parameter $name is needed by the route's handler but is undefined or empty."
-        );
+        return $out;
     }
 
 }

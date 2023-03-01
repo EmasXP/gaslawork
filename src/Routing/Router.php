@@ -2,12 +2,15 @@
 
 namespace Gaslawork\Routing;
 
+use Psr\Http\Message\RequestInterface;
 
-class Router implements RouterInterface {
+class Router implements RouterInterface
+{
 
-    /** @var RouteInterface[]  */
+    /**
+     * @var RouteInterface[]
+     */
     protected $routes = [];
-
 
     /**
      * Add a route to the router.
@@ -21,28 +24,25 @@ class Router implements RouterInterface {
         return $this;
     }
 
-
     /**
      * Find the first matching route.
      *
-     * @param string $uri
-     * @param string $method
+     * @param RequestInterface $request
      * @return RouteDataInterface|null
      */
-    public function find($uri, $method = null): ?RouteDataInterface
+    public function find(RequestInterface $request): ?RouteDataInterface
     {
-        $route_uri = new RequestUri($uri);
+        $request_uri = new RequestUri($request);
 
-        foreach ($this->routes as $route)
-        {
-            $route_data = $route->check($route_uri, $method);
+        foreach ($this->routes as $route) {
+            $route_data = $route->check($request_uri, $request);
 
-            if ($route_data !== null)
-            {
+            if ($route_data !== null) {
                 return $route_data;
             }
         }
 
         return null;
     }
+
 }

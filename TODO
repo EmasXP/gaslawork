@@ -1,7 +1,6 @@
 STEP 1
 - Write tests and documentation for App:
 	- Controller::__invoke()
-	- Action prefix & suffix
 - Finalize the documentation:
 	- nginx: https://docs.koseven.ga/guide/kohana/tutorials/clean-urls
 	- Controllers & Actions
@@ -10,8 +9,8 @@ STEP 1
 	- Configuration
     - Exception handling
     - "\Controller\\" should be "\\Controller\\"
+    - (Cron) Tasks
 - Tips & Tricks
-	- Extend Route to set defaults on suffix/prefix or namespace prefix
 	- Performance tweaks:
 		- Help composer by manually including Gaslawork files
 		- Composer optimize

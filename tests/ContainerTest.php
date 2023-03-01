@@ -3,519 +3,600 @@
 namespace Gaslawork\Tests;
 
 use PHPUnit\Framework\TestCase;
-use \Gaslawork\Container;
+use \Gaslawork\Container\Container;
+use \Gaslawork\Container\ClassName;
+use \Gaslawork\Container\AutoWire;
 
+class DummyClass {
 
-final class RoutingTest extends TestCase {
+    /** @var int */
+    public $id;
 
-    public function testGetValue()
+    public function __construct(int $id = 0)
     {
-        $container = new Container;
-        $container->set("foo", "bar");
-        $this->assertEquals("bar", $container->get("foo"));
+        $this->id = $id;
     }
 
-    public function testGetClosure()
+}
+
+class DummyParentClass {
+
+    /** @var DummyClass */
+    public $child;
+
+    public function __construct(DummyClass $child)
+    {
+         $this->child = $child;
+    }
+
+}
+
+class UnsatisfiableClass {
+
+    /** @var mixed */
+    public $id;
+
+    public function __construct($id)
+    {
+        $this->id = $id;
+    }
+
+}
+
+class TypedUnsatisfiableClass {
+
+    /** @var int */
+    public $id;
+
+    public function __construct(int $id)
+    {
+        $this->id = $id;
+    }
+
+}
+
+class ParentUnsatisfiableClass {
+
+    /** @var UnsatisfiableClass */
+    public $child;
+
+    public function __construct(UnsatisfiableClass $child)
+    {
+        $this->child = $child;
+    }
+
+}
+
+
+final class ContainerTest extends TestCase {
+
+    public function testSetGetProperty(): void
     {
         $container = new Container;
-        $container->set("hello", function($c){
-            return "world";
+
+        $container->setProperty("foo", "bar");
+        $this->assertEquals("bar", $container->getProperty("foo"));
+
+        $container->setProperty("a", "");
+        $this->assertEquals("", $container->getProperty("a"));
+
+        $cls = new DummyClass(123);
+        $container->setProperty("b", $cls);
+        $this->assertEquals($cls, $container->getProperty("b"));
+
+        $container->setProperty("c", false);
+        $this->assertEquals(false, $container->getProperty("c"));
+
+        $container->setProperty("d", null);
+        $this->assertEquals(null, $container->getProperty("d"));
+
+        $container->setProperty("e", 123);
+        $this->assertEquals(123, $container->getProperty("e"));
+
+        $container->setProperty("f", true);
+        $this->assertEquals(true, $container->getProperty("f"));
+
+        $container->setProperty("g", 0);
+        $this->assertEquals(0, $container->getProperty("g"));
+    }
+
+    public function testSetGetSingleton(): void
+    {
+        $container = new Container;
+        $container->setSingleton(DummyClass::class, function($c){
+            return new DummyClass;
         });
-        $this->assertEquals("world", $container->get("hello"));
+        $this->assertInstanceOf(DummyClass::class, $container->get(DummyClass::class));
     }
 
-    public function testGetClosureTwice()
+    public function testChangingProperty(): void
     {
         $container = new Container;
-        $container->set("hello", function($c){
-            return "world";
+        $container->setProperty("foo", "bar");
+        $this->assertEquals("bar", $container->getProperty("foo"));
+        $container->setProperty("foo", "hello");
+        $this->assertEquals("hello", $container->getProperty("foo"));
+    }
+
+    public function testHasProperty(): void
+    {
+        $container = new Container;
+
+        $this->assertFalse($container->hasProperty("foo"));
+
+        $container->setProperty("foo", "bar");
+        $this->assertTrue($container->hasProperty("foo"));
+
+        $this->assertFalse($container->hasProperty("hello"));
+
+        $container->setProperty("a", true);
+        $this->assertTrue($container->hasProperty("a"));
+
+        $container->setProperty("b", false);
+        $this->assertTrue($container->hasProperty("b"));
+
+        $container->setProperty("c", null);
+        $this->assertTrue($container->hasProperty("c"));
+
+        $container->setProperty("d", "");
+        $this->assertTrue($container->hasProperty("d"));
+
+        $container->setProperty("e", 0);
+        $this->assertTrue($container->hasProperty("e"));
+    }
+
+    public function testGetSingletonSameInstance(): void
+    {
+        $counter = 0;
+
+        $container = new Container;
+        $container->setSingleton(
+            DummyClass::class,
+            function($c) use (&$counter) {
+                $counter ++;
+                return new DummyClass($counter);
+            }
+        );
+        $this->assertEquals(
+            $container->get(DummyClass::class),
+            $container->get(DummyClass::class)
+        );
+    }
+
+    public function testSetGetCreate(): void
+    {
+        $container = new Container;
+        $container->setCreate(DummyClass::class, function($c){
+            return new DummyClass;
         });
-        $this->assertEquals("world", $container->get("hello"));
-        $this->assertEquals("world", $container->get("hello"));
+        $this->assertInstanceOf(DummyClass::class, $container->get(DummyClass::class));
     }
 
-    public function testGetNested()
+    public function testGetCreateNotSameInstance(): void
     {
-        $container = new Container;
-        $container->set("foo", "bar");
-        $container->set("hello", function($c){
-            return $c->get("foo");
-        });
-        $this->assertEquals("bar", $container->get("hello"));
-    }
-
-    public function testGetNestedTwice()
-    {
-        $container = new Container;
-        $container->set("foo", "bar");
-        $container->set("hello", function($c){
-            return $c->get("foo");
-        });
-        $this->assertEquals("bar", $container->get("hello"));
-        $this->assertEquals("bar", $container->get("hello"));
-    }
-
-    public function testGetFactory()
-    {
-        $container = new Container;
-        $container->factory("foo", function($c){
-            return "bar";
-        });
-        $this->assertEquals("bar", $container->get("foo"));
-    }
-
-    public function testGetFactoryTwice()
-    {
-        $container = new Container;
-        $container->factory("hello", function($c){
-            return "world";
-        });
-        $this->assertEquals("world", $container->get("hello"));
-        $this->assertEquals("world", $container->get("hello"));
-    }
-
-    public function testGetFactoryNested()
-    {
-        $container = new Container;
-        $container->set("foo", "bar");
-        $container->factory("hello", function($c){
-            return $c->get("foo");
-        });
-        $this->assertEquals("bar", $container->get("hello"));
-    }
-
-    public function testGetFactoryNestedTwice()
-    {
-        $container = new Container;
-        $container->set("foo", "bar");
-        $container->factory("hello", function($c){
-            return $c->get("foo");
-        });
-        $this->assertEquals("bar", $container->get("hello"));
-        $this->assertEquals("bar", $container->get("hello"));
-    }
-
-    public function testSingletonSame()
-    {
-        $container = new Container;
-        $container->set("time", function(){
-            return microtime((true));
-        });
-
-        $first = $container->get("time");
-        usleep(2);
-        $this->assertEquals($first, $container->get("time"));
-        usleep(2);
-        $this->assertEquals($first, $container->get("time"));
-    }
-
-    public function testFactoryNotSame()
-    {
-        $container = new Container;
-        $container->factory("time", function(){
-            return microtime((true));
-        });
-
-        $first = $container->get("time");
-        usleep(2);
-        $this->assertNotEquals($first, $container->get("time"));
-        usleep(2);
-        $this->assertNotEquals($first, $container->get("time"));
-    }
-
-    public function testFetchingNonExisting()
-    {
-        $this->expectException(\Gaslawork\Exception\ContainerEntryNotFoundException::class);
+        $counter = 0;
 
         $container = new Container;
-        $container->get("ohno");
+        $container->setCreate(
+            DummyClass::class,
+            function($c) use (&$counter) {
+                $counter ++;
+                return new DummyClass($counter);
+            }
+        );
+        $this->assertNotEquals(
+            $container->get(DummyClass::class),
+            $container->get(DummyClass::class)
+        );
     }
 
-    public function testModifyFrozenEntry()
-    {
-        $this->expectException(\Gaslawork\Exception\ContainerEntryUsedException::class);
-
-        $container = new Container;
-        $container->set("foo", "bar");
-        $container->get("foo");
-        $container->set("foo", "world");
-    }
-
-    public function testModifyFrozenEntryWhenNested()
-    {
-        $this->expectException(\Gaslawork\Exception\ContainerEntryUsedException::class);
-
-        $container = new Container;
-        $container->set("foo", "bar");
-        $container->get("foo");
-
-        $container->factory("ohno", function($c){
-            $c->set("foo", "world");
-        });
-        $container->get("ohno");
-    }
-
-    public function testModifyFrozenEntryWhenNestedDifferentOrder()
-    {
-        $this->expectException(\Gaslawork\Exception\ContainerEntryUsedException::class);
-
-        $container = new Container;
-        $container->set("foo", "bar");
-        $container->factory("ohno", function($c){
-            $c->set("foo", "world");
-        });
-
-        $container->get("foo");
-        $container->get("ohno");
-    }
-
-    public function testGetObjectValue()
-    {
-        $obj = new \stdClass;
-
-        $container = new Container;
-        $container->set("foo", $obj);
-
-        $this->assertSame($obj, $container->get("foo"));
-
-    }
-
-    public function testGetObjectViaClosure()
-    {
-        $obj = new \stdClass;
-
-        $container = new Container;
-        $container->set("foo", function($c) use ($obj) {
-            return $obj;
-        });
-
-        $this->assertSame($obj, $container->get("foo"));
-    }
-
-    public function testGetObjectViaFactory()
-    {
-        $obj = new \stdClass;
-
-        $container = new Container;
-        $container->factory("foo", function($c) use ($obj) {
-            return $obj;
-        });
-
-        $this->assertSame($obj, $container->get("foo"));
-    }
-
-    public function testGetIntValue()
+    public function testGetPropertyFromCreateFactory(): void
     {
         $container = new Container;
-        $container->set("foo", 12345);
-        $this->assertSame(12345, $container->get("foo"));
-
+        $container->setProperty("id", 1234);
+        $container->setCreate(
+            DummyClass::class,
+            function(Container $c) {
+                return new DummyClass($c->getProperty("id"));
+            }
+        );
+        $this->assertEquals(
+            1234,
+            $container->get(DummyClass::class)->id
+        );
     }
 
-    public function testGetIntViaClosure()
+    public function testGetPropertyFromSingletonFactory(): void
     {
         $container = new Container;
-        $container->set("foo", function($c) {
-            return 12345;
-        });
-
-        $this->assertSame(12345, $container->get("foo"));
+        $container->setProperty("id", 1234);
+        $container->setSingleton(
+            DummyClass::class,
+            function(Container $c) {
+                return new DummyClass($c->getProperty("id"));
+            }
+        );
+        $this->assertEquals(
+            1234,
+            $container->get(DummyClass::class)->id
+        );
     }
 
-    public function testGetIntViaFactory()
+    public function testSingletonResetAfterAlter(): void
     {
         $container = new Container;
-        $container->factory("foo", function($c) {
-            return 12345;
-        });
 
-        $this->assertSame(12345, $container->get("foo"));
+        $container->setSingleton(
+            DummyClass::class,
+            function($c) {
+                return new DummyClass(1);
+            }
+        );
+
+        $first = $container->get(DummyClass::class);
+
+        $container->setSingleton(
+            DummyClass::class,
+            function($c) {
+                return new DummyClass(2);
+            }
+        );
+
+        $second = $container->get(DummyClass::class);
+
+        $this->assertNotEquals($first, $second);
+        $this->assertEquals(1, $first->id);
+        $this->assertEquals(2, $second->id);
     }
 
-    public function testGetFloatValue()
+    public function testSingletonResetAfterClear(): void
+    {
+        $counter = 0;
+
+        $container = new Container;
+        $container->setSingleton(
+            DummyClass::class,
+            function($c) use (&$counter) {
+                $counter ++;
+                return new DummyClass($counter);
+            }
+        );
+
+        $first = $container->get(DummyClass::class);
+
+        $container->clearSingletons();
+
+        $second = $container->get(DummyClass::class);
+
+        $this->assertNotEquals($first, $second);
+        $this->assertEquals(1, $first->id);
+        $this->assertEquals(2, $second->id);
+    }
+
+    public function testSingletonResetAfterChangedToCreate(): void
     {
         $container = new Container;
-        $container->set("foo", 12.345);
-        $this->assertSame(12.345, $container->get("foo"));
 
+        $container->setSingleton(
+            DummyClass::class,
+            function($c) {
+                return new DummyClass(1);
+            }
+        );
+
+        $first = $container->get(DummyClass::class);
+
+        $container->setCreate(
+            DummyClass::class,
+            function($c) {
+                return new DummyClass(2);
+            }
+        );
+
+        $second = $container->get(DummyClass::class);
+
+        $this->assertNotEquals($first, $second);
+        $this->assertEquals(1, $first->id);
+        $this->assertEquals(2, $second->id);
     }
 
-    public function testGetFloatViaClosure()
+    public function testSingletonSameAfterChangedFromCreate(): void
     {
         $container = new Container;
-        $container->set("foo", function($c) {
-            return 12.345;
-        });
 
-        $this->assertSame(12.345, $container->get("foo"));
+        $container->setCreate(
+            DummyClass::class,
+            function($c) {
+                return new DummyClass(-1);
+            }
+        );
+
+        $first = $container->get(DummyClass::class);
+
+        $counter = 0;
+
+        $container = new Container;
+        $container->setSingleton(
+            DummyClass::class,
+            function($c) use (&$counter) {
+                $counter ++;
+                return new DummyClass($counter);
+            }
+        );
+
+        $second = $container->get(DummyClass::class);
+        $third = $container->get(DummyClass::class);
+
+        $this->assertNotEquals($first, $second);
+        $this->assertEquals($second, $third);
+        $this->assertEquals(-1, $first->id);
+        $this->assertEquals(1, $second->id);
+        $this->assertEquals(1, $third->id);
     }
 
-    public function testGetFloatViaFactory()
+    public function testHas(): void
     {
         $container = new Container;
-        $container->factory("foo", function($c) {
-            return 12.345;
-        });
 
-        $this->assertSame(12.345, $container->get("foo"));
+        $this->assertFalse($container->has("foo"));
+        $this->assertFalse($container->has("moo"));
+
+        $container->setSingleton("foo", function(){});
+        $container->setSingleton("moo", function(){});
+
+        $this->assertTrue($container->has("foo"));
+        $this->assertTrue($container->has("moo"));
+
+        $this->assertFalse($container->has(DummyClass::class));
+        $container->setSingleton(DummyClass::class, function(){});
+        $this->assertTrue($container->has(DummyClass::class));
     }
 
-    public function testNestSeveralLevels()
+    public function testClassName(): void
     {
-        $container = (new Container)
-            ->set("greeting", "Hello!")
-            ->set("say", function($c){
-                return $c->get("greeting");
-            })
-            ->factory("yo", function($c){
-                return $c->get("say");
-            });
+        $classname = new ClassName(DummyClass::class);
+        $this->assertEquals(DummyClass::class, $classname->getName());
 
-        $this->assertEquals("Hello!", $container->get("yo"));
+        $moo = new ClassName("moo");
+        $this->assertEquals("moo", $moo->getName());
     }
 
-    public function testNestSeveralLevelsReversedOrder()
-    {
-        $container = (new Container)
-            ->factory("yo", function($c){
-                return $c->get("say");
-            })
-            ->set("say", function($c){
-                return $c->get("greeting");
-            })
-            ->set("greeting", "Hello!");
-
-        $this->assertEquals("Hello!", $container->get("yo"));
-    }
-
-    public function testHas()
-    {
-        $container = (new Container)
-            ->set("a", "Hello")
-            ->set("b", 1234)
-            ->set("c", 12.345)
-            ->set("d", 0)
-            ->set("e", 0.0)
-            ->set("f", -1)
-            ->set("g", false)
-            ->set("h", true)
-            ->set("i", new \stdClass)
-            ->set("j", "")
-            ->set("k", null);
-
-        $this->assertTrue($container->has("a"));
-        $this->assertTrue($container->has("b"));
-        $this->assertTrue($container->has("c"));
-        $this->assertTrue($container->has("d"));
-        $this->assertTrue($container->has("e"));
-        $this->assertTrue($container->has("f"));
-        $this->assertTrue($container->has("g"));
-        $this->assertTrue($container->has("h"));
-        $this->assertTrue($container->has("i"));
-        $this->assertTrue($container->has("j"));
-        $this->assertTrue($container->has("k"));
-
-        $this->assertFalse($container->has("nope"));
-    }
-
-    public function testOverwriteValueToValue()
+    public function testAutoWire(): void
     {
         $container = new Container;
-        $container->set("foo", "bar");
-        $container->set("foo", "world");
-        $this->assertEquals("world", $container->get("foo"));
+
+        $aw = new AutoWire(DummyClass::class);
+
+        $this->assertInstanceOf(
+            DummyClass::class,
+            $aw->create($container)
+        );
+
+        $this->assertEquals(
+            0,
+            $aw->create($container)->id
+        );
     }
 
-    public function testOverwriteValueToClosure()
+    public function testAutoWireDependency(): void
     {
         $container = new Container;
-        $container->set("foo", "bar");
-        $container->set("foo", function($c){
-            return "abc!";
-        });
-        $this->assertEquals("abc!", $container->get("foo"));
+
+        $aw = new AutoWire(DummyParentClass::class);
+
+        $this->assertInstanceOf(
+            DummyParentClass::class,
+            $aw->create($container)
+        );
+
+        $this->assertInstanceOf(
+            DummyClass::class,
+            $aw->create($container)->child
+        );
+
+        $this->assertEquals(
+            0,
+            $aw->create($container)->child->id
+        );
     }
 
-    public function testOverwriteValueToFactory()
+    public function testAutoWireFactoryDependency(): void
     {
         $container = new Container;
-        $container->set("foo", "bar");
-        $container->factory("foo", function($c){
-            return "pizza!";
-        });
-        $this->assertEquals("pizza!", $container->get("foo"));
+
+        $container->setCreate(
+            DummyClass::class,
+            function($c){
+                return new DummyClass(123);
+            }
+        );
+
+        $aw = new AutoWire(DummyParentClass::class);
+
+        $this->assertEquals(
+            123,
+            $aw->create($container)->child->id
+        );
     }
 
-    public function testOverwriteClosureToValue()
+    public function testAutoWireMixes(): void
     {
         $container = new Container;
-        $container->set("foo", function($c){
-            return "bar";
-        });
-        $container->set("foo", "world");
-        $this->assertEquals("world", $container->get("foo"));
+
+        $container->setCreate(
+            DummyParentClass::class,
+            function($c){
+                return new DummyParentClass(
+                    $c->get(DummyClass::class)
+                );
+            }
+        );
+
+        $this->assertInstanceOf(
+            DummyParentClass::class,
+            $container->get(DummyParentClass::class)
+        );
+
+        $this->assertEquals(
+            0,
+            $container->get(DummyParentClass::class)->child->id
+        );
+
+        $container->setCreate(
+            DummyParentClass::class,
+            function($c){
+                return new DummyParentClass(
+                    new DummyClass(123)
+                );
+            }
+        );
+
+        $this->assertInstanceOf(
+            DummyParentClass::class,
+            $container->get(DummyParentClass::class)
+        );
+
+        $this->assertEquals(
+            123,
+            $container->get(DummyParentClass::class)->child->id
+        );
+
+        $container->setProperty("id", 1024);
+
+        $container->setCreate(
+            DummyParentClass::class,
+            function(Container $c){
+                return new DummyParentClass(
+                    new DummyClass(
+                        $c->getProperty("id")
+                    )
+                );
+            }
+        );
+
+        $this->assertInstanceOf(
+            DummyParentClass::class,
+            $container->get(DummyParentClass::class)
+        );
+
+        $this->assertEquals(
+            1024,
+            $container->get(DummyParentClass::class)->child->id
+        );
     }
 
-    public function testOverwriteClosureToClosure()
+    public function testUnsatisfiableDependency(): void
+    {
+        $this->expectException(\Gaslawork\Container\UnsatisfiableDependencyException::class);
+        $this->expectExceptionMessage("Cannot satisfy dependency \$id of Gaslawork\Tests\UnsatisfiableClass");
+        new AutoWire(UnsatisfiableClass::class);
+    }
+
+    public function testUnsatisfiableTypedDependency(): void
+    {
+        $this->expectException(\Gaslawork\Container\UnsatisfiableDependencyException::class);
+        $this->expectExceptionMessage("Cannot satisfy dependency int \$id of Gaslawork\Tests\TypedUnsatisfiableClass");
+        new AutoWire(TypedUnsatisfiableClass::class);
+    }
+
+    public function testUnsatisfiableDependencyFromContainer(): void
+    {
+        $this->expectException(\Gaslawork\Container\UnsatisfiableDependencyException::class);
+        $this->expectExceptionMessage("Cannot satisfy dependency \$id of Gaslawork\Tests\UnsatisfiableClass");
+        $container = new Container;
+        $container->get(UnsatisfiableClass::class);
+    }
+
+    public function testUnsatisfiableTypedDependencyFromContainer(): void
+    {
+        $this->expectException(\Gaslawork\Container\UnsatisfiableDependencyException::class);
+        $this->expectExceptionMessage("Cannot satisfy dependency int \$id of Gaslawork\Tests\TypedUnsatisfiableClass");
+        $container = new Container;
+        $container->get(TypedUnsatisfiableClass::class);
+    }
+
+    public function testUnsatisfiableDependencyWorksWithFactory(): void
     {
         $container = new Container;
-        $container->set("foo", function($c){
-            return "bar";
-        });
-        $container->set("foo", function($c){
-            return "abc!";
-        });
-        $this->assertEquals("abc!", $container->get("foo"));
+
+        $container->setCreate(
+            UnsatisfiableClass::class,
+            function($c){
+                return new UnsatisfiableClass(123);
+            }
+        );
+
+        $container->setCreate(
+            TypedUnsatisfiableClass::class,
+            function($c){
+                return new UnsatisfiableClass(1024);
+            }
+        );
+
+        $first = $container->get(UnsatisfiableClass::class);
+        $second = $container->get(TypedUnsatisfiableClass::class);
+
+        $this->assertEquals(123, $first->id);
+        $this->assertEquals(1024, $second->id);
     }
 
-    public function testOverwriteClosureToFactory()
+    public function testUnsatisfiableChild(): void
+    {
+        $this->expectException(\Gaslawork\Container\UnsatisfiableDependencyException::class);
+        $this->expectExceptionMessage("Cannot satisfy dependency \$id of Gaslawork\Tests\UnsatisfiableClass");
+
+        $container = new Container;
+        $aw = new AutoWire(ParentUnsatisfiableClass::class);
+        $aw->create($container);
+    }
+
+    public function testUnsatisfiableChildWorksWithFactory(): void
     {
         $container = new Container;
-        $container->set("foo", function($c){
-            return "bar";
-        });
-        $container->factory("foo", function($c){
-            return "pizza!";
-        });
-        $this->assertEquals("pizza!", $container->get("foo"));
+
+        $container->setCreate(
+            UnsatisfiableClass::class,
+            function($c){
+                return new UnsatisfiableClass(123);
+            }
+        );
+
+        $aw = new AutoWire(ParentUnsatisfiableClass::class);
+
+        $this->assertEquals(123, $aw->create($container)->child->id);
     }
 
-    public function testOverwriteFactoryToValue()
+    public function testUnsatisfiableChildFromContainer(): void
+    {
+        $this->expectException(\Gaslawork\Container\UnsatisfiableDependencyException::class);
+        $this->expectExceptionMessage("Cannot satisfy dependency \$id of Gaslawork\Tests\UnsatisfiableClass");
+
+        $container = new Container;
+        $container->get(ParentUnsatisfiableClass::class);
+    }
+
+    public function testUnsatisfiableChildWorksWithFactoryFromContainer(): void
     {
         $container = new Container;
-        $container->factory("foo", function($c){
-            return "bar";
-        });
-        $container->set("foo", "world");
-        $this->assertEquals("world", $container->get("foo"));
+
+        $container->setCreate(
+            UnsatisfiableClass::class,
+            function($c){
+                return new UnsatisfiableClass(123);
+            }
+        );
+
+        $this->assertEquals(
+            123,
+            $container->get(ParentUnsatisfiableClass::class)->child->id
+        );
     }
 
-    public function testOverwriteFactoryToClosure()
-    {
-        $container = new Container;
-        $container->factory("foo", function($c){
-            return "bar";
-        });
-        $container->set("foo", function($c){
-            return "abc!";
-        });
-        $this->assertEquals("abc!", $container->get("foo"));
-    }
-
-    public function testOverwriteFactoryToFactory()
-    {
-        $container = new Container;
-        $container->factory("foo", function($c){
-            return "bar";
-        });
-        $container->factory("foo", function($c){
-            return "pizza!";
-        });
-        $this->assertEquals("pizza!", $container->get("foo"));
-    }
-
-    public function testOverwriteValueMulitple()
-    {
-        $container = new Container;
-        $container->set("foo", "bar");
-        $container->set("foo", "world");
-        $container->set("foo", "abc!");
-        $container->set("foo", "pizza!");
-        $this->assertEquals("pizza!", $container->get("foo"));
-    }
-
-    public function testOverwriteValueMulitpleAgain()
-    {
-        $container = new Container;
-        $container->set("foo", "bar");
-        $container->set("foo", "world");
-        $container->set("foo", function($c){
-            return "abc!";
-        });
-        $container->set("foo", function($c){
-            return "pizza!";
-        });
-        $this->assertEquals("pizza!", $container->get("foo"));
-    }
-
-
-    public function testIntAsIdInGet()
-    {
-        $this->expectException(\Gaslawork\Exception\ContainerIdInvalidTypeException::class);
-
-        (new Container)
-            ->get(1234);
-    }
-
-    public function testFloatAsIdInGet()
-    {
-        $this->expectException(\Gaslawork\Exception\ContainerIdInvalidTypeException::class);
-
-        (new Container)
-            ->get(12.34);
-    }
-
-    public function testObjectAsIdInGet()
-    {
-        $this->expectException(\Gaslawork\Exception\ContainerIdInvalidTypeException::class);
-
-        (new Container)
-            ->get(new \stdClass);
-    }
-
-    public function testIntStringAsIdInGet()
-    {
-        $container = (new Container)
-            ->set("1234", "Yes!");
-
-        $this->assertEquals("Yes!", $container->get("1234"));
-    }
-
-    public function testFloatStringAsIdInGet()
-    {
-        $container = (new Container)
-            ->set("12.34", "Yes!");
-
-        $this->assertEquals("Yes!", $container->get("12.34"));
-    }
-
-    public function testIntAsIdInHas()
-    {
-        $this->expectException(\Gaslawork\Exception\ContainerIdInvalidTypeException::class);
-
-        (new Container)
-            ->has(1234);
-    }
-
-    public function testFloatAsIdInHas()
-    {
-        $this->expectException(\Gaslawork\Exception\ContainerIdInvalidTypeException::class);
-
-        (new Container)
-            ->has(12.34);
-    }
-
-    public function testObjectAsIdInHas()
-    {
-        $this->expectException(\Gaslawork\Exception\ContainerIdInvalidTypeException::class);
-
-        (new Container)
-            ->has(new \stdClass);
-    }
-
-    public function testIntStringAsIdInHas()
-    {
-        $container = (new Container)
-            ->set("1234", "Yes!");
-
-        $this->assertTrue($container->has("1234"));
-    }
-
-    public function testFloatStringAsIdInHas()
-    {
-        $container = (new Container)
-            ->set("12.34", "Yes!");
-
-        $this->assertTrue($container->has("12.34"));
-    }
+    /*
+    getProperty non-existing property
+    get() non-existing
+    AutoWire
+        Fallbacks to AutoWire if not Factory
+    Autowire cache reset
+    */
 }

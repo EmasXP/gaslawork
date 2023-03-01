@@ -2,8 +2,15 @@
 
 namespace Gaslawork\Routing;
 
-interface RouteInterface {
+use Psr\Http\Message\RequestInterface;
 
-    public function check(RequestUri $url, ?string $method): ?RouteDataInterface;
+interface RouteInterface
+{
+
+    public function check(RequestUri $url, RequestInterface $request): ?RouteDataInterface;
+
+    public function getMinimumParts(): int;
+
+    public function getMaximumParts(): int;
 
 }

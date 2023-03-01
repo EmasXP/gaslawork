@@ -2,8 +2,11 @@
 
 namespace Gaslawork\Routing;
 
-interface RouterInterface {
+use Psr\Http\Message\RequestInterface;
 
-    public function find($uri, $method = null): ?RouteDataInterface;
+interface RouterInterface
+{
+
+    public function find(RequestInterface $request): ?RouteDataInterface;
 
 }

@@ -38,7 +38,7 @@ I'm now going to explain how the routing internals work. You do not _need_ to kn
 
 ## A brief explanation of the controller and the action
 
-[Controllers]({{ site.baseurl }}/controllers) has its on documentation, but to make sense of this document I'll give you a short explanation.
+[Controllers]({{ site.baseurl }}/controllers) has its own documentation, but to make sense of this document I'll give you a short explanation.
 
 A "controller" is a PHP class that has one or more methods (functions). These methods are what we call "actions". Gaslawork will create a new instance of the controller (class), and then execute the correct action (method).
 

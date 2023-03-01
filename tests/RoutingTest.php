@@ -1697,4 +1697,283 @@ final class RoutingTest extends TestCase {
         $this->assertNull($route_data->getAction());
     }
 
+
+    public function testGetMinimumParts(): void
+    {
+        $this->assertEquals(
+            1,
+            (new Route("", ""))->getMinimumParts()
+        );
+
+        $this->assertEquals(
+            1,
+            (new Route("/", ""))->getMinimumParts()
+        );
+
+        $this->assertEquals(
+            1,
+            (new Route("/moo", ""))->getMinimumParts()
+        );
+
+        $this->assertEquals(
+            1,
+            (new Route("moo", ""))->getMinimumParts()
+        );
+
+        $this->assertEquals(
+            1,
+            (new Route("/moo/", ""))->getMinimumParts()
+        );
+
+        $this->assertEquals(
+            2,
+            (new Route("/moo/foo", ""))->getMinimumParts()
+        );
+
+        $this->assertEquals(
+            2,
+            (new Route("moo/foo", ""))->getMinimumParts()
+        );
+
+        $this->assertEquals(
+            2,
+            (new Route("/moo/foo/", ""))->getMinimumParts()
+        );
+
+        $this->assertEquals(
+            2,
+            (new Route("/moo/foo/:bar", ""))->getMinimumParts()
+        );
+
+        $this->assertEquals(
+            2,
+            (new Route("/moo/foo/:bar/:baz", ""))->getMinimumParts()
+        );
+
+        $this->assertEquals(
+            2,
+            (new Route("/moo/foo/:bar/:baz/", ""))->getMinimumParts()
+        );
+
+        $this->assertEquals(
+            4,
+            (new Route("/moo/foo/:bar/baz/", ""))->getMinimumParts()
+        );
+
+        $this->assertEquals(
+            4,
+            (new Route("/moo/foo/:bar/baz/:hello", ""))->getMinimumParts()
+        );
+
+        $this->assertEquals(
+            6,
+            (new Route("/moo/foo/:bar/baz/:hello/world", ""))->getMinimumParts()
+        );
+    }
+
+    public function testGetMinimumPartsWithRequiredParams(): void
+    {
+        $this->assertEquals(
+            1,
+            (new Route("/:foo", ""))
+                ->setRequired([
+                    "foo",
+                ])
+                ->getMinimumParts()
+        );
+
+        $this->assertEquals(
+            2,
+            (new Route("/hello/:foo", ""))
+                ->setRequired([
+                    "foo",
+                ])
+                ->getMinimumParts()
+        );
+
+        $this->assertEquals(
+            2,
+            (new Route("/hello/:foo/:bar", ""))
+                ->setRequired([
+                    "foo",
+                ])
+                ->getMinimumParts()
+        );
+
+        $this->assertEquals(
+            3,
+            (new Route("/hello/:foo/:bar", ""))
+                ->setRequired([
+                    "foo",
+                    "bar",
+                ])
+                ->getMinimumParts()
+        );
+
+        $this->assertEquals(
+            4,
+            (new Route("/hello/:foo/:bar/world", ""))
+                ->setRequired([
+                    "foo",
+                    "bar",
+                ])
+                ->getMinimumParts()
+        );
+    }
+
+    public function testGetMinimumPartsWithRequiredParamsAndDefaults(): void
+    {
+        $this->assertEquals(
+            1,
+            (new Route("/:foo", ""))
+                ->setRequired([
+                    "foo",
+                ])
+                ->setDefaults([
+                    "foo" => "123",
+                ])
+                ->getMinimumParts()
+        );
+
+        $this->assertEquals(
+            2,
+            (new Route("/:foo/:bar", ""))
+                ->setRequired([
+                    "foo",
+                    "bar",
+                ])
+                ->setDefaults([
+                    "foo" => "123",
+                ])
+                ->getMinimumParts()
+        );
+
+        $this->assertEquals(
+            1,
+            (new Route("/:foo/:bar", ""))
+                ->setRequired([
+                    "foo",
+                    "bar",
+                ])
+                ->setDefaults([
+                    "foo" => "123",
+                    "bar" => "123",
+                ])
+                ->getMinimumParts()
+        );
+
+        $this->assertEquals(
+            1,
+            (new Route("/:foo/:hello/:bar", ""))
+                ->setRequired([
+                    "foo",
+                    "bar",
+                ])
+                ->setDefaults([
+                    "foo" => "123",
+                    "bar" => "123",
+                ])
+                ->getMinimumParts()
+        );
+
+        $this->assertEquals(
+            2,
+            (new Route("/:foo/:hello/:bar", ""))
+                ->setRequired([
+                    "foo",
+                    "bar",
+                    "hello",
+                ])
+                ->setDefaults([
+                    "foo" => "123",
+                    "bar" => "123",
+                ])
+                ->getMinimumParts()
+        );
+
+        $this->assertEquals(
+           1,
+            (new Route("/:foo/:hello/:bar", ""))
+                ->setRequired([
+                    "foo",
+                    "bar",
+                    "hello",
+                ])
+                ->setDefaults([
+                    "foo" => "123",
+                    "bar" => "123",
+                    "hello" => "123",
+                ])
+                ->getMinimumParts()
+        );
+    }
+
+    public function testGetMaximumParts(): void
+    {
+        $this->assertEquals(
+            1,
+            (new Route("", ""))->getMaximumParts()
+        );
+
+        $this->assertEquals(
+            1,
+            (new Route("/", ""))->getMaximumParts()
+        );
+
+        $this->assertEquals(
+            1,
+            (new Route("/moo", ""))->getMaximumParts()
+        );
+
+        $this->assertEquals(
+            1,
+            (new Route("/moo/", ""))->getMaximumParts()
+        );
+
+        $this->assertEquals(
+            2,
+            (new Route("/moo/root", ""))->getMaximumParts()
+        );
+
+        $this->assertEquals(
+            2,
+            (new Route("/moo/root/", ""))->getMaximumParts()
+        );
+
+        $this->assertEquals(
+            2,
+            (new Route("moo/root/", ""))->getMaximumParts()
+        );
+
+        $this->assertEquals(
+            2,
+            (new Route("moo/root", ""))->getMaximumParts()
+        );
+
+        $this->assertEquals(
+            5,
+            (new Route("/:foo/bar/:hello/world/:pizza", ""))
+                ->setRequired([
+                    "foo",
+                ])
+                ->setDefaults([
+                    "foo" => "123",
+                    "hello" => "123",
+                ])
+                ->getMaximumParts()
+        );
+
+        $this->assertEquals(
+            5,
+            (new Route("/:foo/bar/:hello/world/:pizza", ""))
+                ->setRequired([
+                    "hello",
+                ])
+                ->setDefaults([
+                    "pizza" => "123",
+                ])
+                ->getMaximumParts()
+        );
+    }
+
 }
