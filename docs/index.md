@@ -4,11 +4,11 @@ title: Gaslawork documentation
 
 # Gaslawork documentation
 
-This is the documentation for the Gaslawork PHP micro web framework. 
+This is the documentation for the Gaslawork PHP micro web framework.
 
 ## Project status
 
-This is my hobby project. Like a pet I give far too little attention. Sometimes I get a bad conscience after not looking after it for a year. 
+This is my hobby project. Like a pet I give far too little attention. Sometimes I get a bad conscience after not looking after it for a year.
 
 At this point - and maybe forever - one shall not look at this project as very serious. It is more like a playground for me. I keep trying out ideas, and then I get more bad conscience because I don't maintain the test suite.
 
@@ -44,7 +44,7 @@ while ($req = $worker->waitRequest()) {
         $rsp = $app->executeRequest($req);
         $worker->respond($rsp);
     } catch (\Throwable $e) {
-        $psr7->respond(new Psr7\Response(500, [], "Something Went Wrong!"));
+        $worker->respond(new Psr7\Response(500, [], "Something Went Wrong!"));
     }
 }
 ```
@@ -66,7 +66,7 @@ class Index {
 }
 ```
 
-This example uses [RoadRunner](https://roadrunner.dev/), but any PSR17 compatible application will work.
+This example uses [RoadRunner](https://roadrunner.dev/), but any PSR17 compatible application server will work.
 
 Add a `.rr.yaml` that looks something like this:
 

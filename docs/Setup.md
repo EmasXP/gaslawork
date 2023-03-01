@@ -55,7 +55,7 @@ while ($req = $worker->waitRequest()) {
         $rsp = $app->executeRequest($req);
         $worker->respond($rsp);
     } catch (\Throwable $e) {
-        $psr7->respond(new Psr7\Response(500, [], "Something Went Wrong!"));
+        $worker->respond(new Psr7\Response(500, [], "Something Went Wrong!"));
     }
 }
 ```
