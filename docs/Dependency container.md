@@ -164,3 +164,28 @@ class Index {
 * `app.request` - Only exist during a request
 * `app.route-data` - Only exist during a request
 
+## Auto wire
+
+The container can build instances that are not defined.
+
+```php
+$app->getContainer()
+    ->setSingleton(\PDO::class, function($c){
+        return new \PDO("...");
+    });
+```
+
+```php
+class Example {
+    
+    public function __construct(PDO $db)
+    {
+        // ...
+    }
+    
+}
+```
+
+```php
+\Gaslawork\App::current()->get(Example::class); // An instance of Example with the PDO passed
+```
