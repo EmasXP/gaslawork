@@ -1,15 +1,10 @@
 {
     "autoload": {
         "psr-4": {
-            "Gaslawork\\": "src",
-            "Gaslawork\\Tests\\": "tests"
+            "": "classes/"
         }
     },
     "require-dev": {
-        "phpunit/phpunit": "^5.7"
-    },
-    "require": {
-        "psr/container": "1.0.0",
-        "psr/http-message": "^1.0"
+        "phpunit/phpunit": "^12.5"
     }
 }
